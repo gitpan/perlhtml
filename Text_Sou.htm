@@ -1,0 +1,93 @@
+<HEAD><CENTER><TITLE>Text_Soundex</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Text::Soundex_name_0">
+NAME</A>
+</H1>
+Text::Soundex - Implementation of the Soundex Algorithm as Described by Knuth
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Soundex_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Text::Soundex;
+  $code = soundex $string;            # get soundex code for a string
+  @codes = soundex @list;             # get list of codes for list of strings
+  # set value to be returned for strings without soundex code
+  $soundex_nocode = 'Z000';
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Soundex_description_0">
+DESCRIPTION</A>
+</H1>
+This module implements the soundex algorithm as described by Donald Knuth
+in Volume 3 of <STRONG>The Art of Computer Programming</STRONG>.  The algorithm is
+intended to hash words (in particular surnames) into a small space using a
+simple model which approximates the sound of the word when spoken by an English
+speaker.  Each word is reduced to a four character string, the first
+character being an upper case letter and the remaining three being digits.
+<p>If there is no soundex code representation for a string then the value of
+<CODE><STRONG>$soundex_nocode</STRONG></CODE> is returned.  This is initially set to 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+, but
+many people seem to prefer an <EM>unlikely</EM> value like <CODE>Z000</CODE>
+(how unlikely this is depends on the data set being dealt with.)  Any value
+can be assigned to <CODE><STRONG>$soundex_nocode</STRONG></CODE>.
+<p>In scalar context <CODE>soundex</CODE> returns the soundex code of its first
+argument, and in array context a list is returned in which each element is the 
+soundex code for the corresponding argument passed to <CODE>soundex</CODE> e.g.
+<p>
+<XMP>
+  @codes = soundex qw(Mike Stok);
+
+</XMP>
+<p>leaves <CODE><STRONG>@codes</STRONG></CODE> containing <CODE>('M200', 'S320')</CODE>.
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Soundex_examples_0">
+EXAMPLES</A>
+</H1>
+Knuth's examples of various names and the soundex codes they map to
+are listed below:
+<p>
+<XMP>
+  Euler, Ellery -> E460
+  Gauss, Ghosh -> G200
+  Hilbert, Heilbronn -> H416
+  Knuth, Kant -> K530
+  Lloyd, Ladd -> L300
+  Lukasiewicz, Lissajous -> L222
+
+</XMP>
+<p>so:
+<p>
+<XMP>
+  $code = soundex 'Knuth';              # $code contains 'K530'
+  @list = soundex qw(Lloyd Gauss);      # @list contains 'L300', 'G200'
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Soundex_limitations_0">
+LIMITATIONS</A>
+</H1>
+As the soundex algorithm was originally used a <STRONG>long</STRONG> time ago in the US
+it considers only the English alphabet and pronunciation.
+<p>As it is mapping a large space (arbitrary length strings) onto a small
+space (single letter plus 3 digits) no inference can be made about the
+similarity of two strings which end up with the same soundex code.  For 
+example, both <CODE>Hilbert</CODE> and <CODE>Heilbronn</CODE> end up with a soundex code
+of <CODE>H416</CODE>.
+<p>
+</BODY>
+</HTML>

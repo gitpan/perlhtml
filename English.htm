@@ -1,0 +1,51 @@
+<HEAD><CENTER><TITLE>English</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="English_name_0">
+NAME</A>
+</H1>
+English - use nice English (or awk) names for ugly punctuation variables
+<p><p><hr>
+
+<H1> 
+<A NAME="English_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use English;
+    ...
+    if ($ERRNO =~ /denied/) { ... }
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="English_description_0">
+DESCRIPTION</A>
+</H1>
+This module provides aliases for the built-in variables whose
+names no one seems to like to read.  Variables with side-effects
+which get triggered just by accessing them (like 
+<A HREF="perlvar.htm#perlvar__28">$0</A>
+) will still 
+be affected.
+<p>For those variables that have an <STRONG>awk</STRONG> version, both long
+and short English alternatives are provided.  For example, 
+the 
+<A HREF="perlvar.htm#perlvar__7">$/</A>
+ variable can be referred to either 
+<A HREF="perlvar.htm#perlvar_rs_0">$RS</A>
+ or 
+
+<A HREF="perlvar.htm#perlvar_input_record_separator_1">$INPUT_RECORD_SEPARATOR</A>
+ if you are using the English module.
+<p>See 
+<A HREF="perlvar.htm">
+the <EM>perlvar</EM> manpage</A>
+ for a complete list of these.
+<p>
+</BODY>
+</HTML>

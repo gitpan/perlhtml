@@ -1,0 +1,124 @@
+<HEAD><CENTER><TITLE>strict</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="strict_name_0">
+NAME</A>
+</H1>
+strict - Perl pragma to restrict unsafe constructs
+<p><p><hr>
+
+<H1> 
+<A NAME="strict_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use strict;
+    use strict "vars";
+    use strict "refs";
+    use strict "subs";
+    use strict;
+    no strict "vars";
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="strict_description_0">
+DESCRIPTION</A>
+</H1>
+If no import list is supplied, all possible restrictions are assumed.
+(This is the safest mode to operate in, but is sometimes too strict for
+casual programming.)  Currently, there are three possible things to be
+strict about:  ``subs'', ``vars'', and ``refs''.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="strict_strict_0">
+strict refs</A>
+
+</DT></STRONG>
+<DD>
+This generates a runtime error if you 
+use symbolic references (see 
+<A HREF="perlref.htm">
+the <EM>perlref</EM> manpage</A>
+).
+<p>
+<XMP>
+    use strict 'refs';
+    $ref = \$foo;
+    print $$ref;        # ok
+    $ref = "foo";
+    print $$ref;        # runtime error; normally ok
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="strict_strict_1">
+strict vars</A>
+
+</DT></STRONG>
+<DD>
+This generates a compile-time error if you access a variable that wasn't
+localized via 
+<A HREF="perlfunc.htm#perlfunc_my_0">
+<A HREF="perlfunc.htm#perlfunc_my_0">my()</A>
+</A>
+ or wasn't fully qualified.  Because this is to avoid
+variable suicide problems and subtle dynamic scoping issues, a merely
+
+<A HREF="perlfunc.htm#perlfunc_local_0">local()</A>
+ variable isn't good enough.  See 
+<A HREF="perlfunc.htm#perlfunc_my_0"><EM>my</EM></A>
+ and
+
+<A HREF="perlfunc.htm#perlfunc_local_0"><EM>local</EM></A>
+.
+<p>
+<XMP>
+    use strict 'vars';
+    $X::foo = 1;         # ok, fully qualified
+    my $foo = 10;        # ok, my() var
+    local $foo = 9;      # blows up
+
+</XMP>
+<p>The 
+<A HREF="perlfunc.htm#perlfunc_local_0">local()</A>
+ generated a compile-time error because you just touched a global
+name without fully qualifying it.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="strict_strict_2">
+strict subs</A>
+
+</DT></STRONG>
+<DD>
+This disables the poetry optimization, generating a compile-time error if
+you try to use a bareword identifier that's not a subroutine, unless it
+appears in curly braces or on the left hand side of the ``=&gt;'' symbol.
+<p>
+<XMP>
+    use strict 'subs';
+    $SIG{PIPE} = Plumber;       # blows up
+    $SIG{PIPE} = "Plumber";     # just fine: bareword in curlies always ok
+    $SIG{PIPE} = \&Plumber;     # preferred form
+
+</XMP>
+<p>
+</DL>
+See <EM>Pragmatic Modules</EM>.
+<p>
+</BODY>
+</HTML>

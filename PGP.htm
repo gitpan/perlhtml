@@ -1,0 +1,491 @@
+<HEAD><CENTER><TITLE>PGP</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="PGP_name_0">
+NAME</A>
+</H1>
+PGP - perl module to work with PGP messages
+<p><p><hr>
+
+<H1> 
+<A NAME="PGP_synopsis_0">
+SYNOPSIS</A>
+</H1>
+use PGP;
+<p><STRONG>$message</STRONG> = new PGP <STRONG>$pgppath</STRONG>;
+<p><p><hr>
+
+<H1> 
+<A NAME="PGP_description_0">
+DESCRIPTION</A>
+</H1>
+The PGP module allow a perl script to work with PGP related files.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+<EM>* PGP::new</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $pgp = new PGP [$pgppath], [$pgpexec];
+
+</XMP>
+<p>Create the PGP encapsulation object. The standard location for the 
+PGP executable is /usr/local/bin/pgp.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Exec</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $pid = Exec $pgp $args, $in, $out, $err;
+
+</XMP>
+<p>Execute the PGP command and attach the <CODE><STRONG>$in</STRONG></CODE>, <CODE><STRONG>$out</STRONG></CODE>, <CODE><STRONG>$err</STRONG></CODE> file handles. 
+This should be fine for the moment, but need to look into making
+sure that data is not written to a temporary file anywhere.
+<p>The <STRONG>$args</STRONG> variable can have several substituted strings:
+<p>
+<XMP>
+        %p      PGP path variable
+        %r      Path to PGP keyring
+        %k      Specified user
+
+</XMP>
+<p>The file handle variables--<CODE><STRONG>$in</STRONG></CODE>, <CODE><STRONG>$out</STRONG></CODE> and <CODE><STRONG>$err</STRONG></CODE>--are send as
+normal filehandle names, but they reside in the PGP package. For
+example, the following procedure call is made:
+<p>
+<XMP>
+        PGP->Exec ($args, FIN, FOUT, FERR);
+
+</XMP>
+<p>Even though the file handles were specified as <CODE>FIN</CODE>, <CODE>FOUT</CODE> and
+<CODE>FERR</CODE>; they must be referred to as <CODE>PGP::FIN</CODE>, <CODE>PGP::FOUT</CODE> and
+<CODE>PGP::FERR</CODE> in the orignal procedure that made the call.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Sign</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $signed_document = Sign $pgp %args;
+
+</XMP>
+<p>The <CODE>Sign</CODE> procedure will take a file or data and sign with a PGP
+secret key. The default behavior is to sign the data with the last
+secret key added to the keyring, but that can be overridden with the
+<EM>Key</EM> argument. This method always returns the signed document.
+<p>The <CODE><STRONG>%args</STRONG></CODE> consist of a series of keys and values. Since there are
+several variations in the way data can be signed, not all the
+following options must be specified. This approach also makes it much
+easier to scale to new versions of PGP with more options.
+<p><UL><LI>	Armor		The output should be ASCII armored</LI>
+<LI>	Clear		Produce a "clear" signature</LI>
+<LI>	Encrypt		Encrypt the resulting signed document with</LI>
+<LI>			the given keyobj</LI>
+<LI>	Detach		Create a detached signature</LI>
+<LI>	File		Sign the specified file</LI>
+<LI>	Key		Sign with the specified key object</LI>
+<LI>	Nosave		Do not allow user to save message</LI>
+<LI>	Password	The password to use for signing</LI>
+<LI>	Signfile	The filename of the signed document</LI>
+<LI>	Text		Data to be signed.</LI>
+<LI>	Wipe		Remove the orignal file</LI>
+</UL>
+<p>The only absolute argument that is always required is the <CODE>Password</CODE>. 
+<p><STRONG>Examples</STRONG>
+<p>
+<XMP>
+ Sign $pgp Password => 'xyz', File => '/etc/motd', Clear => 1, Armor => 1;
+
+</XMP>
+<p>This would return a signed copy of the <EM>/etc/motd</EM> file. In this
+case, we use a file as the input, but the output is returned at the
+method's termination. The orignal file remains in the clear, and the
+signature is ASCII armored (Base64). 
+<p>
+<XMP>
+ Sign $pgp Password => 'abc', Text => 'Important info', Armor => 1,
+           Signfile => 'signed.asc', Key => $keyobj;
+
+</XMP>
+<p>This is sort of the reverse of the first example. It takes what is in
+the <CODE>Text</CODE> field and signs it. It then puts the result in the file
+<EM>signed.asc</EM> and returns it to the caller. In this case, the entire
+message is ASCII armored including the orignal text (i.e. <CODE>Text</CODE>).
+We also specify another secret key to produce the signature. For more
+information on the the key objects, please see <EM>``PGP::Key''</EM> section.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Encrypt</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $encrypted_document = Encrypt $pgp %args;
+
+</XMP>
+<p>The <CODE>Encrypt</CODE> method produces an encrypted document with the given
+public keys specified by <CODE>Key</CODE>. The <CODE>Encrypt</CODE> method follow the
+same conventions as the <CODE>Sign</CODE> method. The data to be encrypted can
+be sent to the method or can reside in a file. The resulting
+encrypted data can also reside in a file or be sent back to the caller. 
+<p>In addition to encrypting a document, the document can also be signed
+by using the <CODE>Sign</CODE> key in the <CODE><STRONG>%args</STRONG></CODE> array. If the document is to
+be signed by the default secret key (last key added to the secret
+keyring), then <CODE>Sign</CODE> can be left undefined or contain something
+other than a reference to a key object. Otherwise the <CODE>Sign</CODE> key
+should contain a reference to a specific key object (see
+<EM>``PGP::Key''</EM>).
+<p><UL><LI>	Armor		The output should be ASCII armored</LI>
+<LI>	Encryptfile	The filename of the encrypted document</LI>
+<LI>	File		Encrypt the specified file</LI>
+<LI>	Key		Encrypt with the specified key object</LI>
+<LI>	Nosave		Do not allow user to save message</LI>
+<LI>	Password	The password to use for signing</LI>
+<LI>	Sign		In addition to encrypting, sign the document</LI>
+<LI>	Text		Data to be encrypted</LI>
+<LI>	Wipe		Remove orignal file</LI>
+</UL>
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Decrypt</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        \%stats = Decrypt $pgp %args;
+
+</XMP>
+<p><CODE>Decrypt</CODE> will use a PGP secret key to decrypt a message. The secret
+key must reside on the secret keyring. The <CODE>Decrypt</CODE> method follows
+the same conventions for data transfer that <CODE>Sign</CODE> and <CODE>Encrypt</CODE>
+follow. The resulting associative array that is sent back contains
+three fields:
+<p><UL><LI>	Text		The decrypted document</LI>
+<LI>	Signature	PGP::Key object of the signer (if any)</LI>
+<LI>	Time		Time document was signed (if any)</LI>
+<LI>	Key		PGP::Key object used to decrypt document </LI>
+</UL>
+<p>The following are the accepted arguments:
+<p><UL><LI>	Password	Password to use for decrypting</LI>
+<LI>	File		File to decrypt</LI>
+<LI>	Keyring		Needed to return info about document</LI>
+<LI>	Plainfile	File to put the data in</LI>
+<LI>	Text		Document to decrypt</LI>
+<LI>	Wipe		Remove original file</LI>
+</UL>
+<p>The <CODE>Password</CODE> argument is required to perform the decryption of the
+document. The <CODE>Keyring</CODE> argument is also required if any document 
+information is to be returned.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Document_Info</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        \%doc = Document_Info $pgp %args;
+
+</XMP>
+<p><CODE>Document_Info</CODE> returns an associative array or a reference to an
+associative array to the caller. This returned structure contains
+information about the document that is sent to the <CODE>Document_Info</CODE>
+method. The returned structure is fairly straight forward:
+<p><UL><LI>	Text		The decrypted document</LI>
+<LI>	Signature	PGP::Key object of the signer (if any)</LI>
+<LI>	Time		Time document was signed (if any)</LI>
+<LI>	Key		PGP::Key object used to decrypt document</LI>
+</UL>
+<p>The <CODE>Document_Info</CODE> method currently accepts the following arguments:
+<p><UL><LI>	File		File to decrypt</LI>
+<LI>	Text		Document to decrypt</LI>
+<LI>	</LI>
+<LI>At this point, we cheat with the C<Document_Info> method. Basically</LI>
+<LI>we send the document through the C<Decrypt> method and grab the</LI>
+<LI>results. </LI>
+</UL>
+<p>
+<H2> 
+<A NAME="PGP_pgp_keyring_0">
+PGP::Keyring</A>
+</H2>
+The 
+<A HREF="PGP.htm#PGP_pgp_keyring_0">PGP::Keyring</A>
+ object is used to perform key management functions. 
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Keyring::new</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $Keyring = new PGP::Keyring $pgpkeyring;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Keyring::Add_Key</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $signature = Add_Key $Keyring $signature;
+
+</XMP>
+<p>Add a signature to the keyring. At this point, there is no error 
+checking or verification that the key has been added.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Remove_Key</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        Remove_Key $Keyring $key;
+
+</XMP>
+<p>Remove a signature from a keyring.   
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Extract_Key</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $key = Extract_Key $Keyring $keyobj;
+
+</XMP>
+<p>Extract a key from the specified keyring. A real simple dirty way of 
+extracting the key.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Generate_Key</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        Generate_Key $Keyring;
+
+</XMP>
+<p>Generate a new secret and public key set. This routine will not be
+present in the first rev of code. It is also subject to change.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Revoke_Key</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $certificate = Revoke_Key $Keyring $Keyobj;
+
+</XMP>
+<p>Produce a revocation certificate for the given key. Revocation is
+actually a two step process. We must first mark the key as revoked.
+This is the same as the <CODE>Remove_Key</CODE> method. After flaging the key,
+the key must be extracted to produce a revocation certificate.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Keyring::List_Keys</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        @{$keyobj} = List_Keys $Keyring;
+
+</XMP>
+<p>List the keys on a given keyring. This routine simply captures the output
+of the command <CODE>pgp -kc <STRONG>$keyring</STRONG></CODE> and does a quick parse on it. It 
+takes the lines that it parses, and constructs 
+<A HREF="PGP.htm#PGP_pgp_key_0"><EM>PGP::Key</EM></A>
+ objects.
+In the near future, this function will also pass the trust factors to the 
+PGP::Key object. We got it in the output, so why not use it.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Keyring::Find</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        @keys = Find $keyring %criteria;
+        \@keys = Find $keyring %criteria;
+        $key = Find $keyring %criteria; (Single match)
+
+</XMP>
+<p>Function to locate a single key.
+<p>
+<H2> 
+<A NAME="PGP_pgp_key_0">
+PGP::Key</A>
+</H2>
+The 
+<A HREF="PGP.htm#PGP_pgp_key_0">PGP::Key</A>
+ object is used to store the individual key
+information. It is primarily used by the 
+<A HREF="PGP.htm#PGP_pgp_keyring_0">PGP::Keyring</A>
+ object and
+for passing to the various methods that accept key parameters to
+encrypt and sign documents. 
+<p>Future revisions will provide actual methods to do key comparison for
+the trust and validity factors. These methods will provide a
+standardized way to determine which keys can be trusted and which
+keys should not be used at all.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Key::new</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $key = new PGP::Key $keyline;
+
+</XMP>
+<p>This is the constructor for the 
+<A HREF="PGP.htm#PGP_pgp_key_0">PGP::Key</A>
+ object. This is primarily
+used by the 
+<A HREF="PGP.htm#PGP_pgp_keyring_0">PGP::Keyring</A>
+ methods. The 
+<A HREF="PGP.htm#PGP_pgp_keyring_0">PGP::Keyring</A>
+ methods keep
+track of the keys and maintain the Trust and Validity components.
+About the only useful method is the <CODE>PGP::Key::Fingerprint</CODE>, which
+will return a string that is the finger print of the given key.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="PGP__0">
++ PGP::Key::Add_ID</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+        Add_ID $key $desc;
+
+</XMP>
+<p>The <CODE>Add_ID</CODE> method will add identification information to the owner 
+and email portions of the given 
+<A HREF="PGP.htm#PGP_pgp_key_0">PGP::Key</A>
+ object. This is to support 
+keys that multiple identification packets associated with them.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Key::Trust</EM>
+</DT></STRONG>
+<DD>
+This will set and/or retrieve the trust factor. Currently, this routine
+will just store what is sent to it. Need to define some ``trust'' 
+variables and provide useful routines to use them.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Key::Validity</EM>
+</DT></STRONG>
+<DD>
+This function will set and/or return the validity factor. This 
+subroutine is very much like PGP::Key::Trust. It also needs to be 
+worked on quite a bit.
+<p>
+<DT>
+
+<STRONG>
+<EM>* PGP::Key::Fingerprint</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+        $fingerprint = Fingerprint $key;
+
+</XMP>
+<p>
+<H2> 
+<A NAME="PGP_known_0">
+Known Bugs and Limitations</A>
+</H2>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="PGP__1">
++ Hopefully none, proabably many!</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<H2> 
+<A NAME="PGP_author_0">
+Author</A>
+</H2>
+
+<XMP>
+        Gerard Hickey
+        RR 2  Box 409
+        Lower Main St.
+        North Berwick, ME   03906
+        hickey@ctron.com
+
+</XMP>
+<p>
+<H2> 
+<A NAME="PGP_copyrights_0">
+Copyrights</A>
+</H2>
+
+<XMP>
+        Copyleft (l) 1996, by Gerard Hickey
+
+</XMP>
+<p>What this means is that this program may be copied freely given that
+there is no payment in exchange for this program, and that all the
+source is left intact with all comments and documentation. If you
+wish to modify this program to correct bugs or to extend it's
+usefullness, please coordinate such actions with the author.
+<p>
+</DL>
+
+</BODY>
+</HTML>

@@ -1,0 +1,573 @@
+<HEAD><CENTER><TITLE>Getopt_Long</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_name_0">
+NAME</A>
+</H1>
+GetOptions - extended processing of command line options
+<p><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Getopt::Long;
+  $result = GetOptions (...option-descriptions...);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_description_0">
+DESCRIPTION</A>
+</H1>
+The Getopt::Long module implements an extended getopt function called
+<EM>GetOptions()</EM>. This function adheres to the POSIX syntax for command
+line options, with GNU extensions. In general, this means that options
+have long names instead of single letters, and are introduced with a
+double dash ``--''. There is no bundling of command line options, as was
+the case with the more traditional single-letter approach. For
+example, the UNIX ``ps'' command can be given the command line ``option'' 
+<p>
+<XMP>
+  -vax
+
+</XMP>
+<p>which means the combination of 
+<A HREF="perlrun.htm#perlrun_v_0">-v</A>
+, 
+<A HREF="perlrun.htm#perlrun_a_0">-a</A>
+ and 
+<A HREF="perlrun.htm#perlrun_x_0">-x</A>
+. With the new
+syntax <STRONG>--vax</STRONG> would be a single option, probably indicating a
+computer architecture. 
+<p>Command line options can be used to set values. These values can be
+specified in one of two ways:
+<p>
+<XMP>
+  --size 24
+  --size=24
+
+</XMP>
+<p>GetOptions is called with a list of option-descriptions, each of which
+consists of two elements: the option specifier and the option linkage.
+The option specifier defines the name of the option and, optionally,
+the value it can take. The option linkage is usually a reference to a
+variable that will be set when the option is used. For example, the
+following call to GetOptions:
+<p>
+<XMP>
+  &GetOptions("size=i" => \$offset);
+
+</XMP>
+<p>will accept a command line option ``size'' that must have an integer
+value. With a command line of ``--size 24'' this will cause the variable
+<STRONG>$offset</STRONG> to get the value 24.
+<p>Alternatively, the first argument to GetOptions may be a reference to
+a HASH describing the linkage for the options. The following call is
+equivalent to the example above:
+<p>
+<XMP>
+  %optctl = ("size" => \$offset);
+  &GetOptions(\%optctl, "size=i");
+
+</XMP>
+<p>Linkage may be specified using either of the above methods, or both.
+Linkage specified in the argument list takes precedence over the
+linkage specified in the HASH.
+<p>The command line options are taken from array 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+. Upon completion
+of GetOptions, 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+ will contain the rest (i.e. the non-options) of
+the command line.
+ 
+Each option specifier designates the name of the option, optionally
+followed by an argument specifier. Values for argument specifiers are:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_none_0">
+<none&gt;</A>
+
+</DT></STRONG>
+<DD>
+Option does not take an argument. 
+The option variable will be set to 1.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long__0">
+!</A>
+
+</DT></STRONG>
+<DD>
+Option does not take an argument and may be negated, i.e. prefixed by
+``no''. E.g. ``foo!'' will allow <STRONG>--foo</STRONG> (with value 1) and <STRONG>-nofoo</STRONG>
+(with value 0).
+The option variable will be set to 1, or 0 if negated.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_s_0">
+=s</A>
+
+</DT></STRONG>
+<DD>
+Option takes a mandatory string argument.
+This string will be assigned to the option variable.
+Note that even if the string argument starts with <STRONG>-</STRONG> or <STRONG>--</STRONG>, it
+will not be considered an option on itself.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_s_1">
+:s</A>
+
+</DT></STRONG>
+<DD>
+Option takes an optional string argument.
+This string will be assigned to the option variable.
+If omitted, it will be assigned ``'' (an empty string).
+If the string argument starts with <STRONG>-</STRONG> or <STRONG>--</STRONG>, it
+will be considered an option on itself.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_i_0">
+=i</A>
+
+</DT></STRONG>
+<DD>
+Option takes a mandatory integer argument.
+This value will be assigned to the option variable.
+Note that the value may start with <STRONG>-</STRONG> to indicate a negative
+value. 
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_i_1">
+:i</A>
+
+</DT></STRONG>
+<DD>
+Option takes an optional integer argument.
+This value will be assigned to the option variable.
+If omitted, the value 0 will be assigned.
+Note that the value may start with <STRONG>-</STRONG> to indicate a negative
+value.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_f_0">
+=f</A>
+
+</DT></STRONG>
+<DD>
+Option takes a mandatory real number argument.
+This value will be assigned to the option variable.
+Note that the value may start with <STRONG>-</STRONG> to indicate a negative
+value.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_f_1">
+:f</A>
+
+</DT></STRONG>
+<DD>
+Option takes an optional real number argument.
+This value will be assigned to the option variable.
+If omitted, the value 0 will be assigned.
+<p>
+</DL>
+A lone dash <STRONG>-</STRONG> is considered an option, the corresponding optionname is the empty string.
+<p>A double dash on itself <STRONG>--</STRONG> signals end of the options list.
+<p>
+<H2> 
+<A NAME="Getopt::Long_linkage_0">
+Linkage specification</A>
+</H2>
+The linkage specifier is optional. If no linkage is explicitly
+specified but a ref HASH is passed, GetOptions will place the value in
+the HASH. For example:
+<p>
+<XMP>
+  %optctl = ();
+  &GetOptions (\%optctl, "size=i");
+
+</XMP>
+<p>will perform the equivalent of the assignment
+<p>
+<XMP>
+  $optctl{"size"} = 24;
+
+</XMP>
+<p>For array options, a reference to an array is used, e.g.:
+<p>
+<XMP>
+  %optctl = ();
+  &GetOptions (\%optctl, "sizes=i@");
+
+</XMP>
+<p>with command line ``-sizes 24 -sizes 48'' will perform the equivalent of
+the assignment
+<p>
+<XMP>
+  $optctl{"sizes"} = [24, 48];
+
+</XMP>
+<p>If no linkage is explicitly specified and no ref HASH is passed,
+GetOptions will put the value in a global variable named after the
+option, prefixed by ``opt_''. To yield a usable Perl variable,
+characters that are not part of the syntax for variables are
+translated to underscores. For example, ``--fpp-struct-return'' will set
+the variable <STRONG>$opt_fpp_struct_return</STRONG>. Note that this variable resides
+in the namespace of the calling program, not necessarily <STRONG>main</STRONG>.
+For example:
+<p>
+<XMP>
+  &GetOptions ("size=i", "sizes=i@");
+
+</XMP>
+<p>with command line ``-size 10 -sizes 24 -sizes 48'' will perform the
+equivalent of the assignments
+<p>
+<XMP>
+  $opt_size = 10;
+  @opt_sizes = (24, 48);
+
+</XMP>
+<p>A lone dash <STRONG>-</STRONG> is considered an option, the corresponding Perl
+identifier is <STRONG>$opt_</STRONG> .
+<p>The linkage specifier can be a reference to a scalar, a reference to
+an array or a reference to a subroutine.
+<p>If a REF SCALAR is supplied, the new value is stored in the referenced
+variable. If the option occurs more than once, the previous value is
+overwritten. 
+<p>If a REF ARRAY is supplied, the new value is appended (pushed) to the
+referenced array. 
+<p>If a REF CODE is supplied, the referenced subroutine is called with
+two arguments: the option name and the option value.
+The option name is always the true name, not an abbreviation or alias.
+<p>
+<H2> 
+<A NAME="Getopt::Long_aliases_0">
+Aliases and abbreviations</A>
+</H2>
+The option name may actually be a list of option names, separated by
+``|''s, e.g. ``foo|bar|blech=s''. In this example, ``foo'' is the true name
+op this option. If no linkage is specified, options ``foo'', ``bar'' and
+``blech'' all will set <STRONG>$opt_foo</STRONG>.
+<p>Option names may be abbreviated to uniqueness, depending on
+configuration variable 
+<A HREF="Getopt_L.htm#Getopt::Long_getopt_long_autoabbrev_0">$Getopt::Long::autoabbrev</A>
+.
+<p>
+<H2> 
+<A NAME="Getopt::Long_non_option_0">
+Non-option call-back routine</A>
+</H2>
+A special option specifier, &lt;&gt;, can be used to designate a subroutine
+to handle non-option arguments. GetOptions will immediately call this
+subroutine for every non-option it encounters in the options list.
+This subroutine gets the name of the non-option passed.
+This feature requires 
+<A HREF="Getopt_L.htm#Getopt::Long_getopt_long_order_0">$Getopt::Long::order</A>
+ to have the value <STRONG>$PERMUTE</STRONG>.
+See also the examples.
+<p>
+<H2> 
+<A NAME="Getopt::Long_option_0">
+Option starters</A>
+</H2>
+On the command line, options can start with <STRONG>-</STRONG> (traditional), <STRONG>--</STRONG>
+(POSIX) and <STRONG>+</STRONG> (GNU, now being phased out). The latter is not
+allowed if the environment variable <STRONG>POSIXLY_CORRECT</STRONG> has been
+defined.
+<p>Options that start with ``--'' may have an argument appended, separated
+with an ``='', e.g. ``--foo=bar''.
+<p>
+<H2> 
+<A NAME="Getopt::Long_return_0">
+Return value</A>
+</H2>
+A return status of 0 (false) indicates that the function detected
+one or more errors.
+<p><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_compatibility_0">
+COMPATIBILITY</A>
+</H1>
+Getopt::Long::<EM>GetOptions()</EM> is the successor of
+<STRONG>newgetopt.pl</STRONG> that came with Perl 4. It is fully upward compatible.
+In fact, the Perl 5 version of newgetopt.pl is just a wrapper around
+the module.
+<p>If an ``@'' sign is appended to the argument specifier, the option is
+treated as an array.  Value(s) are not set, but pushed into array
+<STRONG>@opt_name</STRONG>. This only applies if no linkage is supplied.
+<p>If configuration variable 
+<A HREF="Getopt_L.htm#Getopt::Long_getopt_long_getopt_compat_0">$Getopt::Long::getopt_compat</A>
+ is set to a
+non-zero value, options that start with ``+'' may also include their
+arguments, e.g. ``+foo=bar''. This is for compatiblity with older
+implementations of the GNU ``getopt'' routine.
+<p>If the first argument to GetOptions is a string consisting of only
+non-alphanumeric characters, it is taken to specify the option starter
+characters. Everything starting with one of these characters from the
+starter will be considered an option. B<Using a starter argument is
+strongly deprecated.&gt;
+<p>For convenience, option specifiers may have a leading <STRONG>-</STRONG> or <STRONG>--</STRONG>,
+so it is possible to write:
+<p>
+<XMP>
+   GetOptions qw(-foo=s --bar=i --ar=s);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_examples_0">
+EXAMPLES</A>
+</H1>
+If the option specifier is ``one:i'' (i.e. takes an optional integer
+argument), then the following situations are handled:
+<p>
+<XMP>
+   -one -two            -> $opt_one = '', -two is next option
+   -one -2              -> $opt_one = -2
+
+</XMP>
+<p>Also, assume specifiers ``foo=s'' and ``bar:s'' :
+<p>
+<XMP>
+   -bar -xxx            -> $opt_bar = '', '-xxx' is next option
+   -foo -bar            -> $opt_foo = '-bar'
+   -foo --              -> $opt_foo = '--'
+
+</XMP>
+<p>In GNU or POSIX format, option names and values can be combined:
+<p>
+<XMP>
+   +foo=blech           -> $opt_foo = 'blech'
+   --bar=               -> $opt_bar = ''
+   --bar=--             -> $opt_bar = '--'
+
+</XMP>
+<p>Example of using variabel references:
+<p>
+<XMP>
+   $ret = &GetOptions ('foo=s', \$foo, 'bar=i', 'ar=s', \@ar);
+
+</XMP>
+<p>With command line options ``-foo blech -bar 24 -ar xx -ar yy'' 
+this will result in:
+<p>
+<XMP>
+   $bar = 'blech'
+   $opt_bar = 24
+   @ar = ('xx','yy')
+
+</XMP>
+<p>Example of using the &lt;&gt; option specifier:
+<p>
+<XMP>
+   @ARGV = qw(-foo 1 bar -foo 2 blech);
+   &GetOptions("foo=i", \$myfoo, "<>", \&mysub);
+
+</XMP>
+<p>Results:
+<p>
+<XMP>
+   &mysub("bar") will be called (with $myfoo being 1)
+   &mysub("blech") will be called (with $myfoo being 2)
+
+</XMP>
+<p>Compare this with:
+<p>
+<XMP>
+   @ARGV = qw(-foo 1 bar -foo 2 blech);
+   &GetOptions("foo=i", \$myfoo);
+
+</XMP>
+<p>This will leave the non-options in <STRONG>@ARGV:</STRONG>
+<p>
+<XMP>
+   $myfoo -> 2
+   @ARGV -> qw(bar blech)
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Getopt::Long_configuration_0">
+CONFIGURATION VARIABLES</A>
+</H1>
+The following variables can be set to change the default behaviour of
+<EM>GetOptions()</EM>:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_autoabbrev_0">
+$Getopt::Long::autoabbrev</A>
+      
+</DT></STRONG>
+<DD>
+Allow option names to be abbreviated to uniqueness.
+Default is 1 unless environment variable
+POSIXLY_CORRECT has been set.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_getopt_compat_0">
+$Getopt::Long::getopt_compat</A>
+   
+</DT></STRONG>
+<DD>
+Allow '+' to start options.
+Default is 1 unless environment variable
+POSIXLY_CORRECT has been set.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_order_0">
+$Getopt::Long::order</A>
+           
+</DT></STRONG>
+<DD>
+Whether non-options are allowed to be mixed with
+options.
+Default is <STRONG>$REQUIRE_ORDER</STRONG> if environment variable
+POSIXLY_CORRECT has been set, <STRONG>$PERMUTE</STRONG> otherwise.
+<p><STRONG>$PERMUTE</STRONG> means that 
+<p>
+<XMP>
+    -foo arg1 -bar arg2 arg3
+
+</XMP>
+<p>is equivalent to
+<p>
+<XMP>
+    -foo -bar arg1 arg2 arg3
+
+</XMP>
+<p>If a non-option call-back routine is specified, 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+ will always be
+empty upon succesful return of GetOptions since all options have been
+processed, except when <STRONG>--</STRONG> is used:
+<p>
+<XMP>
+    -foo arg1 -bar arg2 -- arg3
+
+</XMP>
+<p>will call the call-back routine for arg1 and arg2, and terminate
+leaving arg2 in 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+.
+<p>If 
+<A HREF="Getopt_L.htm#Getopt::Long_getopt_long_order_0">$Getopt::Long::order</A>
+ is <STRONG>$REQUIRE_ORDER</STRONG>, options processing
+terminates when the first non-option is encountered.
+<p>
+<XMP>
+    -foo arg1 -bar arg2 arg3
+
+</XMP>
+<p>is equivalent to
+<p>
+<XMP>
+    -foo -- arg1 -bar arg2 arg3
+
+</XMP>
+<p><STRONG>$RETURN_IN_ORDER</STRONG> is not supported by <EM>GetOptions()</EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_ignorecase_0">
+$Getopt::Long::ignorecase</A>
+      
+</DT></STRONG>
+<DD>
+Ignore case when matching options. Default is 1.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_version_0">
+$Getopt::Long::VERSION</A>
+
+</DT></STRONG>
+<DD>
+The version number of this Getopt::Long implementation in the format
+<CODE>major</CODE>.<CODE>minor</CODE>. This can be used to have Exporter check the
+version, e.g.
+<p>
+<XMP>
+    use Getopt::Long 2.00;
+
+</XMP>
+<p>You can inspect <STRONG>$Getopt::Long::major_version</STRONG> and
+<STRONG>$Getopt::Long::minor_version</STRONG> for the individual components.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_error_0">
+$Getopt::Long::error</A>
+
+</DT></STRONG>
+<DD>
+Internal error flag. May be incremented from a call-back routine to
+cause options parsing to fail.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Getopt::Long_getopt_long_debug_0">
+$Getopt::Long::debug</A>
+           
+</DT></STRONG>
+<DD>
+Enable copious debugging output. Default is 0.
+<p>
+</DL>
+
+</BODY>
+</HTML>

@@ -1,0 +1,51 @@
+<HEAD><CENTER><TITLE>Time_Local</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Time::Local_name_0">
+NAME</A>
+</H1>
+Time::Local - efficiently compute tome from local and GMT time
+<p><p><hr>
+
+<H1> 
+<A NAME="Time::Local_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    $time = timelocal($sec,$min,$hours,$mday,$mon,$year);
+    $time = timegm($sec,$min,$hours,$mday,$mon,$year);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Time::Local_description_0">
+DESCRIPTION</A>
+</H1>
+These routines are quite efficient and yet are always guaranteed to agree
+with 
+<A HREF="perlfunc.htm#perlfunc_localtime_0">localtime()</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_gmtime_0">gmtime()</A>
+.  We manage this by caching the start times
+of any months we've seen before.  If we know the start time of the month,
+we can always calculate any time within the month.  The start times
+themselves are guessed by successive approximation starting at the
+current time, since most dates seen in practice are close to the
+current date.  Unlike algorithms that do a binary search (calling gmtime
+once for each bit of the time value, resulting in 32 calls), this algorithm
+calls it at most 6 times, and usually only once or twice.  If you hit
+the month cache, of course, it doesn't call it at all.
+<p>timelocal is implemented using the same cache.  We just assume that we're
+translating a GMT time, and then fudge it when we're done for the timezone
+and daylight savings arguments.  The timezone is determined by examining
+the result of localtime(0) when the package is initialized.  The daylight
+savings offset is currently assumed to be one hour.
+<p>Both routines return -1 if the integer limit is hit. I.e. for dates
+after the 1st of January, 2038 on most machines.
+<p>
+</BODY>
+</HTML>

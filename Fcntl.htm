@@ -1,0 +1,42 @@
+<HEAD><CENTER><TITLE>Fcntl</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Fcntl_name_0">
+NAME</A>
+</H1>
+Fcntl - load the C Fcntl.h defines
+<p><p><hr>
+
+<H1> 
+<A NAME="Fcntl_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Fcntl;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Fcntl_description_0">
+DESCRIPTION</A>
+</H1>
+This module is just a translation of the C <EM>fnctl.h</EM> file.
+Unlike the old mechanism of requiring a translated <EM>fnctl.ph</EM>
+file, this uses the <STRONG>h2xs</STRONG> program (see the Perl source distribution)
+and your native C compiler.  This means that it has a 
+far more likely chance of getting the numbers right.
+<p><p><hr>
+
+<H1> 
+<A NAME="Fcntl_note_0">
+NOTE</A>
+</H1>
+Only <CODE>#define</CODE> symbols get translated; you must still correctly
+pack up your own arguments to pass as args for locking functions, etc.
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,99 @@
+<HEAD><CENTER><TITLE>Math_BigFloat</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Math::BigFloat_name_0">
+NAME</A>
+</H1>
+Math::BigFloat - Arbitrary length float math package
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigFloat_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Math::BogFloat;
+  $f = Math::BigFloat->new($string);
+  $f->fadd(NSTR) return NSTR            addition
+  $f->fsub(NSTR) return NSTR            subtraction
+  $f->fmul(NSTR) return NSTR            multiplication
+  $f->fdiv(NSTR[,SCALE]) returns NSTR   division to SCALE places
+  $f->fneg() return NSTR                negation
+  $f->fabs() return NSTR                absolute value
+  $f->fcmp(NSTR) return CODE            compare undef,<0,=0,>0
+  $f->fround(SCALE) return NSTR         round to SCALE digits
+  $f->ffround(SCALE) return NSTR        round at SCALEth place
+  $f->fnorm() return (NSTR)             normalize
+  $f->fsqrt([SCALE]) return NSTR        sqrt to SCALE places
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigFloat_description_0">
+DESCRIPTION</A>
+</H1>
+All basic math operations are overloaded if you declare your big
+floats as
+<p>
+<XMP>
+    $float = new Math::BigFloat "2.123123123123123123123123123123123";
+
+</XMP>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Math::BigFloat_number_0">
+number format</A>
+
+</DT></STRONG>
+<DD>
+canonical strings have the form /[+-]\d+E[+-]\d+/ .  Input values can
+have inbedded whitespace.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Math::BigFloat_error_0">
+Error returns 'NaN'</A>
+
+</DT></STRONG>
+<DD>
+An input parameter was ``Not a Number'' or divide by zero or sqrt of
+negative number.
+<p>
+<DT>
+
+<STRONG>
+<EM>Division is computed to </EM>
+</DT></STRONG>
+<DD>
+<CODE>max(<STRONG>$div_scale</STRONG>,length(dividend)+length(divisor))</CODE> digits by default.
+Also used for default sqrt scale.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="Math::BigFloat_bugs_0">
+BUGS</A>
+</H1>
+The current version of this module is a preliminary version of the
+real thing that is currently (as of perl5.002) under development.
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigFloat_author_0">
+AUTHOR</A>
+</H1>
+Mark Biggar
+<p>
+</BODY>
+</HTML>

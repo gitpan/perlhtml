@@ -1,0 +1,71 @@
+<HEAD><CENTER><TITLE>File_Copy</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="File::Copy_name_0">
+NAME</A>
+</H1>
+File::Copy - Copy files or filehandles
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Copy_synopsis_0">
+SYNOPSIS</A>
+</H1>
+<UL><LI>  	use File::Copy;</LI>
+</UL>
+<p>
+<XMP>
+        copy("file1","file2");
+        copy("Copy.pm",\*STDOUT);'
+        use POSIX;
+        use File::Copy cp;
+        $n=FileHandle->new("/dev/null","r");
+        cp($n,"x");'
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Copy_description_0">
+DESCRIPTION</A>
+</H1>
+The Copy module provides one function (copy) which takes two
+parameters: a file to copy from and a file to copy to. Either
+argument may be a string, a FileHandle reference or a FileHandle
+glob. Obviously, if the first argument is a filehandle of some
+sort, it will be read from, and if it is a file <EM>name</EM> it will
+be opened for reading. Likewise, the second argument will be
+written to (and created if need be).
+<p>An optional third parameter can be used to specify the buffer
+size used for copying. This is the number of bytes from the
+first file, that wil be held in memory at any given time, before
+being written to the second file. The default buffer size depends
+upon the file, but will generally be the whole file (up to 2Mb), or
+1k for filehandles that do not reference files (eg. sockets).
+<p>When running under VMS, this routine performs an RMS copy of
+the file, in order to preserve file attributed, indexed file
+structure, <EM>etc.</EM>  The buffer size parameter is ignored.
+<p>You may use the syntax 
+<A HREF="perlfunc.htm#perlfunc_use_1">use File::Copy ``cp''</A>
+ to get at the
+``cp'' alias for this function. The syntax is <EM>exactly</EM> the same.
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Copy_return_0">
+RETURN</A>
+</H1>
+Returns 1 on success, 0 on failure. $! will be set if an error was
+encountered.
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Copy_author_0">
+AUTHOR</A>
+</H1>
+File::Copy was written by Aaron Sherman &lt;<A HREF="MAILTO:ajs@ajs.com">ajs@ajs.com</A>&gt; in 1995.
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,547 @@
+<HEAD><CENTER><TITLE>perltrap</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="perltrap_name_0">
+NAME</A>
+</H1>
+perltrap - Perl traps for the unwary
+<p><p><hr>
+
+<H1> 
+<A NAME="perltrap_description_0">
+DESCRIPTION</A>
+</H1>
+The biggest trap of all is forgetting to use the 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+ switch; see
+
+<A HREF="perlrun.htm">
+the <EM>perlrun</EM> manpage</A>
+.  The second biggest trap is not making your entire program
+runnable under 
+<A HREF="perlfunc.htm#perlfunc_use_1">use strict</A>
+.
+<p>
+<H2> 
+<A NAME="perltrap_awk_0">
+Awk Traps</A>
+</H2>
+Accustomed <STRONG>awk</STRONG> users should take special note of the following:
+<p>
+<UL>
+<LI>The English module, loaded via
+<p>
+<XMP>
+    use English;
+
+</XMP>
+<p>allows you to refer to special variables (like 
+<A HREF="perlvar.htm#perlvar_rs_0">$RS</A>
+) as 
+though they were in <STRONG>awk</STRONG>; see 
+<A HREF="perlvar.htm">
+the <EM>perlvar</EM> manpage</A>
+ for details.
+<p>
+<LI>Semicolons are required after all simple statements in Perl (except
+at the end of a block).  Newline is not a statement delimiter.
+<p>
+<LI>Curly brackets are required on <CODE>if</CODE>s and <CODE>while</CODE>s.
+<p>
+<LI>Variables begin with ``$'' or ``@'' in Perl.
+<p>
+<LI>Arrays index from 0.  Likewise string positions in 
+<A HREF="perlfunc.htm#perlfunc_substr_1">substr()</A>
+ and
+
+<A HREF="perlfunc.htm#perlfunc_index_1">index()</A>
+.
+<p>
+<LI>You have to decide whether your array has numeric or string indices.
+<p>
+<LI>Associative array values do not spring into existence upon mere
+reference.
+<p>
+<LI>You have to decide whether you want to use string or numeric
+comparisons.
+<p>
+<LI>Reading an input line does not split it for you.  You get to split it
+yourself to an array.  And 
+<A HREF="perlfunc.htm#perlfunc_split_2">split()</A>
+ operator has different
+arguments.
+<p>
+<LI>The current input line is normally in 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+, not 
+<A HREF="perlvar.htm#perlvar__28">$0</A>
+.  It generally does
+not have the newline stripped.  (
+<A HREF="perlvar.htm#perlvar__28">$0</A>
+ is the name of the program
+executed.)  See 
+<A HREF="perlvar.htm">
+the <EM>perlvar</EM> manpage</A>
+.
+<p>
+<LI>$&lt;<EM>digit</EM>&gt; does not refer to fields--it refers to substrings matched by
+the last match pattern.
+<p>
+<LI>The 
+<A HREF="perlfunc.htm#perlfunc_print_1">print()</A>
+ statement does not add field and record separators unless
+you set 
+<A HREF="perlvar.htm#perlvar__9">$,</A>
+ and 
+<A HREF="perlvar.htm#perlvar__6">$.</A>
+.  You can set 
+<A HREF="perlvar.htm#perlvar_ofs_0">$OFS</A>
+ and 
+<A HREF="perlvar.htm#perlvar_ors_0">$ORS</A>
+ if you're using
+the English module.
+<p>
+<LI>You must open your files before you print to them.
+<p>
+<LI>The range operator is ``..'', not comma.  The comma operator works as in
+C.
+<p>
+<LI>The match operator is ``=~'', not ``~''.  (``~'' is the one's complement
+operator, as in C.)
+<p>
+<LI>The exponentiation operator is ``**'', not ``^''.  ``^'' is the XOR
+operator, as in C.  (You know, one could get the feeling that <STRONG>awk</STRONG> is
+basically incompatible with C.)
+<p>
+<LI>The concatenation operator is ``.'', not the null string.  (Using the
+null string would render <CODE>/pat/ /pat/</CODE> unparsable, since the third slash
+would be interpreted as a division operator--the tokener is in fact
+slightly context sensitive for operators like ``/'', ``?'', and ``&gt;''.
+And in fact, ``.'' itself can be the beginning of a number.)
+<p>
+<LI>The 
+<A HREF="perlfunc.htm#perlfunc_next_0">next</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_exit_0">exit</A>
+, and 
+<A HREF="perlfunc.htm#perlfunc_continue_0">continue</A>
+ keywords work differently.
+<p>
+<LI><p>The following variables work differently:
+<p><UL><LI>      Awk	Perl</LI>
+<LI>      ARGC	$#ARGV or scalar @ARGV</LI>
+<LI>      ARGV[0]	$0</LI>
+<LI>      FILENAME	$ARGV</LI>
+<LI>      FNR	$. - something</LI>
+<LI>      FS	(whatever you like)</LI>
+<LI>      NF	$#Fld, or some such</LI>
+<LI>      NR	$.</LI>
+<LI>      OFMT	$#</LI>
+<LI>      OFS	$,</LI>
+<LI>      ORS	$\</LI>
+<LI>      RLENGTH	length($&)</LI>
+<LI>      RS	$/</LI>
+<LI>      RSTART	length($`)</LI>
+<LI>      SUBSEP	$;</LI>
+</UL>
+<p>
+<LI>You cannot set 
+<A HREF="perlvar.htm#perlvar_rs_0">$RS</A>
+ to a pattern, only a string.
+<p>
+<LI>When in doubt, run the <STRONG>awk</STRONG> construct through <STRONG>a2p</STRONG> and see what it
+gives you.
+<p>
+</UL>
+
+<H2> 
+<A NAME="perltrap_c_0">
+C Traps</A>
+</H2>
+Cerebral C programmers should take note of the following:
+<p>
+<UL>
+<LI>Curly brackets are required on <CODE>if</CODE>'s and <CODE>while</CODE>'s.
+<p>
+<LI>You must use <CODE>elsif</CODE> rather than <CODE>else if</CODE>.
+<p>
+<LI>The <CODE>break</CODE> and 
+<A HREF="perlfunc.htm#perlfunc_continue_0">continue</A>
+ keywords from C become in 
+Perl 
+<A HREF="perlfunc.htm#perlfunc_last_0">last</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_next_0">next</A>
+, respectively.
+Unlike in C, these do <EM>NOT</EM> work within a 
+<A HREF="perlfunc.htm#perlfunc_do_2">do { } while</A>
+ construct.
+<p>
+<LI>There's no switch statement.  (But it's easy to build one on the fly.)
+<p>
+<LI>Variables begin with ``$'' or ``@'' in Perl.
+<p>
+<LI>
+<A HREF="perlfunc.htm#perlfunc_printf_1">printf()</A>
+ does not implement the ``*'' format for interpolating
+field widths, but it's trivial to use interpolation of double-quoted
+strings to achieve the same effect.
+<p>
+<LI>Comments begin with ``#'', not ``/*''.
+<p>
+<LI>You can't take the address of anything, although a similar operator
+in Perl 5 is the backslash, which creates a reference.
+<p>
+<LI><CODE>ARGV</CODE> must be capitalized.  <CODE>
+<A HREF="perlvar.htm#perlvar_argv_0">$ARGV</A>
+[0]</CODE> is C's <CODE>argv[1]</CODE>, and <CODE>argv[0]</CODE>
+ends up in 
+<A HREF="perlvar.htm#perlvar__28">
+<A HREF="perlvar.htm#perlvar__28">$0</A>
+</A>
+.
+<p>
+<LI>System calls such as 
+<A HREF="perlfunc.htm#perlfunc_link_0">link()</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_unlink_0">unlink()</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_rename_0">rename()</A>
+, etc. return nonzero for
+success, not 0.
+<p>
+<LI>Signal handlers deal with signal names, not numbers.  Use 
+<A HREF="perlfunc.htm#perlfunc_kill_0">kill -l</A>
+
+to find their names on your system.
+<p>
+</UL>
+
+<H2> 
+<A NAME="perltrap_sed_0">
+Sed Traps</A>
+</H2>
+Seasoned <STRONG>sed</STRONG> programmers should take note of the following:
+<p>
+<UL>
+<LI>Backreferences in substitutions use ``$'' rather than ``\''.
+<p>
+<LI>The pattern matching metacharacters ``('', ``)'', and ``|'' do not have backslashes
+in front.
+<p>
+<LI>The range operator is <CODE>...</CODE>, rather than comma.
+<p>
+</UL>
+
+<H2> <A HREF="Shell.htm">Shell Traps</A></H2>
+Sharp shell programmers should take note of the following:
+<p>
+<UL>
+<LI>The backtick operator does variable interpretation without regard to
+the presence of single quotes in the command.
+<p>
+<LI>The backtick operator does no translation of the return value, unlike <STRONG>csh</STRONG>.
+<p>
+<LI>Shells (especially <STRONG>csh</STRONG>) do several levels of substitution on each
+command line.  Perl does substitution only in certain constructs
+such as double quotes, backticks, angle brackets, and search patterns.
+<p>
+<LI>Shells interpret scripts a little bit at a time.  Perl compiles the
+entire program before executing it (except for <CODE>BEGIN</CODE> blocks, which
+execute at compile time).
+<p>
+<LI>The arguments are available via 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+, not <STRONG>$1</STRONG>, <STRONG>$2</STRONG>, etc.
+<p>
+<LI>The environment is not automatically made available as separate scalar
+variables.
+<p>
+</UL>
+
+<H2> 
+<A NAME="perltrap_perl_0">
+Perl Traps</A>
+</H2>
+Practicing Perl Programmers should take note of the following:
+<p>
+<UL>
+<LI>Remember that many operations behave differently in a list
+context than they do in a scalar one.  See 
+<A HREF="perldata.htm">
+the <EM>perldata</EM> manpage</A>
+ for details.
+<p>
+<LI>Avoid barewords if you can, especially all lower-case ones.
+You can't tell just by looking at it whether a bareword is 
+a function or a string.  By using quotes on strings and 
+parens on function calls, you won't ever get them confused.
+<p>
+<LI>You cannot discern from mere inspection which built-ins
+are unary operators (like 
+<A HREF="perlfunc.htm#perlfunc_chop_1">chop()</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_chdir_0">chdir()</A>
+) 
+and which are list operators (like 
+<A HREF="perlfunc.htm#perlfunc_print_1">print()</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_unlink_0">unlink()</A>
+).
+(User-defined subroutines can <STRONG>only</STRONG> be list operators, never
+unary ones.)  See 
+<A HREF="perlop.htm">
+the <EM>perlop</EM> manpage</A>
+.
+<p>
+<LI>People have a hard time remembering that some functions
+default to 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+, or 
+<A HREF="perlvar.htm#perlvar_argv_1">@ARGV</A>
+, or whatever, but that others which
+you might expect to do not.  
+<p>
+<LI><EM>* </EM>
+The &lt;FH&gt; construct is not the name of the filehandle, it is a readline
+operation on that handle.  The data read is only assigned to 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ if the
+file read is the sole condition in a while loop:
+<p>
+<XMP>
+    while (<FH>)      { }
+    while ($_ = <FH>) { }..
+    <FH>;  # data discarded!
+
+</XMP>
+<p>
+<LI><EM>* </EM>
+Remember not to use ``<CODE>=</CODE>'' when you need ``<CODE>=~</CODE>'';
+these two constructs are quite different:
+<p>
+<XMP>
+    $x =  /foo/;
+    $x =~ /foo/;
+
+</XMP>
+<p>
+<LI>The 
+<A HREF="perlfunc.htm#perlfunc_do_2">do {}</A>
+ construct isn't a real loop that you can use 
+loop control on.
+<p>
+<LI>Use 
+<A HREF="perlfunc.htm#perlfunc_my_0">my()</A>
+ for local variables whenever you can get away with 
+it (but see 
+<A HREF="perlform.htm">
+the <EM>perlform</EM> manpage</A>
+ for where you can't).  
+Using 
+<A HREF="perlfunc.htm#perlfunc_local_0">local()</A>
+ actually gives a local value to a global 
+variable, which leaves you open to unforeseen side-effects
+of dynamic scoping.
+<p>
+<LI>If you localize an exported variable in a module, its exported value will
+not change.  The local name becomes an alias to a new value but the
+external name is still an alias for the original.
+<p>
+</UL>
+
+<H2> 
+<A NAME="perltrap_perl_1">
+Perl4 Traps</A>
+</H2>
+Penitent Perl 4 Programmers should take note of the following
+incompatible changes that occurred between release 4 and release 5:
+<p>
+<UL>
+<LI><CODE>@</CODE> now always interpolates an array in double-quotish strings.  Some programs
+may now need to use backslash to protect any <CODE>@</CODE> that shouldn't interpolate.
+<p>
+<LI>Barewords that used to look like strings to Perl will now look like subroutine
+calls if a subroutine by that name is defined before the compiler sees them.
+For example:
+<p>
+<XMP>
+    sub SeeYa { die "Hasta la vista, baby!" }
+    $SIG{'QUIT'} = SeeYa;
+
+</XMP>
+<p>In Perl 4, that set the signal handler; in Perl 5, it actually calls the
+function!  You may use the 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+ switch to find such places.
+<p>
+<LI>Symbols starting with <CODE>_</CODE> are no longer forced into package <CODE>main</CODE>, except
+for 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ itself (and <STRONG>@_</STRONG>, etc.).
+<p>
+<LI>Double-colon is now a valid package separator in an identifier.  Thus these
+behave differently in perl4 vs. perl5:
+<p>
+<XMP>
+    print "$a::$b::$c\n";
+    print "$var::abc::xyz\n";
+
+</XMP>
+<p>
+<LI><CODE>s'<STRONG>$lhs</STRONG>'<STRONG>$rhs</STRONG>'</CODE> now does no interpolation on either side.  It used to
+interpolate <CODE><STRONG>$lhs</STRONG></CODE> but not <CODE><STRONG>$rhs</STRONG></CODE>.
+<p>
+<LI>The second and third arguments of 
+<A HREF="perlfunc.htm#perlfunc_splice_2">splice()</A>
+ are now evaluated in scalar
+context (as the book says) rather than list context.
+<p>
+<LI>These are now semantic errors because of precedence:
+<p>
+<XMP>
+    shift @list + 20;   
+    $n = keys %map + 20; 
+
+</XMP>
+<p>Because if that were to work, then this couldn't:
+<p>
+<XMP>
+    sleep $dormancy + 20;
+
+</XMP>
+<p>
+<LI>The precedence of assignment operators is now the same as the precedence
+of assignment.  Perl 4 mistakenly gave them the precedence of the associated
+operator.  So you now must parenthesize them in expressions like
+<p>
+<XMP>
+    /foo/ ? ($a += 2) : ($a -= 2);
+
+</XMP>
+<p>Otherwise
+<p>
+<XMP>
+    /foo/ ? $a += 2 : $a -= 2;
+
+</XMP>
+<p>would be erroneously parsed as
+<p>
+<XMP>
+    (/foo/ ? $a += 2 : $a) -= 2;
+
+</XMP>
+<p>On the other hand,
+<p>
+<XMP>
+    $a += /foo/ ? 1 : 2;
+
+</XMP>
+<p>now works as a C programmer would expect.
+<p>
+<LI>
+<A HREF="perlfunc.htm#perlfunc_open_1">open FOO || die</A>
+ is now incorrect.  You need parens around the filehandle.
+While temporarily supported, using such a construct will 
+generate a non-fatal (but non-suppressible) warning.
+<p>
+<LI>The elements of argument lists for formats are now evaluated in list
+context.  This means you can interpolate list values now.
+<p>
+<LI>You can't do a 
+<A HREF="perlfunc.htm#perlfunc_goto_2">goto</A>
+ into a block that is optimized away.  Darn.
+<p>
+<LI>It is no longer syntactically legal to use whitespace as the name
+of a variable, or as a delimiter for any kind of quote construct.
+Double darn.
+<p>
+<LI>The 
+<A HREF="perlfunc.htm#perlfunc_caller_0">caller()</A>
+ function now returns a false value in a scalar context if there
+is no caller.  This lets library files determine if they're being required.
+<p>
+<LI><CODE>m//g</CODE> now attaches its state to the searched string rather than the
+regular expression.
+<p>
+<LI>
+<A HREF="perlfunc.htm#perlfunc_reverse_0">reverse</A>
+ is no longer allowed as the name of a sort subroutine.
+<p>
+<LI><STRONG>taintperl</STRONG> is no longer a separate executable.  There is now a 
+<A HREF="perlrun.htm#perlrun_t_0">-T</A>
+
+switch to turn on tainting when it isn't turned on automatically.
+<p>
+<LI>Double-quoted strings may no longer end with an unescaped <CODE>$</CODE> or <CODE>@</CODE>.
+<p>
+<LI>The archaic <CODE>while/if</CODE> BLOCK BLOCK syntax is no longer supported.
+<p>
+<LI>Negative array subscripts now count from the end of the array.
+<p>
+<LI>The comma operator in a scalar context is now guaranteed to give a
+scalar context to its arguments.
+<p>
+<LI>The <CODE>**</CODE> operator now binds more tightly than unary minus.  
+It was documented to work this way before, but didn't.
+<p>
+<LI>Setting <CODE>
+<A HREF="perlvar.htm#perlvar__13">$#</A>
+array</CODE> lower now discards array elements.
+<p>
+<LI>
+<A HREF="perlfunc.htm#perlfunc_delete_0">delete()</A>
+ is not guaranteed to return the old value for 
+<A HREF="perlfunc.htm#perlfunc_tie_0">tie()</A>
+d arrays,
+since this capability may be onerous for some modules to implement.
+<p>
+<LI>The construct ``this is 
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+x'' used to interpolate the pid at that
+point, but now tries to dereference <STRONG>$x</STRONG>.  
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+ by itself still
+works fine, however.
+<p>
+<LI>The meaning of foreach has changed slightly when it is iterating over a
+list which is not an array.  This used to assign the list to a
+temporary array, but no longer does so (for efficiency).  This means
+that you'll now be iterating over the actual values, not over copies of
+the values.  Modifications to the loop variable can change the original
+values.  To retain Perl 4 semantics you need to assign your list
+explicitly to a temporary array and then iterate over that.  For
+example, you might need to change
+<p>
+<XMP>
+    foreach $var (grep /x/, @list) { ... }
+
+</XMP>
+<p>to
+<p>
+<XMP>
+    foreach $var (my @tmp = grep /x/, @list) { ... }
+
+</XMP>
+<p>Otherwise changing <CODE><STRONG>$var</STRONG></CODE> will clobber the values of <STRONG>@list</STRONG>.  (This most often
+happens when you use 
+<A HREF="perlvar.htm#perlvar__0">
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+</A>
+ for the loop variable, and call subroutines in
+the loop that don't properly localize 
+<A HREF="perlvar.htm#perlvar__0">
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+</A>
+.)
+<p>
+<LI>Some error messages will be different.
+<p>
+<LI>Some bugs may have been inadvertently removed.
+<p>
+</UL>
+
+</BODY>
+</HTML>

@@ -1,0 +1,104 @@
+<HEAD><CENTER><TITLE>Term_Complete</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Term::Complete_name_0">
+NAME</A>
+</H1>
+Term::Complete - Perl word completion module
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::Complete_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    $input = complete('prompt_string', \@completion_list);
+    $input = complete('prompt_string', @completion_list);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::Complete_description_0">
+DESCRIPTION</A>
+</H1>
+This routine provides word completion on the list of words in
+the array (or array ref).
+<p>The tty driver is put into raw mode using the system command
+<CODE>stty raw -echo</CODE> and restored using <CODE>stty -raw echo</CODE>.
+<p>The following command characters are defined:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::Complete_tab_0">
+<tab&gt;</A>
+
+</DT></STRONG>
+<DD>
+Attempts word completion.
+Cannot be changed.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::Complete_d_0">
+^D</A>
+
+</DT></STRONG>
+<DD>
+Prints completion list.
+Defined by <EM><STRONG>$Term::Complete::complete</STRONG></EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::Complete_u_0">
+^U</A>
+
+</DT></STRONG>
+<DD>
+Erases the current input.
+Defined by <EM><STRONG>$Term::Complete::kill</STRONG></EM>.
+<p>
+<DT>
+
+<STRONG>
+<EM><del&gt;, &lt;bs&gt;</EM>
+</DT></STRONG>
+<DD>
+Erases one character.
+Defined by <EM><STRONG>$Term::Complete::erase1</STRONG></EM> and <EM><STRONG>$Term::Complete::erase2</STRONG></EM>.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="Term::Complete_diagnostics_0">
+DIAGNOSTICS</A>
+</H1>
+Bell sounds when word completion fails.
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::Complete_bugs_0">
+BUGS</A>
+</H1>
+The completion charater &lt;tab&gt; cannot be changed.
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::Complete_author_0">
+AUTHOR</A>
+</H1>
+Wayne Thompson
+<p>
+</BODY>
+</HTML>

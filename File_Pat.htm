@@ -1,0 +1,93 @@
+<HEAD><CENTER><TITLE>File_Path</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="File::Path_name_0">
+NAME</A>
+</H1>
+File::Path - create or remove a series of directories
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Path_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<A HREF="perlfunc.htm#perlfunc_use_1">use File::Path</A>
+
+<p><CODE>mkpath(['/foo/bar/baz', 'blurfl/quux'], 1, 0711);</CODE>
+<p><CODE>rmtree(['foo/bar/baz', 'blurfl/quux'], 1, 1);</CODE>
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Path_description_0">
+DESCRIPTION</A>
+</H1>
+The <CODE>mkpath</CODE> function provides a convenient way to create directories, even if
+your 
+<A HREF="perlfunc.htm#perlfunc_mkdir_0">mkdir</A>
+ kernel call won't create more than one level of directory at a
+time.  <CODE>mkpath</CODE> takes three arguments:
+<p>
+<UL>
+<LI>the name of the path to create, or a reference
+to a list of paths to create,
+<p>
+<LI>a boolean value, which if TRUE will cause <CODE>mkpath</CODE>
+to print the name of each directory as it is created
+(defaults to FALSE), and
+<p>
+<LI>the numeric mode to use when creating the directories
+(defaults to 0777)
+<p>
+</UL>
+It returns a list of all directories (including intermediates, determined usingthe Unix '/' separator) created.
+<p>Similarly, the <CODE>rmtree</CODE> function provides a convenient way to delete a
+subtree from the directory structure, much like the Unix command <CODE>rm -r</CODE>.
+<CODE>rmtree</CODE> takes three arguments:
+<p>
+<UL>
+<LI>the root of the subtree to delete, or a reference to
+a list of roots.  All of the files and directories
+below each root, as well as the roots themselves,
+will be deleted.
+<p>
+<LI>a boolean value, which if TRUE will cause <CODE>rmtree</CODE> to
+print a message each time it examines a file, giving the
+name of the file, and indicating whether it's using 
+<A HREF="perlfunc.htm#perlfunc_rmdir_0">rmdir</A>
+
+or 
+<A HREF="perlfunc.htm#perlfunc_unlink_0">unlink</A>
+ to remove it, or that it's skipping it.
+(defaults to FALSE)
+<p>
+<LI>a boolean value, which if TRUE will cause <CODE>rmtree</CODE> to
+skip any files to which you do not have delete access
+(if running under VMS) or write access (if running
+under another OS).  This will change in the future when
+a criterion for 'delete permission' under OSs other
+than VMS is settled. (defaults to FALSE)
+<p>
+</UL>
+It returns the number of files successfully deleted. Symlinks aretreated as ordinary files.
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Path_authors_0">
+AUTHORS</A>
+</H1>
+Tim Bunce &lt;<A HREF="MAILTO:Tim.Bunce@ig.co.uk">Tim.Bunce@ig.co.uk</A>&gt;
+Charles Bailey &lt;<A HREF="MAILTO:bailey@genetics.upenn.edu">bailey@genetics.upenn.edu</A>&gt;
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Path_revision_0">
+REVISION</A>
+</H1>
+This module was last revised 14-Feb-1996, for perl 5.002. <STRONG>$VERSION</STRONG> is
+1.01.
+<p>
+</BODY>
+</HTML>

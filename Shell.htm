@@ -1,0 +1,64 @@
+<HEAD><CENTER><TITLE>Shell</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Shell_name_0">
+NAME</A>
+</H1>
+Shell - run shell commands transparently within perl
+<p><p><hr>
+
+<H1> 
+<A NAME="Shell_synopsis_0">
+SYNOPSIS</A>
+</H1>
+See below.
+<p><p><hr>
+
+<H1> 
+<A NAME="Shell_description_0">
+DESCRIPTION</A>
+</H1>
+
+<XMP>
+  Date: Thu, 22 Sep 94 16:18:16 -0700
+  Message-Id: <9409222318.AA17072@scalpel.netlabs.com>
+  To: perl5-porters@isu.edu
+  From: Larry Wall <lwall@scalpel.netlabs.com>
+  Subject: a new module I just wrote
+
+</XMP>
+<p>Here's one that'll whack your mind a little out.
+<p>
+<XMP>
+    #!/usr/bin/perl
+    use Shell;
+    $foo = echo("howdy", "<funny>", "world");
+    print $foo;
+    $passwd = cat("</etc/passwd");
+    print $passwd;
+    sub ps;
+    print ps -ww;
+    cp("/etc/passwd", "/tmp/passwd");
+
+</XMP>
+<p>That's maybe too gonzo.  It actually exports an AUTOLOAD to the current
+package (and uncovered a bug in Beta 3, by the way).  Maybe the usual
+usage should be
+<p>
+<XMP>
+    use Shell qw(echo cat ps cp);
+
+</XMP>
+<p>Larry
+<p><p><hr>
+
+<H1> 
+<A NAME="Shell_author_0">
+AUTHOR</A>
+</H1>
+Larry Wall
+<p>
+</BODY>
+</HTML>

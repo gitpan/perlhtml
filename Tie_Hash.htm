@@ -1,0 +1,197 @@
+<HEAD><CENTER><TITLE>Tie_Hash</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Tie::Hash_name_0">
+NAME</A>
+</H1>
+Tie::Hash, Tie::StdHash - base class definitions for tied hashes
+<p><p><hr>
+
+<H1> 
+<A NAME="Tie::Hash_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    package NewHash;
+    require Tie::Hash;
+    
+    @ISA = (Tie::Hash);
+    
+    sub DELETE { ... }          # Provides needed method
+    sub CLEAR { ... }           # Overrides inherited method
+    
+    
+    package NewStdHash;
+    require Tie::Hash;
+    
+    @ISA = (Tie::StdHash);
+    
+    # All methods provided by default, define only those needing overrides
+    sub DELETE { ... }
+    
+    
+    package main;
+    
+    tie %new_hash, NewHash;
+    tie %new_std_hash, NewStdHash;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Tie::Hash_description_0">
+DESCRIPTION</A>
+</H1>
+This module provides some skeletal methods for hash-tying classes. See
+
+<A HREF="perltie.htm">
+the <EM>perltie</EM> manpage</A>
+ for a list of the functions required in order to tie a hash
+to a package. The basic <STRONG>Tie::Hash</STRONG> package provides a <CODE>new</CODE> method, as well
+as methods 
+<A HREF="Tie_Hash.htm#Tie::Hash_tiehash_0">TIEHASH</A>
+, 
+<A HREF="Tie_Hash.htm#Tie::Hash_exists_0">EXISTS</A>
+ and 
+<A HREF="Tie_Hash.htm#Tie::Hash_clear_0">CLEAR</A>
+. The <STRONG>Tie::StdHash</STRONG> package
+provides most methods required for hashes in 
+<A HREF="perltie.htm">
+the <EM>perltie</EM> manpage</A>
+. It inherits from
+<STRONG>Tie::Hash</STRONG>, and causes tied hashes to behave exactly like standard hashes,
+allowing for selective overloading of methods. The <CODE>new</CODE> method is provided
+as grandfathering in the case a class forgets to include a 
+<A HREF="Tie_Hash.htm#Tie::Hash_tiehash_0">TIEHASH</A>
+ method.
+<p>For developers wishing to write their own tied hashes, the required methods
+are briefly defined below. See the 
+<A HREF="perltie.htm">
+the <EM>perltie</EM> manpage</A>
+ section for more detailed
+descriptive, as well as example code:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_tiehash_0">
+TIEHASH classname, LIST</A>
+
+</DT></STRONG>
+<DD>
+The method invoked by the command 
+<A HREF="perlfunc.htm#perlfunc_tie_0">tie <STRONG>%hash</STRONG>, classname</A>
+. Associates a new
+hash instance with the specified class. <CODE>LIST</CODE> would represent additional
+arguments (along the lines of <EM>AnyDBM_File</EM> and compatriots) needed to
+complete the association.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_store_0">
+STORE this, key, value</A>
+
+</DT></STRONG>
+<DD>
+Store datum <EM>value</EM> into <EM>key</EM> for the tied hash <EM>this</EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_fetch_0">
+FETCH this, key</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the datum in <EM>key</EM> for the tied hash <EM>this</EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_firstkey_0">
+FIRSTKEY this</A>
+
+</DT></STRONG>
+<DD>
+Return the (key, value) pair for the first key in the hash.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_nextkey_0">
+NEXTKEY this, lastkey</A>
+
+</DT></STRONG>
+<DD>
+Return the next (key, value) pair for the hash.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_exists_0">
+EXISTS this, key</A>
+
+</DT></STRONG>
+<DD>
+Verify that <EM>key</EM> exists with the tied hash <EM>this</EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_delete_0">
+DELETE this, key</A>
+
+</DT></STRONG>
+<DD>
+Delete the key <EM>key</EM> from the tied hash <EM>this</EM>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Tie::Hash_clear_0">
+CLEAR this</A>
+
+</DT></STRONG>
+<DD>
+Clear all values from the tied hash <EM>this</EM>.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="Tie::Hash_caveats_0">
+CAVEATS</A>
+</H1>
+The 
+<A HREF="perltie.htm">
+the <EM>perltie</EM> manpage</A>
+ documentation includes a method called <CODE>DESTROY</CODE> as
+a necessary method for tied hashes. Neither <STRONG>Tie::Hash</STRONG> nor <STRONG>Tie::StdHash</STRONG>
+define a default for this method. This is a standard for class packages,
+but may be omitted in favor of a simple default.
+<p><p><hr>
+
+<H1> 
+<A NAME="Tie::Hash_more_0">
+MORE INFORMATION</A>
+</H1>
+The packages relating to various DBM-related implemetations (<EM>DB_File</EM>,
+<EM>NDBM_File</EM>, etc.) show examples of general tied hashes, as does the
+<EM>Config</EM> module. While these do not utilize <STRONG>Tie::Hash</STRONG>, they serve as
+good working examples.
+<p>
+</BODY>
+</HTML>

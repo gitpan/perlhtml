@@ -1,0 +1,540 @@
+<HEAD><CENTER><TITLE>perldebug</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="perldebug_name_0">
+NAME</A>
+</H1>
+perldebug - Perl debugging
+<p><p><hr>
+
+<H1> 
+<A NAME="perldebug_description_0">
+DESCRIPTION</A>
+</H1>
+First of all, have you tried using the 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+ switch?
+<p>
+<H2> 
+<A NAME="perldebug_debugging_0">
+Debugging</A>
+</H2>
+If you invoke Perl with a 
+<A HREF="perlrun.htm#perlrun_d_0">-d</A>
+ switch, your script will be run under the
+debugger.  However, the Perl debugger is not a separate program as it is
+in a C environment.  Instead, the 
+<A HREF="perlrun.htm#perlrun_d_0">-d</A>
+ flag tells the compiler to insert
+source information into the pseudocode it's about to hand to the
+interpreter.  (That means your code must compile correctly for the
+debugger to work on it.)  Then when the interpreter starts up, it
+pre-loads a Perl library file containing the debugger itself.  The program
+will halt before the first executable statement (but see below) and ask
+you for one of the following commands:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_h_0">
+h</A>
+
+</DT></STRONG>
+<DD>
+Prints out a help message.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_t_0">
+T</A>
+
+</DT></STRONG>
+<DD>
+Stack trace.
+If you do bizarre things to your <STRONG>@_</STRONG> arguments in a subroutine, the stack
+backtrace will not always show the original values.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_s_0">
+s</A>
+
+</DT></STRONG>
+<DD>
+Single step.  Executes until it reaches the beginning of another
+statement.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_n_0">
+n</A>
+
+</DT></STRONG>
+<DD>
+Next.  Executes over subroutine calls, until it reaches the beginning
+of the next statement.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_f_0">
+f</A>
+
+</DT></STRONG>
+<DD>
+Finish.  Executes statements until it has finished the current
+subroutine.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_c_1">
+c</A>
+
+</DT></STRONG>
+<DD>
+Continue.  Executes until the next breakpoint is reached.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_c_1">
+c line</A>
+
+</DT></STRONG>
+<DD>
+Continue to the specified line.  Inserts a one-time-only breakpoint at
+the specified line.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_cr_0">
+<CR&gt;</A>
+
+</DT></STRONG>
+<DD>
+Repeat last n or s.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_l_0">
+l min+incr</A>
+
+</DT></STRONG>
+<DD>
+List incr+1 lines starting at min.  If min is omitted, starts where
+last listing left off.  If incr is omitted, previous value of incr is
+used.
+<p>
+<DT>
+
+<STRONG>
+<EM>l min-max</EM>
+</DT></STRONG>
+<DD>
+List lines in the indicated range.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_l_2">
+l line</A>
+
+</DT></STRONG>
+<DD>
+List just the indicated line.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_l_3">
+l</A>
+
+</DT></STRONG>
+<DD>
+List next window.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug__0">
+-</A>
+
+</DT></STRONG>
+<DD>
+List previous window.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_w_0">
+w line</A>
+
+</DT></STRONG>
+<DD>
+List window (a few lines worth of code) around line.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_l_3">
+l subname</A>
+
+</DT></STRONG>
+<DD>
+List subroutine.  If it's a long subroutine it just lists the
+beginning.  Use ``l'' to list more.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_pattern_0">
+/pattern/</A>
+
+</DT></STRONG>
+<DD>
+Regular expression search forward in the source code for pattern; the
+final / is optional.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_pattern_1">
+?pattern?</A>
+
+</DT></STRONG>
+<DD>
+Regular expression search backward in the source code for pattern; the
+final ? is optional.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_l_4">
+L</A>
+
+</DT></STRONG>
+<DD>
+List lines that have breakpoints or actions.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_s_1">
+S</A>
+
+</DT></STRONG>
+<DD>
+Lists the names of all subroutines.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_t_1">
+t</A>
+
+</DT></STRONG>
+<DD>
+Toggle trace mode on or off.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_b_0">
+b line [ condition ]</A>
+
+</DT></STRONG>
+<DD>
+Set a breakpoint.  If line is omitted, sets a breakpoint on the line
+that is about to be executed.  If a condition is specified, it is
+evaluated each time the statement is reached and a breakpoint is taken
+only if the condition is true.  Breakpoints may only be set on lines
+that begin an executable statement.  Conditions don't use <CODE>if</CODE>:
+<p>
+<XMP>
+    b 237 $x > 30
+    b 33 /pattern/i
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_b_1">
+b subname [ condition ]</A>
+
+</DT></STRONG>
+<DD>
+Set breakpoint at first executable line of subroutine.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_d_0">
+d line</A>
+
+</DT></STRONG>
+<DD>
+Delete breakpoint.  If line is omitted, deletes the breakpoint on the
+line that is about to be executed.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_d_1">
+D</A>
+
+</DT></STRONG>
+<DD>
+Delete all breakpoints.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_a_0">
+a line command</A>
+
+</DT></STRONG>
+<DD>
+Set an action for line.  A multiline command may be entered by
+backslashing the newlines.  This command is Perl code, not another
+debugger command.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_a_1">
+A</A>
+
+</DT></STRONG>
+<DD>
+Delete all line actions.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug__1">
+< command</A>
+
+</DT></STRONG>
+<DD>
+Set an action to happen before every debugger prompt.  A multiline
+command may be entered by backslashing the newlines.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug__2">
+&gt; command</A>
+
+</DT></STRONG>
+<DD>
+Set an action to happen after the prompt when you've just given a
+command to return to executing the script.  A multiline command may be
+entered by backslashing the newlines.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_v_0">
+V package [symbols]</A>
+
+</DT></STRONG>
+<DD>
+Display all (or some) variables in package (defaulting to the <CODE>main</CODE>
+package) using a data pretty-printer (hashes show their keys and values so
+you see what's what, control characters are made printable, etc.).  Make
+sure you don't put the type specifier (like $) there, just the symbol
+names, like this:
+<p>
+<XMP>
+    V DB filename line 
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+<EM>X [symbols] </EM>
+</DT></STRONG>
+<DD>
+Same as as ``V'' command, but within the current package.  
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug__3">
+! number</A>
+
+</DT></STRONG>
+<DD>
+Redo a debugging command.  If number is omitted, redoes the previous
+command.
+<p>
+<DT>
+
+<STRONG>
+<EM>! -number</EM>
+</DT></STRONG>
+<DD>
+Redo the command that was that many commands ago.
+<p>
+<DT>
+
+<STRONG>
+<EM>H -number</EM>
+</DT></STRONG>
+<DD>
+Display last n commands.  Only commands longer than one character are
+listed.  If number is omitted, lists them all.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_q_0">
+q or ^D</A>
+
+</DT></STRONG>
+<DD>
+Quit.  (``quit'' doesn't work for this.)
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_command_0">
+command</A>
+
+</DT></STRONG>
+<DD>
+Execute command as a Perl statement.  A missing semicolon will be
+supplied.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="perldebug_p_0">
+p expr</A>
+
+</DT></STRONG>
+<DD>
+Same as 
+<A HREF="perlfunc.htm#perlfunc_print_1">print DB::OUT expr</A>
+.  The DB::OUT filehandle is opened to
+/dev/tty, regardless of where STDOUT may be redirected to.
+<p>
+</DL>
+Any command you type in that isn't recognized by the debugger will bedirectly executed (
+<A HREF="perlfunc.htm#perlfunc_eval_1">eval</A>
+'d) as Perl code.  Leading white space will
+cause the debugger to think it's <CODE>NOT</CODE> a debugger command.
+<p>If you have any compile-time executable statements (code within a BEGIN 
+block or a 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ statement), these will <EM>NOT</EM> be stopped by debugger,
+although 
+<A HREF="perlfunc.htm#perlfunc_require_0">require</A>
+s will.  From your own code, however, you can transfer
+control back to the debugger using the following statement, which is harmless
+if the debugger is not running:
+<p>
+<XMP>
+    $DB::single = 1;
+
+</XMP>
+<p>
+<H2> 
+<A NAME="perldebug_customization_0">
+Customization</A>
+</H2>
+If you want to modify the debugger, copy <EM>perl5db.pl</EM> from the Perl
+library to another name and modify it as necessary.  You'll also want
+to set environment variable PERL5DB to say something like this:
+<p>
+<XMP>
+    BEGIN { require "myperl5db.pl" }
+
+</XMP>
+<p>You can do some customization by setting up a <EM>.perldb</EM> file which
+contains initialization code.  For instance, you could make aliases
+like these (the last one in particular most people seem to expect to 
+be there):
+<p>
+<XMP>
+    $DB::alias{'len'} = 's/^len(.*)/p length($1)/';
+    $DB::alias{'stop'} = 's/^stop (at|in)/b/';
+    $DB::alias{'.'} = 's/^\./p '
+                    . '"\$DB::sub(\$DB::filename:\$DB::line):\t"'
+                    . ',\$DB::dbline[\$DB::line]/' ;
+
+</XMP>
+<p>
+<H2> 
+<A NAME="perldebug_other_0">
+Other resources</A>
+</H2>
+You did try the 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+ switch, didn't you?
+<p><p><hr>
+
+<H1> 
+<A NAME="perldebug_bugs_0">
+BUGS</A>
+</H1>
+If your program 
+<A HREF="perlfunc.htm#perlfunc_exit_0">exit()</A>
+s or 
+<A HREF="perlfunc.htm#perlfunc_die_0">die()</A>
+s, so does the debugger.
+<p>There's no builtin way to restart the debugger without exiting and coming back
+into it.  You could use an alias like this:
+<p>
+<XMP>
+    $DB::alias{'rerun'} = 'exec "perl -d $DB::filename"';
+
+</XMP>
+<p>But you'd lose any pending breakpoint information, and that might not
+be the right path, etc.
+<p>
+</BODY>
+</HTML>

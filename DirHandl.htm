@@ -1,0 +1,48 @@
+<HEAD><CENTER><TITLE>DirHandle</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="DirHandle_name_0">
+NAME </A>
+</H1>
+DirHandle - supply object methods for directory handles
+<p><p><hr>
+
+<H1> 
+<A NAME="DirHandle_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use DirHandle;
+    $d = new DirHandle ".";
+    if (defined $d) {
+        while (defined($_ = $d->read)) { something($_); }
+        $d->rewind;
+        while (defined($_ = $d->read)) { something_else($_); }
+        undef $d;
+    }
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="DirHandle_description_0">
+DESCRIPTION</A>
+</H1>
+The <CODE>DirHandle</CODE> method provide an alternative interface to the
+
+<A HREF="perlfunc.htm#perlfunc_opendir_0">opendir()</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_closedir_0">closedir()</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_readdir_0">readdir()</A>
+, and 
+<A HREF="perlfunc.htm#perlfunc_rewinddir_0">rewinddir()</A>
+ functions.
+<p>The only objective benefit to using <CODE>DirHandle</CODE> is that it avoids
+namespace pollution by creating globs to hold directory handles.
+<p>
+</BODY>
+</HTML>

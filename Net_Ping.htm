@@ -1,0 +1,65 @@
+<HEAD><CENTER><TITLE>Net_Ping</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Net::Ping_name_0">
+NAME</A>
+</H1>
+Net::Ping, pingecho - check a host for upness
+<p><p><hr>
+
+<H1> 
+<A NAME="Net::Ping_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Net::Ping;
+    print "'jimmy' is alive and kicking\n" if pingecho('jimmy', 10) ;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Net::Ping_description_0">
+DESCRIPTION</A>
+</H1>
+This module contains routines to test for the reachability of remote hosts.
+Currently the only routine implemented is <EM>pingecho()</EM>. 
+<p><EM>pingecho()</EM> uses a TCP echo (<EM>not</EM> an ICMP one) to determine if the
+remote host is reachable. This is usually adequate to tell that a remote
+host is available to rsh(1), ftp(1), or telnet(1) onto.
+<p>
+<H2> 
+<A NAME="Net::Ping_parameters_0">
+Parameters</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Net::Ping_hostname_0">
+hostname</A>
+
+</DT></STRONG>
+<DD>
+The remote host to check, specified either as a hostname or as an IP address.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Net::Ping_timeout_0">
+timeout</A>
+
+</DT></STRONG>
+<DD>
+The timeout in seconds. If not specified it will default to 5 seconds.
+<p>
+</DL>
+
+</BODY>
+</HTML>

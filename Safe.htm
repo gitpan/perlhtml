@@ -1,0 +1,921 @@
+<HEAD><CENTER><TITLE>Safe</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Safe_name_0">
+NAME</A>
+</H1>
+Safe - Compile and execute code in restricted compartments
+<p><p><hr>
+
+<H1> 
+<A NAME="Safe_description_0">
+DESCRIPTION</A>
+</H1>
+The Safe extension module allows the creation of compartments
+in which perl code can be evaluated. Each compartment has
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_a_0">
+a new namespace</A>
+
+</DT></STRONG>
+<DD>
+The ``root'' of the namespace (i.e. ``main::'') is changed to a
+different package and code evaluated in the compartment cannot
+refer to variables outside this namespace, even with run-time
+glob lookups and other tricks.
+<p>Code which is compiled outside the compartment can choose to place
+variables into (or 
+<A HREF="Safe.htm#Safe_share_0">share</A>
+ variables with) the compartment's namespace
+and only that data will be visible to code evaluated in the
+compartment.
+<p>By default, the only variables shared with compartments are the
+``underscore'' variables 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ and <STRONG>@_</STRONG> (and, technically, the less frequently
+used <STRONG>%_</STRONG>, the _ filehandle and so on). This is because otherwise perl
+operators which default to 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ will not work and neither will the
+assignment of arguments to <STRONG>@_</STRONG> on subroutine entry.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_an_0">
+an operator mask</A>
+
+</DT></STRONG>
+<DD>
+Each compartment has an associated ``operator mask''. Recall that
+perl code is compiled into an internal format before execution.
+Evaluating perl code (e.g. via ``eval'' or ``do 'file''') causes
+the code to be compiled into an internal format and then,
+provided there was no error in the compilation, executed.
+Code evaulated in a compartment compiles subject to the
+compartment's operator mask. Attempting to evaulate code in a
+compartment which contains a masked operator will cause the
+compilation to fail with an error. The code will not be executed.
+<p>By default, the operator mask for a newly created compartment masks
+out all operations which give ``access to the system'' in some sense.
+This includes masking off operators such as 
+<A HREF="perlfunc.htm#perlfunc_system_1">system</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_open_1">open</A>
+,
+
+<A HREF="perlfunc.htm#perlfunc_chown_0">chown</A>
+, and 
+<A HREF="perlfunc.htm#perlfunc_shmget_0">shmget</A>
+ but does not mask off operators such as
+
+<A HREF="perlfunc.htm#perlfunc_print_1">print</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_sysread_1">sysread</A>
+ and <EM>&lt;HANDL&gt;</EM>. Those file operators
+are allowed since for the code in the compartment to have access
+to a filehandle, the code outside the compartment must have explicitly
+placed the filehandle variable inside the compartment.
+<p>(Note: the definition of the default ops is not yet finalised.)
+<p>Since it is only at the compilation stage that the operator mask
+applies, controlled access to potentially unsafe operations can
+be achieved by having a handle to a wrapper subroutine (written
+outside the compartment) placed into the compartment. For example,
+<p>
+<XMP>
+    $cpt = new Safe;
+    sub wrapper {
+        # vet arguments and perform potentially unsafe operations
+    }
+    $cpt->share('&wrapper');
+
+</XMP>
+<p>
+</DL>
+Confusingly the term 'operator mask' is used to refer to the 'maskingout' of operators during compilation and also to a value defining a set
+of operators. The term 'opset' is being more widely used to refer to
+the latter but you may still come across mask being used instead.
+<p>
+<H2> 
+<A NAME="Safe_warning_0">
+WARNING</A>
+</H2>
+The interface to the Safe module has changed quite dramatically since
+version 1 (as supplied with Perl5.002). Study these pages carefully if
+you have code written to use Safe version 1 because you will need to
+makes changes.
+<p>
+<H2> 
+<A NAME="Safe_operator_0">
+Operator Names and Operator Lists</A>
+</H2>
+XXX
+<p>The canonical list of operator names is the contents of the array
+op_name defined and initialised in file <EM>opcode.h</EM> of the Perl
+source distribution (and installed into the perl library).
+<p>Each operator has both a terse name and a more verbose or recognisable
+descriptive name. The opdesc function can be used to return a list of
+descriptions for a list of operators.
+<p>Many of the functions and methods listed below take a lists of
+operators as parameters. Operator lists can be made up of several
+types of elements. Each element can be one of
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_an_1">
+an operator name (opname)</A>
+
+</DT></STRONG>
+<DD>
+XXX
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_an_2">
+an operator tag name (optag)</A>
+
+</DT></STRONG>
+<DD>
+Operator tags can be used to refer to groups (or sets) of operators.
+Tag names always being with a colon. The Safe module defines several
+optags and the user can define others using the define_optag function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_a_1">
+a negated opname or optag</A>
+
+</DT></STRONG>
+<DD>
+XXX
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_an_3">
+an operator set (opset)</A>
+
+</DT></STRONG>
+<DD>
+An <EM>opset</EM> as an opaque binary string of approximately 43 bytes which
+holds a set or zero or more operators.
+<p>The ops_to_opset and opset_to_ops functions can be used to convert from
+a list of operators to an opset (and <EM>vice versa</EM>).
+<p>Wherever a list of operators can be given you can use one or more opsets.
+<p>
+</DL>
+
+<H2> 
+<A NAME="Safe_methods_0">
+Methods in class Safe</A>
+</H2>
+To create a new compartment, use
+<p>
+<XMP>
+    $cpt = new Safe;
+
+</XMP>
+<p>Optional argument is (NAMESPACE), where NAMESPACE is the root namespace
+to use for the compartment (defaults to ``Safe::Root0'', incremented for
+each new compartment).
+<p>Note that version 1.00 of the Safe module supported a second optional
+parameter, MASK.  That functionality has been withdrawn pending deeper
+consideration. Use the permit and deny methods described below.
+<p>The following methods can then be used on the compartment
+object returned by the above constructor. The object argument
+is implicit in each case.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_permit_0">
+permit (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+Permit the listed operators to be used when compiling code in the
+compartment (in <EM>addition</EM> to any operators already permitted).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_permit_only_0">
+permit_only (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+Permit <EM>only</EM> the listed operators to be used when compiling code in
+the compartment (
+<A HREF="perlfunc.htm#perlfunc_no_0">no</A>
+ other operators are permitted).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_deny_0">
+deny (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+Deny the listed operators from being used when compiling code in the
+compartment (other operators may still be permitted).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_deny_only_0">
+deny_only (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+Deny <EM>only</EM> the listed operators from being used when compiling code
+in the compartment (<EM>all</EM> other operators will be permitted).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_trap_0">
+trap (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_untrap_0">
+untrap (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+The trap and untrap methods are synonyms for deny and permit
+respectfully.  They are provided for backwards compatibility and
+should not be used in new code.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_share_0">
+share (VARNAME, ...)</A>
+
+</DT></STRONG>
+<DD>
+This shares the variable(s) in the argument list with the compartment.
+This is almost identical to exporting variables using the Exporter
+module.
+<p>Each VARNAME must be the <STRONG>name</STRONG> of a variable with a leading type
+identifier included. A bareword is treated as a function name. Examples
+of legal names are '<STRONG>$foo</STRONG>' for a scalar, '<STRONG>@foo</STRONG>' for an array,
+'<STRONG>%foo</STRONG>' for a hash, '&amp;foo' or 'foo' for a subroutine and '*foo' for a
+glob (i.e.  all symbol table entries associated with ``foo'', including
+scalar, array, hash, sub and filehandle).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_varglob_0">
+varglob (VARNAME)</A>
+
+</DT></STRONG>
+<DD>
+This returns a glob reference for the symbol table entry of VARNAME in
+the package of the compartment. VARNAME must be the <STRONG>name</STRONG> of a
+variable without any leading type marker. For example,
+<p>
+<XMP>
+    $cpt = new Safe 'Root';
+    $Root::foo = "Hello world";
+    # Equivalent version which doesn't need to know $cpt's package name:
+    ${$cpt->varglob('foo')} = "Hello world";
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_reval_0">
+reval (STRING)</A>
+
+</DT></STRONG>
+<DD>
+This evaluates STRING as perl code inside the compartment.
+<p>The code can only see the compartment's namespace (as returned by the
+
+<A HREF="Safe.htm#Safe_root_0">root</A>
+ method). The compartment's root package appears to be the
+<CODE>main::</CODE> package to the code inside the compartment.
+<p>Any attempt by the code in STRING to use an operator which is not permitted
+by the compartment will cause an error (at run-time of the main program
+but at compile-time for the code in STRING).  The error is of the form
+``<STRONG>%s</STRONG> trapped by operation mask operation...''.
+<p>If an operation is trapped in this way, then the code in STRING will
+not be executed. If such a trapped operation occurs or any other
+compile-time or return error, then $<STRONG>@ </STRONG>is set to the error message, just
+as with an 
+<A HREF="perlfunc.htm#perlfunc_eval_1">eval()</A>
+.
+<p>If there is no error, then the method returns the value of the last
+expression evaluated, or a return statement may be used, just as with
+subroutines and 
+<A HREF="perlfunc.htm#perlfunc_eval_1">
+<A HREF="perlfunc.htm#perlfunc_eval_1">eval()</A>
+</A>
+. The context (list or scalar) is determined
+by the caller as usual.
+<p>This behaviour differs from the beta distribution of the Safe extension
+where earlier versions of perl made it hard to mimic the return
+behaviour of the 
+<A HREF="perlfunc.htm#perlfunc_eval_1">eval()</A>
+ command and the context was always scalar.
+<p>Some points to note:
+<p>If the entereval/leaveeval ops are permitted then the code can use them
+to 'hide' code which might use denied ops. This is not a major problem
+since when the code tries to execute the eval it will fail because the
+opmask is still in effect. However this technique would allow clever,
+and possibly harmful, code to 'probe' the boundaries of what is possible.
+<p>Any string eval which is executed by code executing in a compartment,
+or by code called from code executing in a compartment, will be eval'd
+in the namespace of the compartment. This is potentially a serious
+problem.
+<p>Consider a function <EM>foo()</EM> in package bar compiled outside a compartment
+but shared with it. Assume the compartment has a root package called
+'Root'. If <EM>foo()</EM> contains an eval statement like eval '<STRONG>$baz</STRONG> = 1' then,
+normally, <STRONG>$bar::foo</STRONG> will be set to 1.  If <EM>foo()</EM> is called from the
+compartment (by whatever means) then instead of setting <STRONG>$bar::foo</STRONG>, the
+eval will actually set <STRONG>$Root::bar::foo</STRONG>.
+<p>This can easily be demonstrated by using a module, such as the Socket
+module, which uses eval ``...'' as part of an AUTOLOAD function. You can
+'use' the module outside the compartment and share an (autoloaded)
+function with the compartment. If an autoload is triggered by code in
+the compartment, or by any code anywhere that is called by any means
+from the compartment, then the eval in the Socket module's AUTOLOAD
+function happens in the namespace of the compartment. Any variables
+created or used by the eval'd code are now under the control of
+the code in the compartment.
+<p>A similar effect applies to <EM>all</EM> runtime symbol lookups in code
+called from a compartment but not compiled within it.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_rdo_0">
+rdo (FILENAME)</A>
+
+</DT></STRONG>
+<DD>
+This evaluates the contents of file FILENAME inside the compartment.
+See above documentation on the 
+<A HREF="Safe.htm#Safe_reval_0">reval</A>
+ method for further details.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_root_0">
+root (NAMESPACE)</A>
+
+</DT></STRONG>
+<DD>
+This method returns the name of the package that is the root of the
+compartment's namespace.
+<p>Note that this behaviour differs from version 1.00 of the Safe module
+where the root module could be used to change the namespace. That
+functionality has been withdrawn pending deeper consideration.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_mask_0">
+mask (MASK)</A>
+
+</DT></STRONG>
+<DD>
+This is a get-or-set method for the compartment's operator mask.
+<p>With no MASK argument present, it returns the current operator mask of
+the compartment.
+<p>With the MASK argument present, it sets the operator mask for the
+compartment (equivalent to calling the deny_only method).
+<p>
+</DL>
+
+<H2> 
+<A NAME="Safe_subroutines_0">
+Subroutines in package Safe</A>
+</H2>
+The Safe package contains subroutines for manipulating operator names
+tags and sets. All are available for export by the package.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_ops_to_opset_0">
+ops_to_opset (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+This takes a list of operators and returns an opset representing
+precisely those operators.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_opset_to_ops_0">
+opset_to_ops (OPSET)</A>
+
+</DT></STRONG>
+<DD>
+This takes an opset and returns a list of operator names corresponding
+to those operators in the set.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_full_opset_0">
+full_opset</A>
+
+</DT></STRONG>
+<DD>
+This just returns opset which includes all operators.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_empty_opset_0">
+empty_opset</A>
+
+</DT></STRONG>
+<DD>
+This just returns an opset which contains no operators.
+<p>This is useful if you want a compartment to make use of the namespace
+protection features but do not want the default restrictive mask.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_define_optag_0">
+define_optag (OPTAG, OPSET)</A>
+
+</DT></STRONG>
+<DD>
+Define OPTAG as a symbolic name for OPSET. Optag names always start
+with a colon <CODE>:</CODE>. The optag name used must not be defined already
+(define_optag will croak if it is already defined). Optag names are
+global to the perl process and optag definitions cannot be altered or
+deleted once defined.
+<p>It is strongly recommended that applications using Safe should use a
+leading capital letter on their tag names since lowercase names are
+reserved for use by the Safe module. If using Safe within a module
+you should prefix your tags names with the name of your module to
+ensure uniqueness.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_opdesc_0">
+opdesc (OP, ...)</A>
+
+</DT></STRONG>
+<DD>
+This takes a list of operators and returns the corresponding list of
+operator descriptions.
+<p>
+</DL>
+
+<H2> 
+<A NAME="Safe_some_0">
+Some Safety Issues</A>
+</H2>
+This section is currently just an outline of some of the things code in
+a compartment might do (intentionally or unintentionally) which can
+have an effect outside the compartment.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_memory_0">
+Memory</A>
+
+</DT></STRONG>
+<DD>
+Consuming all (or nearly all) available memory.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_cpu_0">
+CPU</A>
+
+</DT></STRONG>
+<DD>
+Causing infinite loops etc.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_snooping_0">
+Snooping</A>
+
+</DT></STRONG>
+<DD>
+Copying private information out of your system. Even something as
+simple as your user name is of value to others. Much useful information
+could be gleaned from your environment variables for example.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_signals_0">
+Signals</A>
+
+</DT></STRONG>
+<DD>
+Causing signals (especially SIGFPE and SIGALARM) to affect your process.
+<p>Setting up a signal handler will need to be carefully considered
+and controlled.  What mask is in effect when a signal handler
+gets called?  If a user can get an imported function to get an
+exception and call the user's signal handler, does that user's
+restricted mask get re-instated before the handler is called?
+Does an imported handler get called with its original mask or
+the user's one?
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_state_0">
+State Changes</A>
+
+</DT></STRONG>
+<DD>
+Ops such as chdir obviously effect the process as a whole and not just
+the code in the compartment. Ops such as rand and srand have a similar
+but more subtle effect.
+<p>
+</DL>
+<p><hr>
+
+<H1> <A HREF="Opcode.htm">Opcode Tags</A></H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_base_core_0">
+:base_core</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    null stub scalar pushmark wantarray const defined undef
+    rv2sv sassign
+    rv2av aassign aelem aelemfast aslice
+    rv2hv helem hslice each values keys exists -- no delete here
+    preinc i_preinc predec i_predec postinc i_postinc postdec i_postdec
+    int hex oct abs pow multiply i_multiply divide i_divide modulo
+    i_modulo add i_add subtract i_subtract
+    left_shift right_shift bit_and bit_xor bit_or negate i_negate
+    not complement
+    lt i_lt gt i_gt le i_le ge i_ge eq i_eq ne i_ne ncmp i_ncmp
+    slt sgt sle sge seq sne scmp
+    substr vec stringify study pos length index rindex ord chr
+    ucfirst lcfirst uc lc quotemeta trans chop schop chomp schomp
+    splice push pop shift unshift reverse
+    cond_expr flip flop andassign orassign and or xor
+    lineseq nextstate unstack scope enter leave entersub leavesub
+    return method
+    warn die
+        leaveeval -- needed for Safe to operate
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_base_mem_0">
+:base_mem</A>
+
+</DT></STRONG>
+<DD>
+These memory related ops are not included in :base_core because they
+can easily be used to implement a resource attack (e.g., consume all
+available memory).
+<p>
+<XMP>
+    concat repeat join
+    anonlist anonhash
+
+</XMP>
+<p>Note that despite the existance of this optag a memory resource attack
+may still be possible using only :base_core ops.
+<p>Disabling these ops is a <EM>very</EM> heavy handed way to attempt to prevent
+a memory resource attack. It's probable that a specific memory limit
+mechanism will be added to perl in the near future.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_base_loop_0">
+:base_loop</A>
+
+</DT></STRONG>
+<DD>
+These loop ops are not included in :base_core because they can easily be
+used to implement a resource attack (e.g., consume all available CPU time).
+<p>
+<XMP>
+    grepstart grepwhile
+    mapstart mapwhile
+    enteriter iter
+    enterloop leaveloop
+    last next redo
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_base_orig_0">
+:base_orig</A>
+
+</DT></STRONG>
+<DD>
+These are a hotchpotch of opcode still waiting to be considered
+<p>
+<XMP>
+    gvsv gv gelem
+    padsv padav padhv padany
+    pushre
+    rv2gv av2arylen rv2cv anoncode prototype refgen
+    srefgen ref bless
+    glob readline rcatline
+    regcmaybe regcomp match subst substcont
+    sprintf formline
+    crypt
+    delete -- hash elem
+    split list lslice
+    range
+    reset
+    caller dbstate goto
+    tie untie
+    dbmopen dbmclose sselect select getc read enterwrite leavewrite
+    prtf print sysread syswrite send recv eof tell seek truncate fcntl
+    sockpair bind connect listen accept shutdown gsockopt
+    getsockname
+    ftrwrite ftsvtx
+    open_dir readdir closedir telldir seekdir rewinddir
+    getppid getpgrp setpgrp getpriority setpriority time tms localtime gmtime
+    entertry leavetry
+    ghbyname ghbyaddr ghostent gnbyname gnbyaddr gnetent gpbyname
+    gpbynumber gprotoent gsbyname gsbyport gservent shostent snetent
+    sprotoent sservent ehostent enetent eprotoent eservent
+    gpwnam gpwuid gpwent spwent epwent ggrnam ggrgid ggrent sgrent
+    egrent
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_base_math_0">
+:base_math</A>
+
+</DT></STRONG>
+<DD>
+These ops are not included in :base_core because of the risk of them being
+used to generate floating point exceptions (which would have to be caught
+using a <STRONG>$SIG</STRONG>{FPE} handler).
+<p>
+<XMP>
+    atan2 sin cos exp log sqrt
+
+</XMP>
+<p>These ops are not included in :base_core because they have an effect
+beyond the scope of the compartment.
+<p>
+<XMP>
+    rand srand
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_default_0">
+:default</A>
+
+</DT></STRONG>
+<DD>
+The default set of ops allowed in a compartment.  (The current ops
+allowed is unstable while development continues. It will change.)
+<p>
+<XMP>
+    :base_core :base_mem :base_loop :base_orig
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_subprocess_0">
+:subprocess</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    backtick system
+    fork
+    wait waitpid
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_ownprocess_0">
+:ownprocess</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    exec exit dump syscall kill
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_filesys_open_0">
+:filesys_open</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    sysopen open close umask
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_filesys_read_0">
+:filesys_read</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    stat lstat readlink
+    ftatime ftblk ftchr ftctime ftdir fteexec fteowned fteread
+    ftewrite ftfile ftis ftlink ftmtime ftpipe ftrexec ftrowned
+    ftrread ftsgid ftsize ftsock ftsuid fttty ftzero
+    fttext ftbinary
+    fileno
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_filesys_write_0">
+:filesys_write</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    link unlink rename symlink
+    mkdir rmdir
+    utime chmod chown
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_others_0">
+:others</A>
+
+</DT></STRONG>
+<DD>
+This tag holds groups of assorted specialist opcodes that don't warrant
+having optags defined for them.
+<p>SystemV Interprocess Communications:
+<p>
+<XMP>
+    msgctl msgget msgrcv msgsnd
+    semctl semget semop
+    shmctl shmget shmread shmwrite
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_still_to_be_decided_0">
+:still_to_be_decided</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    chdir
+    chroot
+    require dofile 
+    binmode
+    flock ioctl
+    getlogin
+    pipe_op socket getpeername ssockopt 
+    sleep alarm
+    sort
+    tied
+    pack unpack
+    entereval -- can be used to hide code
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Safe_foo_0">
+:foo</A>
+
+</DT></STRONG>
+<DD>
+Just an example to show and test negation
+<p>
+<XMP>
+    :default !spwent !sgrent
+
+</XMP>
+<p>
+</DL>
+
+<H2> 
+<A NAME="Safe_author_0">
+AUTHOR</A>
+</H2>
+Originally designed and implemented by Malcolm Beattie,
+<A HREF="MAILTO:mbeattie@sable.ox.ac.uk">mbeattie@sable.ox.ac.uk</A>.
+<p>Optags and other changes added by Tim Bunce &lt;<A HREF="MAILTO:Tim.Bunce@ig.co.uk">Tim.Bunce@ig.co.uk</A>&gt;.
+<p>
+</BODY>
+</HTML>

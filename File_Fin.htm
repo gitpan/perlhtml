@@ -1,0 +1,83 @@
+<HEAD><CENTER><TITLE>File_Find</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="File::Find_name_0">
+NAME</A>
+</H1>
+find - traverse a file tree
+<p>finddepth - traverse a directory structure depth-first
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Find_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use File::Find;
+    find(\&wanted, '/foo','/bar');
+    sub wanted { ... }
+    
+    use File::Find;
+    finddepth(\&wanted, '/foo','/bar');
+    sub wanted { ... }
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Find_description_0">
+DESCRIPTION</A>
+</H1>
+The <EM>wanted()</EM> function does whatever verifications you want.
+<STRONG>$File::Find::dir</STRONG> contains the current directory name, and 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ the
+current filename within that directory.  <STRONG>$File::Find::name</STRONG> contains
+<CODE>``<STRONG>$File::Find::dir</STRONG>/
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+''</CODE>.  You are 
+<A HREF="perlfunc.htm#perlfunc_chdir_0">chdir()</A>
+'d to <STRONG>$File::Find::dir</STRONG> when
+the function is called.  The function may set <STRONG>$File::Find::prune</STRONG> to
+prune the tree.
+<p>This library is primarily for the <CODE>find2perl</CODE> tool, which when fed, 
+<p>
+<XMP>
+    find2perl / -name .nfs\* -mtime +7 \
+        -exec rm -f {} \; -o -fstype nfs -prune
+
+</XMP>
+<p>produces something like:
+<p>
+<XMP>
+    sub wanted {
+        /^\.nfs.*$/ &&
+        (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
+        int(-M _) > 7 &&
+        unlink($_)
+        ||
+        ($nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_))) &&
+        $dev < 0 &&
+        ($File::Find::prune = 1);
+    }
+
+</XMP>
+<p>Set the variable <STRONG>$File::Find::dont_use_nlink</STRONG> if you're using AFS,
+since AFS cheats.
+<p><CODE>finddepth</CODE> is just like <CODE>find</CODE>, except that it does a depth-first
+search.
+<p>Here's another interesting wanted function.  It will find all symlinks
+that don't resolve:
+<p>
+<XMP>
+    sub wanted {
+        -l && !-e && print "bogus link: $File::Find::name\n";
+    } 
+
+</XMP>
+<p>
+</BODY>
+</HTML>

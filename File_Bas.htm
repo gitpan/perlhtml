@@ -1,0 +1,188 @@
+<HEAD><CENTER><TITLE>File_Basename</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="File::Basename_name_0">
+NAME</A>
+</H1>
+Basename - parse file specifications
+<p>fileparse - split a pathname into pieces
+<p>basename - extract just the filename from a path
+<p>dirname - extract just the directory from a path
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Basename_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use File::Basename;
+    ($name,$path,$suffix) = fileparse($fullname,@suffixlist)
+    fileparse_set_fstype($os_string);
+    $basename = basename($fullname,@suffixlist);
+    $dirname = dirname($fullname);
+    ($name,$path,$suffix) = fileparse("lib/File/Basename.pm","\.pm");
+    fileparse_set_fstype("VMS");
+    $basename = basename("lib/File/Basename.pm",".pm");
+    $dirname = dirname("lib/File/Basename.pm");
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="File::Basename_description_0">
+DESCRIPTION</A>
+</H1>
+These routines allow you to parse file specifications into useful
+pieces using the syntax of different operating systems.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="File::Basename_fileparse_set_fstype_0">
+fileparse_set_fstype</A>
+
+</DT></STRONG>
+<DD>
+You select the syntax via the routine 
+<A HREF="File_Bas.htm#File::Basename_fileparse_set_fstype_0">fileparse_set_fstype()</A>
+.
+If the argument passed to it contains one of the substrings
+``VMS'', ``MSDOS'', or ``MacOS'', the file specification syntax of that
+operating system is used in future calls to 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+,
+
+<A HREF="File_Bas.htm#File::Basename_basename_0">basename()</A>
+, and 
+<A HREF="File_Bas.htm#File::Basename_dirname_0">dirname()</A>
+.  If it contains none of these
+substrings, UNIX syntax is used.  This pattern matching is
+case-insensitive.  If you've selected VMS syntax, and the file
+specification you pass to one of these routines contains a ``/'',
+they assume you are using UNIX emulation and apply the UNIX syntax
+rules instead, for that function call only.
+<p>If you haven't called 
+<A HREF="File_Bas.htm#File::Basename_fileparse_set_fstype_0">fileparse_set_fstype()</A>
+, the syntax is chosen
+by examining the ``osname'' entry from the <CODE>Config</CODE> package
+according to these rules.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="File::Basename_fileparse_0">
+fileparse</A>
+
+</DT></STRONG>
+<DD>
+The 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+ routine divides a file specification into three
+parts: a leading <STRONG>path</STRONG>, a file <STRONG>name</STRONG>, and a <STRONG>suffix</STRONG>.  The
+<STRONG>path</STRONG> contains everything up to and including the last directory
+separator in the input file specification.  The remainder of the input
+file specification is then divided into <STRONG>name</STRONG> and <STRONG>suffix</STRONG> based on
+the optional patterns you specify in <CODE><STRONG>@suffixlist</STRONG></CODE>.  Each element of
+this list is interpreted as a regular expression, and is matched
+against the end of <STRONG>name</STRONG>.  If this succeeds, the matching portion of
+<STRONG>name</STRONG> is removed and prepended to <STRONG>suffix</STRONG>.  By proper use of
+<CODE><STRONG>@suffixlist</STRONG></CODE>, you can remove file types or versions for examination.
+<p>You are guaranteed that if you concatenate <STRONG>path</STRONG>, <STRONG>name</STRONG>, and
+<STRONG>suffix</STRONG> together in that order, the result will be identical to the
+input file specification.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="File::Basename_examples_0">
+EXAMPLES</A>
+</H1>
+Using UNIX file syntax:
+<p>
+<XMP>
+    ($base,$path,$type) = fileparse('/virgil/aeneid/draft.book7', 
+                                    '\.book\d+');
+
+</XMP>
+<p>would yield
+<p>
+<XMP>
+    $base eq 'draft'
+    $path eq '/virgil/aeneid',
+    $tail eq '.book7'
+
+</XMP>
+<p>Similarly, using VMS syntax:
+<p>
+<XMP>
+    ($name,$dir,$type) = fileparse('Doc_Root:[Help]Rhetoric.Rnh',
+                                   '\..*');
+
+</XMP>
+<p>would yield
+<p>
+<XMP>
+    $name eq 'Rhetoric'
+    $dir  eq 'Doc_Root:[Help]'
+    $type eq '.Rnh'
+
+</XMP>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="File::Basename_basename_0">
+basename</A>
+
+</DT></STRONG>
+<DD>
+The 
+<A HREF="File_Bas.htm#File::Basename_basename_0">basename()</A>
+ routine returns the first element of the list produced
+by calling 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+ with the same arguments.  It is provided for
+compatibility with the UNIX shell command basename(1).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="File::Basename_dirname_0">
+dirname</A>
+
+</DT></STRONG>
+<DD>
+The 
+<A HREF="File_Bas.htm#File::Basename_dirname_0">dirname()</A>
+ routine returns the directory portion of the input file
+specification.  When using VMS or MacOS syntax, this is identical to the
+second element of the list produced by calling 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+ with the same
+input file specification.  When using UNIX or MSDOS syntax, the return
+value conforms to the behavior of the UNIX shell command dirname(1).  This
+is usually the same as the behavior of 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+, but differs in some
+cases.  For example, for the input file specification <EM>lib/</EM>, 
+<A HREF="File_Bas.htm#File::Basename_fileparse_0">fileparse()</A>
+
+considers the directory name to be <EM>lib/</EM>, while 
+<A HREF="File_Bas.htm#File::Basename_dirname_0">dirname()</A>
+ considers the
+directory name to be <EM>.</EM>).
+<p>
+</DL>
+
+</BODY>
+</HTML>

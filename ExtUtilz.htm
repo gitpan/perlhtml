@@ -1,0 +1,43 @@
+<HEAD><CENTER><TITLE>ExtUtils_Mkbootstrap</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Mkbootstrap_name_0">
+NAME</A>
+</H1>
+ExtUtils::Mkbootstrap - make a bootstrap file for use by DynaLoader
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Mkbootstrap_synopsis_0">
+SYNOPSIS</A>
+</H1>
+<CODE>mkbootstrap</CODE>
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Mkbootstrap_description_0">
+DESCRIPTION</A>
+</H1>
+Mkbootstrap typically gets called from an extension Makefile.
+<p>There is no <CODE>*.bs</CODE> file supplied with the extension. Instead a
+<CODE>*_BS</CODE> file which has code for the special cases, like posix for
+berkeley db on the NeXT.
+<p>This file will get parsed, and produce a maybe empty
+<CODE><STRONG>@DynaLoader::dl_resolve_using</STRONG></CODE> array for the current architecture.
+That will be extended by <STRONG>$BSLOADLIBS</STRONG>, which was computed by
+ExtUtils::Liblist::<EM>ext()</EM>. If this array still is empty, we do nothing,
+else we write a .bs file with an <CODE><STRONG>@DynaLoader::dl_resolve_using</STRONG></CODE>
+array.
+<p>The <CODE>*_BS</CODE> file can put some code into the generated <CODE>*.bs</CODE> file by
+placing it in <CODE><STRONG>$bscode</STRONG></CODE>. This is a handy 'escape' mechanism that may
+prove useful in complex situations.
+<p>If <STRONG>@DynaLoader::dl_resolve_using</STRONG> contains <CODE>-L*</CODE> or 
+<A HREF="perlrun.htm#perlrun_l_0">-l*</A>
+ entries then
+Mkbootstrap will automatically add a <EM>dl_findfile()</EM> call to the
+generated <CODE>*.bs</CODE> file.
+<p>
+</BODY>
+</HTML>

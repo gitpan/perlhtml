@@ -1,0 +1,128 @@
+<HEAD><CENTER><TITLE>AnyDBM_File</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="AnyDBM_File_name_0">
+NAME</A>
+</H1>
+AnyDBM_File - provide framework for multiple DBMs
+<p>NDBM_File, ODBM_File, SDBM_File, GDBM_File - various DBM implementations
+<p><p><hr>
+
+<H1> 
+<A NAME="AnyDBM_File_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use AnyDBM_File;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="AnyDBM_File_description_0">
+DESCRIPTION</A>
+</H1>
+This module is a ``pure virtual base class''--it has nothing of its own.
+It's just there to inherit from one of the various DBM packages.  It
+prefers ndbm for compatibility reasons with Perl 4, then Berkeley DB (See
+<EM>DB_File</EM>), GDBM, SDBM (which is always there--it comes with Perl), and
+finally ODBM.   This way old programs that used to use NDBM via 
+<A HREF="perlfunc.htm#perlfunc_dbmopen_0">dbmopen()</A>
+
+can still do so, but new ones can reorder <STRONG>@ISA:</STRONG>
+<p>
+<XMP>
+    @AnyDBM_File::ISA = qw(DB_File GDBM_File NDBM_File);
+
+</XMP>
+<p>Note, however, that an explicit use overrides the specified order:
+<p>
+<XMP>
+    use GDBM_File;
+    @AnyDBM_File::ISA = qw(DB_File GDBM_File NDBM_File);
+
+</XMP>
+<p>will only find GDBM_File.
+<p>Having multiple DBM implementations makes it trivial to copy database formats:
+<p>
+<XMP>
+    use POSIX; use NDBM_File; use DB_File;
+    tie %newhash,  DB_File, $new_filename, O_CREAT|O_RDWR;
+    tie %oldhash,  NDBM_File, $old_filename, 1, 0;
+    %newhash = %oldhash;
+
+</XMP>
+<p>
+<H2> 
+<A NAME="AnyDBM_File_dbm_0">
+DBM Comparisons</A>
+</H2>
+Here's a partial table of features the different packages offer:
+<p>
+<XMP>
+                         odbm    ndbm    sdbm    gdbm    bsd-db
+                         ----    ----    ----    ----    ------
+ Linkage comes w/ perl   yes     yes     yes     yes     yes
+ Src comes w/ perl       no      no      yes     no      no
+ Comes w/ many unix os   yes     yes[0]  no      no      no
+ Builds ok on !unix      ?       ?       yes     yes     ?
+ Code Size               ?       ?       small   big     big
+ Database Size           ?       ?       small   big?    ok[1]
+ Speed                   ?       ?       slow    ok      fast
+ FTPable                 no      no      yes     yes     yes
+ Easy to build          N/A     N/A      yes     yes     ok[2]
+ Size limits             1k      4k      1k[3]   none    none
+ Byte-order independent  no      no      no      no      yes
+ Licensing restrictions  ?       ?       no      yes     no
+
+</XMP>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+<EM>[0] </EM>
+</DT></STRONG>
+<DD>
+on mixed universe machines, may be in the bsd compat library,
+which is often shunned.
+<p>
+<DT>
+
+<STRONG>
+<EM>[1] </EM>
+</DT></STRONG>
+<DD>
+Can be trimmed if you compile for one access method.
+<p>
+<DT>
+
+<STRONG>
+<EM>[2] </EM>
+</DT></STRONG>
+<DD>
+See <EM>DB_File</EM>. 
+Requires symbolic links.  
+<p>
+<DT>
+
+<STRONG>
+<EM>[3] </EM>
+</DT></STRONG>
+<DD>
+By default, but can be redefined.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="AnyDBM_File_see_0">
+SEE ALSO</A>
+</H1>
+dbm(3), ndbm(3), DB_File(3)
+<p>
+</BODY>
+</HTML>

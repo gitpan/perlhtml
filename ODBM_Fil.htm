@@ -1,0 +1,34 @@
+<HEAD><CENTER><TITLE>ODBM_File</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="ODBM_File_name_0">
+NAME</A>
+</H1>
+ODBM_File - Tied access to odbm files
+<p><p><hr>
+
+<H1> 
+<A NAME="ODBM_File_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+ use ODBM_File;
+ tie(%h,ODBM_File,'Op.dbmx', O_RDWR|O_CREAT, 0640);
+ untie %h;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="ODBM_File_description_0">
+DESCRIPTION</A>
+</H1>
+See 
+<A HREF="perlfunc.htm#perlfunc_tie_0"><EM>tie</EM></A>
+
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,44 @@
+<HEAD><CENTER><TITLE>Text_Wrap</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Text::Wrap_name_0">
+NAME</A>
+</H1>
+Text::Wrap -- wrap text into a paragraph
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Wrap_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+        use Text::Wrap;
+        
+        $Text::Wrap::columns = 20; # Default
+        print wrap("\t","",Hello, world, it's a nice day, isn't it?");
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Wrap_description_0">
+DESCRIPTION</A>
+</H1>
+This module is a simple paragraph formatter that wraps text into a paragraph
+and indents each line. The single exported function, <EM>wrap()</EM>, takes three
+arguments. The first is included before the first output line, and the
+second argument is included before each subsequest output line. The third
+argument is the text to be wrapped.
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Wrap_author_0">
+AUTHOR</A>
+</H1>
+David Muir Sharnoff &lt;<A HREF="MAILTO:muir@idiom.com">muir@idiom.com</A>&gt;
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,4388 @@
+<HEAD><CENTER><TITLE>POSIX</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="POSIX_name_0">
+NAME</A>
+</H1>
+POSIX - Perl interface to IEEE Std 1003.1
+<p><p><hr>
+
+<H1> 
+<A NAME="POSIX_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use POSIX;
+    use POSIX qw(setsid);
+    use POSIX qw(:errno_h :fcntl_h);
+    printf "EINTR is %d\n", EINTR;
+    $sess_id = POSIX::setsid();
+    $fd = POSIX::open($path, O_CREAT|O_EXCL|O_WRONLY, 0644);
+        # note: that's a filedescriptor, *NOT* a filehandle
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="POSIX_description_0">
+DESCRIPTION</A>
+</H1>
+The POSIX module permits you to access all (or nearly all) the standard
+POSIX 1003.1 identifiers.  Many of these identifiers have been given Perl-ish
+interfaces.  Things which are <CODE>#defines</CODE> in C, like EINTR or O_NDELAY, are
+automatically exported into your namespace.  All functions are only exported
+if you ask for them explicitly.  Most likely people will prefer to use the
+fully-qualified function names.
+<p>This document gives a condensed list of the features available in the POSIX
+module.  Consult your operating system's manpages for general information on
+most features.  Consult 
+<A HREF="perlfunc.htm">
+the <EM>perlfunc</EM> manpage</A>
+ for functions which are noted as being
+identical to Perl's builtin functions.
+<p>The first section describes POSIX functions from the 1003.1 specification.
+The second section describes some classes for signal objects, TTY objects,
+and other miscellaneous objects.  The remaining sections list various
+constants and macros in an organization which roughly follows IEEE Std
+1003.1b-1993.
+<p><p><hr>
+
+<H1> 
+<A NAME="POSIX_note_0">
+NOTE</A>
+</H1>
+The POSIX module is probably the most complex Perl module supplied with
+the standard distribution.  It incorporates autoloading, namespace games,
+and dynamic loading of code that's in Perl, C, or both.  It's a great
+source of wisdom.
+<p><p><hr>
+
+<H1> 
+<A NAME="POSIX_caveats_0">
+CAVEATS </A>
+</H1>
+A few functions are not implemented because they are C specific.  If you
+attempt to call these, they will print a message telling you that they
+aren't implemented, and suggest using the Perl equivalent should one
+exist.  For example, trying to access the 
+<A HREF="POSIX.htm#POSIX_setjmp_0">setjmp()</A>
+ call will elicit the
+message ``
+<A HREF="POSIX.htm#POSIX_setjmp_0">setjmp()</A>
+ is C-specific: use eval {} instead''.
+<p>Furthermore, some evil vendors will claim 1003.1 compliance, but in fact
+are not so: they will not pass the PCTS (POSIX Compliance Test Suites).
+For example, one vendor may not define EDEADLK, or the semantics of the
+errno values set by open(2) might not be quite right.  Perl does not
+attempt to verify POSIX compliance.  That means you can currently
+successfully say ``use POSIX'',  and then later in your program you find
+that your vendor has been lax and there's no usable ICANON macro after
+all.  This could be construed to be a bug.
+<p><p><hr>
+
+<H1> 
+<A NAME="POSIX_functions_0">
+FUNCTIONS</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_exit_0">
+_exit</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_exit_0">
+<A HREF="POSIX.htm#POSIX_exit_0">_exit()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_abort_0">
+abort</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_abort_0">
+<A HREF="POSIX.htm#POSIX_abort_0">abort()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_abs_0">
+abs</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_abs_0">
+<A HREF="POSIX.htm#POSIX_abs_0">abs()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_access_0">
+access</A>
+
+</DT></STRONG>
+<DD>
+Determines the accessibility of a file.
+<p>
+<XMP>
+        if( POSIX::access( "/", &POSIX::R_OK ) ){
+                print "have read permission\n";
+        }
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_acos_0">
+acos</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_acos_0">
+<A HREF="POSIX.htm#POSIX_acos_0">acos()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_alarm_0">
+alarm</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_alarm_0">
+<A HREF="POSIX.htm#POSIX_alarm_0">alarm()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_asctime_0">
+asctime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_asctime_0">
+<A HREF="POSIX.htm#POSIX_asctime_0">asctime()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_asin_0">
+asin</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_asin_0">
+<A HREF="POSIX.htm#POSIX_asin_0">asin()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_assert_0">
+assert</A>
+
+</DT></STRONG>
+<DD>
+Unimplemented.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atan_0">
+atan</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_atan_0">
+<A HREF="POSIX.htm#POSIX_atan_0">atan()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atan_1">
+atan2</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_atan_1">
+<A HREF="POSIX.htm#POSIX_atan_1">atan2()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atexit_0">
+atexit</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_atexit_0">atexit()</A>
+ is C-specific: use END {} instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atof_0">
+atof</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_atof_0">atof()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atoi_0">
+atoi</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_atoi_0">atoi()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_atol_0">
+atol</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_atol_0">atol()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_bsearch_0">
+bsearch</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_bsearch_0">bsearch()</A>
+ not supplied.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_calloc_0">
+calloc</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_calloc_0">calloc()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ceil_0">
+ceil</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_ceil_0">
+<A HREF="POSIX.htm#POSIX_ceil_0">ceil()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_chdir_0">
+chdir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_chdir_0">
+<A HREF="POSIX.htm#POSIX_chdir_0">chdir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_chmod_0">
+chmod</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_chmod_0">
+<A HREF="POSIX.htm#POSIX_chmod_0">chmod()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_chown_0">
+chown</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_chown_0">
+<A HREF="POSIX.htm#POSIX_chown_0">chown()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_clearerr_0">
+clearerr</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_clearerr_0">clearerr()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_clock_0">
+clock</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_clock_0">
+<A HREF="POSIX.htm#POSIX_clock_0">clock()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_close_0">
+close</A>
+
+</DT></STRONG>
+<DD>
+Close the file.  This uses file descriptors such as those obtained by calling
+<CODE>POSIX::open</CODE>.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_RDONLY );
+        POSIX::close( $fd );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_closedir_0">
+closedir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_closedir_0">
+<A HREF="POSIX.htm#POSIX_closedir_0">closedir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_cos_0">
+cos</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_cos_0">
+<A HREF="POSIX.htm#POSIX_cos_0">cos()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_cosh_0">
+cosh</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_cosh_0">
+<A HREF="POSIX.htm#POSIX_cosh_0">cosh()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_creat_0">
+creat</A>
+
+</DT></STRONG>
+<DD>
+Create a new file.  This returns a file descriptor like the ones returned by
+<CODE>POSIX::open</CODE>.  Use <CODE>POSIX::close</CODE> to close the file.
+<p>
+<XMP>
+        $fd = POSIX::creat( "foo", 0611 );
+        POSIX::close( $fd );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ctermid_0">
+ctermid</A>
+
+</DT></STRONG>
+<DD>
+Generates the path name for the controlling terminal.
+<p>
+<XMP>
+        $path = POSIX::ctermid();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ctime_0">
+ctime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_ctime_0">
+<A HREF="POSIX.htm#POSIX_ctime_0">ctime()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_cuserid_0">
+cuserid</A>
+
+</DT></STRONG>
+<DD>
+Get the character login name of the user.
+<p>
+<XMP>
+        $name = POSIX::cuserid();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_difftime_0">
+difftime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_difftime_0">
+<A HREF="POSIX.htm#POSIX_difftime_0">difftime()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_div_0">
+div</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_div_0">div()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_dup_0">
+dup</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_dup_0">
+<A HREF="POSIX.htm#POSIX_dup_0">dup()</A>
+</A>
+.
+<p>This uses file descriptors such as those obtained by calling
+<CODE>POSIX::open</CODE>.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_dup_1">
+dup2</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_dup_1">
+<A HREF="POSIX.htm#POSIX_dup_1">dup2()</A>
+</A>
+.
+<p>This uses file descriptors such as those obtained by calling
+<CODE>POSIX::open</CODE>.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_errno_0">
+errno</A>
+
+</DT></STRONG>
+<DD>
+Returns the value of errno.
+<p>
+<XMP>
+        $errno = POSIX::errno();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execl_0">
+execl</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execl_0">execl()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execle_0">
+execle</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execle_0">execle()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execlp_0">
+execlp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execlp_0">execlp()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execv_0">
+execv</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execv_0">execv()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execve_0">
+execve</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execve_0">execve()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_execvp_0">
+execvp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_execvp_0">execvp()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_exit_1">
+exit</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_exit_1">
+<A HREF="POSIX.htm#POSIX_exit_1">exit()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_exp_0">
+exp</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_exp_0">
+<A HREF="POSIX.htm#POSIX_exp_0">exp()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fabs_0">
+fabs</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_abs_0">
+<A HREF="POSIX.htm#POSIX_abs_0">abs()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fclose_0">
+fclose</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_close_0">close()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fcntl_0">
+fcntl</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_fcntl_0">
+<A HREF="POSIX.htm#POSIX_fcntl_0">fcntl()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fdopen_0">
+fdopen</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>new_from_fd()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_feof_0">
+feof</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="perlfunc.htm#perlfunc_eof_1">eof()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ferror_0">
+ferror</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>error()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fflush_0">
+fflush</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>flush()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fgetc_0">
+fgetc</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_getc_0">getc()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fgetpos_0">
+fgetpos</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>getpos()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fgets_0">
+fgets</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_gets_0">gets()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fileno_0">
+fileno</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_fileno_0">fileno()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_floor_0">
+floor</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_floor_0">
+<A HREF="POSIX.htm#POSIX_floor_0">floor()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fmod_0">
+fmod</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_fmod_0">
+<A HREF="POSIX.htm#POSIX_fmod_0">fmod()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fopen_0">
+fopen</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_open_0">open()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fork_0">
+fork</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_fork_0">
+<A HREF="POSIX.htm#POSIX_fork_0">fork()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fpathconf_0">
+fpathconf</A>
+
+</DT></STRONG>
+<DD>
+Retrieves the value of a configurable limit on a file or directory.  This
+uses file descriptors such as those obtained by calling <CODE>POSIX::open</CODE>.
+<p>The following will determine the maximum length of the longest allowable
+pathname on the filesystem which holds <CODE>/tmp/foo</CODE>.
+<p>
+<XMP>
+        $fd = POSIX::open( "/tmp/foo", &POSIX::O_RDONLY );
+        $path_max = POSIX::fpathconf( $fd, &POSIX::_PC_PATH_MAX );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fprintf_0">
+fprintf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fprintf_0">fprintf()</A>
+ is C-specific--use printf instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fputc_0">
+fputc</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fputc_0">fputc()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fputs_0">
+fputs</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fputs_0">fputs()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fread_0">
+fread</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fread_0">fread()</A>
+ is C-specific--use read instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_free_0">
+free</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_free_0">free()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_freopen_0">
+freopen</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_freopen_0">freopen()</A>
+ is C-specific--use open instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_frexp_0">
+frexp</A>
+
+</DT></STRONG>
+<DD>
+Return the mantissa and exponent of a floating-point number.
+<p>
+<XMP>
+        ($mantissa, $exponent) = POSIX::frexp( 3.14 );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fscanf_0">
+fscanf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fscanf_0">fscanf()</A>
+ is C-specific--use &lt;&gt; and regular expressions instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fseek_0">
+fseek</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="perlfunc.htm#perlfunc_seek_0">seek()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fsetpos_0">
+fsetpos</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>setpos()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fstat_0">
+fstat</A>
+
+</DT></STRONG>
+<DD>
+Get file status.  This uses file descriptors such as those obtained by
+calling <CODE>POSIX::open</CODE>.  The data returned is identical to the data from
+Perl's builtin 
+<A HREF="POSIX.htm#POSIX_stat_0">stat</A>
+ function.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_RDONLY );
+        @stats = POSIX::fstat( $fd );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ftell_0">
+ftell</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="perlfunc.htm#perlfunc_tell_0">tell()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fwrite_0">
+fwrite</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_fwrite_0">fwrite()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getc_0">
+getc</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getc_0">
+<A HREF="POSIX.htm#POSIX_getc_0">getc()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getchar_0">
+getchar</A>
+
+</DT></STRONG>
+<DD>
+Returns one character from STDIN.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getcwd_0">
+getcwd</A>
+
+</DT></STRONG>
+<DD>
+Returns the name of the current working directory.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getegid_0">
+getegid</A>
+
+</DT></STRONG>
+<DD>
+Returns the effective group id.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getenv_0">
+getenv</A>
+
+</DT></STRONG>
+<DD>
+Returns the value of the specified enironment variable.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_geteuid_0">
+geteuid</A>
+
+</DT></STRONG>
+<DD>
+Returns the effective user id.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getgid_0">
+getgid</A>
+
+</DT></STRONG>
+<DD>
+Returns the user's real group id.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getgrgid_0">
+getgrgid</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getgrgid_0">
+<A HREF="POSIX.htm#POSIX_getgrgid_0">getgrgid()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getgrnam_0">
+getgrnam</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getgrnam_0">
+<A HREF="POSIX.htm#POSIX_getgrnam_0">getgrnam()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getgroups_0">
+getgroups</A>
+
+</DT></STRONG>
+<DD>
+Returns the ids of the user's supplementary groups.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getlogin_0">
+getlogin</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getlogin_0">
+<A HREF="POSIX.htm#POSIX_getlogin_0">getlogin()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getpgrp_0">
+getpgrp</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getpgrp_0">
+<A HREF="POSIX.htm#POSIX_getpgrp_0">getpgrp()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getpid_0">
+getpid</A>
+
+</DT></STRONG>
+<DD>
+Returns the process's id.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getppid_0">
+getppid</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getppid_0">
+<A HREF="POSIX.htm#POSIX_getppid_0">getppid()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getpwnam_0">
+getpwnam</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getpwnam_0">
+<A HREF="POSIX.htm#POSIX_getpwnam_0">getpwnam()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getpwuid_0">
+getpwuid</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_getpwuid_0">
+<A HREF="POSIX.htm#POSIX_getpwuid_0">getpwuid()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_gets_0">
+gets</A>
+
+</DT></STRONG>
+<DD>
+Returns one line from STDIN.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getuid_0">
+getuid</A>
+
+</DT></STRONG>
+<DD>
+Returns the user's id.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_gmtime_0">
+gmtime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_gmtime_0">
+<A HREF="POSIX.htm#POSIX_gmtime_0">gmtime()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isalnum_0">
+isalnum</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isalpha_0">
+isalpha</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isatty_0">
+isatty</A>
+
+</DT></STRONG>
+<DD>
+Returns a boolean indicating whether the specified filehandle is connected
+to a tty.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_iscntrl_0">
+iscntrl</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isdigit_0">
+isdigit</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isgraph_0">
+isgraph</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_islower_0">
+islower</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isprint_0">
+isprint</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ispunct_0">
+ispunct</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isspace_0">
+isspace</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isupper_0">
+isupper</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_isxdigit_0">
+isxdigit</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function, except that it can apply to a single
+character or to a whole string.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_kill_0">
+kill</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_kill_0">
+<A HREF="POSIX.htm#POSIX_kill_0">kill()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_labs_0">
+labs</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_labs_0">labs()</A>
+ is C-specific, use abs instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ldexp_0">
+ldexp</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_ldexp_0">
+<A HREF="POSIX.htm#POSIX_ldexp_0">ldexp()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ldiv_0">
+ldiv</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_ldiv_0">ldiv()</A>
+ is C-specific, use / and int instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_link_0">
+link</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_link_0">
+<A HREF="POSIX.htm#POSIX_link_0">link()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_localeconv_0">
+localeconv</A>
+
+</DT></STRONG>
+<DD>
+Get numeric formatting information.  Returns a reference to a hash
+containing the current locale formatting values.
+<p>The database for the <STRONG>de</STRONG> (Deutsch or German) locale.
+<p>
+<XMP>
+        $loc = POSIX::setlocale( &POSIX::LC_ALL, "de" );
+        print "Locale = $loc\n";
+        $lconv = POSIX::localeconv();
+        print "decimal_point    = ", $lconv->{decimal_point},   "\n";
+        print "thousands_sep    = ", $lconv->{thousands_sep},   "\n";
+        print "grouping = ", $lconv->{grouping},        "\n";
+        print "int_curr_symbol  = ", $lconv->{int_curr_symbol}, "\n";
+        print "currency_symbol  = ", $lconv->{currency_symbol}, "\n";
+        print "mon_decimal_point = ", $lconv->{mon_decimal_point}, "\n";
+        print "mon_thousands_sep = ", $lconv->{mon_thousands_sep}, "\n";
+        print "mon_grouping     = ", $lconv->{mon_grouping},    "\n";
+        print "positive_sign    = ", $lconv->{positive_sign},   "\n";
+        print "negative_sign    = ", $lconv->{negative_sign},   "\n";
+        print "int_frac_digits  = ", $lconv->{int_frac_digits}, "\n";
+        print "frac_digits      = ", $lconv->{frac_digits},     "\n";
+        print "p_cs_precedes    = ", $lconv->{p_cs_precedes},   "\n";
+        print "p_sep_by_space   = ", $lconv->{p_sep_by_space},  "\n";
+        print "n_cs_precedes    = ", $lconv->{n_cs_precedes},   "\n";
+        print "n_sep_by_space   = ", $lconv->{n_sep_by_space},  "\n";
+        print "p_sign_posn      = ", $lconv->{p_sign_posn},     "\n";
+        print "n_sign_posn      = ", $lconv->{n_sign_posn},     "\n";
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_localtime_0">
+localtime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_localtime_0">
+<A HREF="POSIX.htm#POSIX_localtime_0">localtime()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_log_0">
+log</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_log_0">
+<A HREF="POSIX.htm#POSIX_log_0">log()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_log_1">
+log10</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_log_1">
+<A HREF="POSIX.htm#POSIX_log_1">log10()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_longjmp_0">
+longjmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_longjmp_0">longjmp()</A>
+ is C-specific: use die instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_lseek_0">
+lseek</A>
+
+</DT></STRONG>
+<DD>
+Move the read/write file pointer.  This uses file descriptors such as
+those obtained by calling <CODE>POSIX::open</CODE>.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_RDONLY );
+        $off_t = POSIX::lseek( $fd, 0, &POSIX::SEEK_SET );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_malloc_0">
+malloc</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_malloc_0">malloc()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mblen_0">
+mblen</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_mblen_0">
+<A HREF="POSIX.htm#POSIX_mblen_0">mblen()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mbstowcs_0">
+mbstowcs</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_mbstowcs_0">
+<A HREF="POSIX.htm#POSIX_mbstowcs_0">mbstowcs()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mbtowc_0">
+mbtowc</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_mbtowc_0">
+<A HREF="POSIX.htm#POSIX_mbtowc_0">mbtowc()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_memchr_0">
+memchr</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_memchr_0">memchr()</A>
+ is C-specific, use 
+<A HREF="perlfunc.htm#perlfunc_index_1">index()</A>
+ instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_memcmp_0">
+memcmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_memcmp_0">memcmp()</A>
+ is C-specific, use eq instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_memcpy_0">
+memcpy</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_memcpy_0">memcpy()</A>
+ is C-specific, use = instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_memmove_0">
+memmove</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_memmove_0">memmove()</A>
+ is C-specific, use = instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_memset_0">
+memset</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_memset_0">memset()</A>
+ is C-specific, use x instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mkdir_0">
+mkdir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_mkdir_0">
+<A HREF="POSIX.htm#POSIX_mkdir_0">mkdir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mkfifo_0">
+mkfifo</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_mkfifo_0">
+<A HREF="POSIX.htm#POSIX_mkfifo_0">mkfifo()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_mktime_0">
+mktime</A>
+
+</DT></STRONG>
+<DD>
+Convert date/time info to a calendar time.
+<p>Synopsis:
+<p>
+<XMP>
+        mktime(sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
+
+</XMP>
+<p>The month (<CODE>mon</CODE>), weekday (<CODE>wday</CODE>), and yearday (<CODE>yday</CODE>) begin at zero.
+I.e. January is 0, not 1; Sunday is 0, not 1; January 1st is 0, not 1.  The
+year (<CODE>year</CODE>) is given in years since 1900.  I.e. The year 1995 is 95; the
+year 2001 is 101.  Consult your system's 
+<A HREF="POSIX.htm#POSIX_mktime_0">
+<A HREF="POSIX.htm#POSIX_mktime_0">mktime()</A>
+</A>
+ manpage for details
+about these and the other arguments.
+<p>Calendar time for December 12, 1995, at 10:30 am.
+<p>
+<XMP>
+        $time_t = POSIX::mktime( 0, 30, 10, 12, 11, 95 );
+        print "Date = ", POSIX::ctime($time_t);
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_modf_0">
+modf</A>
+
+</DT></STRONG>
+<DD>
+Return the integral and fractional parts of a floating-point number.
+<p>
+<XMP>
+        ($fractional, $integral) = POSIX::modf( 3.14 );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_nice_0">
+nice</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_nice_0">
+<A HREF="POSIX.htm#POSIX_nice_0">nice()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_offsetof_0">
+offsetof</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_offsetof_0">offsetof()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_open_0">
+open</A>
+
+</DT></STRONG>
+<DD>
+Open a file for reading for writing.  This returns file descriptors, not
+Perl filehandles.  Use <CODE>POSIX::close</CODE> to close the file.
+<p>Open a file read-only with mode 0666.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo" );
+
+</XMP>
+<p>Open a file for read and write.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_RDWR );
+
+</XMP>
+<p>Open a file for write, with truncation.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_WRONLY | &POSIX::O_TRUNC );
+
+</XMP>
+<p>Create a new file with mode 0640.  Set up the file for writing.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_CREAT | &POSIX::O_WRONLY, 0640 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_opendir_0">
+opendir</A>
+
+</DT></STRONG>
+<DD>
+Open a directory for reading.
+<p>
+<XMP>
+        $dir = POSIX::opendir( "/tmp" );
+        @files = POSIX::readdir( $dir );
+        POSIX::closedir( $dir );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_pathconf_0">
+pathconf</A>
+
+</DT></STRONG>
+<DD>
+Retrieves the value of a configurable limit on a file or directory.
+<p>The following will determine the maximum length of the longest allowable
+pathname on the filesystem which holds <CODE>/tmp</CODE>.
+<p>
+<XMP>
+        $path_max = POSIX::pathconf( "/tmp", &POSIX::_PC_PATH_MAX );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_pause_0">
+pause</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_pause_0">
+<A HREF="POSIX.htm#POSIX_pause_0">pause()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_perror_0">
+perror</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_perror_0">
+<A HREF="POSIX.htm#POSIX_perror_0">perror()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_pipe_0">
+pipe</A>
+
+</DT></STRONG>
+<DD>
+Create an interprocess channel.  This returns file descriptors like those
+returned by <CODE>POSIX::open</CODE>.
+<p>
+<XMP>
+        ($fd0, $fd1) = POSIX::pipe();
+        POSIX::write( $fd0, "hello", 5 );
+        POSIX::read( $fd1, $buf, 5 );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_pow_0">
+pow</A>
+
+</DT></STRONG>
+<DD>
+Computes <STRONG>$x</STRONG> raised to the power <STRONG>$exponent</STRONG>.
+<p>
+<XMP>
+        $ret = POSIX::pow( $x, $exponent );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_printf_0">
+printf</A>
+
+</DT></STRONG>
+<DD>
+Prints the specified arguments to STDOUT.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_putc_0">
+putc</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_putc_0">putc()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_putchar_0">
+putchar</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_putchar_0">putchar()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_puts_0">
+puts</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_puts_0">puts()</A>
+ is C-specific--use print instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_qsort_0">
+qsort</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_qsort_0">qsort()</A>
+ is C-specific, use sort instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_raise_0">
+raise</A>
+
+</DT></STRONG>
+<DD>
+Sends the specified signal to the current process.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_rand_0">
+rand</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_rand_0">rand()</A>
+ is non-portable, use Perl's rand instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_read_0">
+read</A>
+
+</DT></STRONG>
+<DD>
+Read from a file.  This uses file descriptors such as those obtained by
+calling <CODE>POSIX::open</CODE>.  If the buffer <CODE><STRONG>$buf</STRONG></CODE> is not large enough for the
+read then Perl will extend it to make room for the request.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_RDONLY );
+        $bytes = POSIX::read( $fd, $buf, 3 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_readdir_0">
+readdir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_readdir_0">
+<A HREF="POSIX.htm#POSIX_readdir_0">readdir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_realloc_0">
+realloc</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_realloc_0">realloc()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_remove_0">
+remove</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_unlink_0">
+<A HREF="POSIX.htm#POSIX_unlink_0">unlink()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_rename_0">
+rename</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_rename_0">
+<A HREF="POSIX.htm#POSIX_rename_0">rename()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_rewind_0">
+rewind</A>
+
+</DT></STRONG>
+<DD>
+Seeks to the beginning of the file.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_rewinddir_0">
+rewinddir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_rewinddir_0">
+<A HREF="POSIX.htm#POSIX_rewinddir_0">rewinddir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_rmdir_0">
+rmdir</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_rmdir_0">
+<A HREF="POSIX.htm#POSIX_rmdir_0">rmdir()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_scanf_0">
+scanf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_scanf_0">scanf()</A>
+ is C-specific--use &lt;&gt; and regular expressions instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setgid_0">
+setgid</A>
+
+</DT></STRONG>
+<DD>
+Sets the real group id for this process.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setjmp_0">
+setjmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_setjmp_0">setjmp()</A>
+ is C-specific: use eval {} instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setlocale_0">
+setlocale</A>
+
+</DT></STRONG>
+<DD>
+Modifies and queries program's locale.
+<p>The following will set the traditional UNIX system locale behavior.
+<p>
+<XMP>
+        $loc = POSIX::setlocale( &POSIX::LC_ALL, "C" );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setpgid_0">
+setpgid</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_setpgid_0">
+<A HREF="POSIX.htm#POSIX_setpgid_0">setpgid()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setsid_0">
+setsid</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_setsid_0">
+<A HREF="POSIX.htm#POSIX_setsid_0">setsid()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setuid_0">
+setuid</A>
+
+</DT></STRONG>
+<DD>
+Sets the real user id for this process.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sigaction_0">
+sigaction</A>
+
+</DT></STRONG>
+<DD>
+Detailed signal management.  This uses 
+<A HREF="POSIX.htm#POSIX_posix_sigaction_0">POSIX::SigAction</A>
+ objects for the
+<CODE>action</CODE> and <CODE>oldaction</CODE> arguments.  Consult your system's 
+<A HREF="POSIX.htm#POSIX_sigaction_0">sigaction</A>
+
+manpage for details.
+<p>Synopsis:
+<p>
+<XMP>
+        sigaction(sig, action, oldaction = 0)
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_siglongjmp_0">
+siglongjmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_siglongjmp_0">siglongjmp()</A>
+ is C-specific: use die instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sigpending_0">
+sigpending</A>
+
+</DT></STRONG>
+<DD>
+Examine signals that are blocked and pending.  This uses 
+<A HREF="POSIX.htm#POSIX_posix_sigset_0">POSIX::SigSet</A>
+
+objects for the <CODE>sigset</CODE> argument.  Consult your system's 
+<A HREF="POSIX.htm#POSIX_sigpending_0">sigpending</A>
+
+manpage for details.
+<p>Synopsis:
+<p>
+<XMP>
+        sigpending(sigset)
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sigprocmask_0">
+sigprocmask</A>
+
+</DT></STRONG>
+<DD>
+Change and/or examine calling process's signal mask.  This uses
+
+<A HREF="POSIX.htm#POSIX_posix_sigset_0">POSIX::SigSet</A>
+ objects for the <CODE>sigset</CODE> and <CODE>oldsigset</CODE> arguments.
+Consult your system's 
+<A HREF="POSIX.htm#POSIX_sigprocmask_0">sigprocmask</A>
+ manpage for details.
+<p>Synopsis:
+<p>
+<XMP>
+        sigprocmask(how, sigset, oldsigset = 0)
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sigsetjmp_0">
+sigsetjmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_sigsetjmp_0">sigsetjmp()</A>
+ is C-specific: use eval {} instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sigsuspend_0">
+sigsuspend</A>
+
+</DT></STRONG>
+<DD>
+Install a signal mask and suspend process until signal arrives.  This uses
+
+<A HREF="POSIX.htm#POSIX_posix_sigset_0">POSIX::SigSet</A>
+ objects for the <CODE>signal_mask</CODE> argument.  Consult your
+system's 
+<A HREF="POSIX.htm#POSIX_sigsuspend_0">sigsuspend</A>
+ manpage for details.
+<p>Synopsis:
+<p>
+<XMP>
+        sigsuspend(signal_mask)
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sin_0">
+sin</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_sin_0">
+<A HREF="POSIX.htm#POSIX_sin_0">sin()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sinh_0">
+sinh</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_sinh_0">
+<A HREF="POSIX.htm#POSIX_sinh_0">sinh()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sleep_0">
+sleep</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_sleep_0">
+<A HREF="POSIX.htm#POSIX_sleep_0">sleep()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sprintf_0">
+sprintf</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_sprintf_0">
+<A HREF="POSIX.htm#POSIX_sprintf_0">sprintf()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sqrt_0">
+sqrt</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_sqrt_0">
+<A HREF="POSIX.htm#POSIX_sqrt_0">sqrt()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_srand_0">
+srand</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_srand_0">srand()</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sscanf_0">
+sscanf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_sscanf_0">sscanf()</A>
+ is C-specific--use regular expressions instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_stat_0">
+stat</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_stat_0">
+<A HREF="POSIX.htm#POSIX_stat_0">stat()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strcat_0">
+strcat</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strcat_0">strcat()</A>
+ is C-specific, use .= instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strchr_0">
+strchr</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strchr_0">strchr()</A>
+ is C-specific, use 
+<A HREF="perlfunc.htm#perlfunc_index_1">index()</A>
+ instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strcmp_0">
+strcmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strcmp_0">strcmp()</A>
+ is C-specific, use eq instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strcoll_0">
+strcoll</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_strcoll_0">
+<A HREF="POSIX.htm#POSIX_strcoll_0">strcoll()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strcpy_0">
+strcpy</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strcpy_0">strcpy()</A>
+ is C-specific, use = instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strcspn_0">
+strcspn</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strcspn_0">strcspn()</A>
+ is C-specific, use regular expressions instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strerror_0">
+strerror</A>
+
+</DT></STRONG>
+<DD>
+Returns the error string for the specified errno.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strftime_0">
+strftime</A>
+
+</DT></STRONG>
+<DD>
+Convert date and time information to string.  Returns the string.
+<p>Synopsis:
+<p>
+<XMP>
+        strftime(fmt, sec, min, hour, mday, mon, year, wday = 0, yday = 0, isdst = 0)
+
+</XMP>
+<p>The month (<CODE>mon</CODE>), weekday (<CODE>wday</CODE>), and yearday (<CODE>yday</CODE>) begin at zero.
+I.e. January is 0, not 1; Sunday is 0, not 1; January 1st is 0, not 1.  The
+year (<CODE>year</CODE>) is given in years since 1900.  I.e. The year 1995 is 95; the
+year 2001 is 101.  Consult your system's 
+<A HREF="POSIX.htm#POSIX_strftime_0">
+<A HREF="POSIX.htm#POSIX_strftime_0">strftime()</A>
+</A>
+ manpage for details
+about these and the other arguments.
+<p>The string for Tuesday, December 12, 1995.
+<p>
+<XMP>
+        $str = POSIX::strftime( "%A, %B %d, %Y", 0, 0, 0, 12, 11, 95, 2 );
+        print "$str\n";
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strlen_0">
+strlen</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strlen_0">strlen()</A>
+ is C-specific, use length instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strncat_0">
+strncat</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strncat_0">strncat()</A>
+ is C-specific, use .= instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strncmp_0">
+strncmp</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strncmp_0">strncmp()</A>
+ is C-specific, use eq instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strncpy_0">
+strncpy</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strncpy_0">strncpy()</A>
+ is C-specific, use = instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_stroul_0">
+stroul</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_stroul_0">stroul()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strpbrk_0">
+strpbrk</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strpbrk_0">strpbrk()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strrchr_0">
+strrchr</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strrchr_0">strrchr()</A>
+ is C-specific, use 
+<A HREF="perlfunc.htm#perlfunc_rindex_1">rindex()</A>
+ instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strspn_0">
+strspn</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strspn_0">strspn()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strstr_0">
+strstr</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="perlfunc.htm#perlfunc_index_1">
+<A HREF="perlfunc.htm#perlfunc_index_1">index()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strtod_0">
+strtod</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strtod_0">strtod()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strtok_0">
+strtok</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strtok_0">strtok()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strtol_0">
+strtol</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_strtol_0">strtol()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_strxfrm_0">
+strxfrm</A>
+
+</DT></STRONG>
+<DD>
+String transformation.  Returns the transformed string.
+<p>
+<XMP>
+        $dst = POSIX::strxfrm( $src );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_sysconf_0">
+sysconf</A>
+
+</DT></STRONG>
+<DD>
+Retrieves values of system configurable variables.
+<p>The following will get the machine's clock speed.
+<p>
+<XMP>
+        $clock_ticks = POSIX::sysconf( &POSIX::_SC_CLK_TCK );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_system_0">
+system</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_system_0">
+<A HREF="POSIX.htm#POSIX_system_0">system()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tan_0">
+tan</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_tan_0">
+<A HREF="POSIX.htm#POSIX_tan_0">tan()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tanh_0">
+tanh</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_tanh_0">
+<A HREF="POSIX.htm#POSIX_tanh_0">tanh()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcdrain_0">
+tcdrain</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_tcdrain_0">
+<A HREF="POSIX.htm#POSIX_tcdrain_0">tcdrain()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcflow_0">
+tcflow</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_tcflow_0">
+<A HREF="POSIX.htm#POSIX_tcflow_0">tcflow()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcflush_0">
+tcflush</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_tcflush_0">
+<A HREF="POSIX.htm#POSIX_tcflush_0">tcflush()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcgetpgrp_0">
+tcgetpgrp</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_tcgetpgrp_0">
+<A HREF="POSIX.htm#POSIX_tcgetpgrp_0">tcgetpgrp()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcsendbreak_0">
+tcsendbreak</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_tcsendbreak_0">
+<A HREF="POSIX.htm#POSIX_tcsendbreak_0">tcsendbreak()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tcsetpgrp_0">
+tcsetpgrp</A>
+
+</DT></STRONG>
+<DD>
+This is similar to the C function 
+<A HREF="POSIX.htm#POSIX_tcsetpgrp_0">
+<A HREF="POSIX.htm#POSIX_tcsetpgrp_0">tcsetpgrp()</A>
+</A>
+.
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_time_0">
+time</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_time_0">
+<A HREF="POSIX.htm#POSIX_time_0">time()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_times_0">
+times</A>
+
+</DT></STRONG>
+<DD>
+The 
+<A HREF="POSIX.htm#POSIX_times_0">times()</A>
+ function returns elapsed realtime since some point in the past
+(such as system startup), user and system times for this process, and user
+and system times used by child processes.  All times are returned in clock
+ticks.
+<p>
+<XMP>
+    ($realtime, $user, $system, $cuser, $csystem) = POSIX::times();
+
+</XMP>
+<p>Note: Perl's builtin 
+<A HREF="POSIX.htm#POSIX_times_0">
+<A HREF="POSIX.htm#POSIX_times_0">times()</A>
+</A>
+ function returns four values, measured in
+seconds.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tmpfile_0">
+tmpfile</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::<EM>new_tmpfile()</EM></CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tmpnam_0">
+tmpnam</A>
+
+</DT></STRONG>
+<DD>
+Returns a name for a temporary file.
+<p>
+<XMP>
+        $tmpfile = POSIX::tmpnam();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tolower_0">
+tolower</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="perlfunc.htm#perlfunc_lc_0">
+<A HREF="perlfunc.htm#perlfunc_lc_0">lc()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_toupper_0">
+toupper</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="perlfunc.htm#perlfunc_uc_0">
+<A HREF="perlfunc.htm#perlfunc_uc_0">uc()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ttyname_0">
+ttyname</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_ttyname_0">
+<A HREF="POSIX.htm#POSIX_ttyname_0">ttyname()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tzname_0">
+tzname</A>
+
+</DT></STRONG>
+<DD>
+Retrieves the time conversion information from the 
+<A HREF="POSIX.htm#POSIX_tzname_0">tzname</A>
+ variable.
+<p>
+<XMP>
+        POSIX::tzset();
+        ($std, $dst) = POSIX::tzname();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_tzset_0">
+tzset</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_tzset_0">
+<A HREF="POSIX.htm#POSIX_tzset_0">tzset()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_umask_0">
+umask</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_umask_0">
+<A HREF="POSIX.htm#POSIX_umask_0">umask()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_uname_0">
+uname</A>
+
+</DT></STRONG>
+<DD>
+Get name of current operating system.
+<p>
+<XMP>
+        ($sysname, $nodename, $release, $version, $machine ) = POSIX::uname();
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ungetc_0">
+ungetc</A>
+
+</DT></STRONG>
+<DD>
+Use method <CODE>FileHandle::
+<A HREF="POSIX.htm#POSIX_ungetc_0">ungetc()</A>
+</CODE> instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_unlink_0">
+unlink</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_unlink_0">
+<A HREF="POSIX.htm#POSIX_unlink_0">unlink()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_utime_0">
+utime</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_utime_0">
+<A HREF="POSIX.htm#POSIX_utime_0">utime()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_vfprintf_0">
+vfprintf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_vfprintf_0">vfprintf()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_vprintf_0">
+vprintf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_vprintf_0">vprintf()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_vsprintf_0">
+vsprintf</A>
+
+</DT></STRONG>
+<DD>
+
+<A HREF="POSIX.htm#POSIX_vsprintf_0">vsprintf()</A>
+ is C-specific.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_wait_0">
+wait</A>
+
+</DT></STRONG>
+<DD>
+This is identical to Perl's builtin 
+<A HREF="POSIX.htm#POSIX_wait_0">
+<A HREF="POSIX.htm#POSIX_wait_0">wait()</A>
+</A>
+ function.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_waitpid_0">
+waitpid</A>
+
+</DT></STRONG>
+<DD>
+Wait for a child process to change state.  This is identical to Perl's
+builtin 
+<A HREF="POSIX.htm#POSIX_waitpid_0">
+<A HREF="POSIX.htm#POSIX_waitpid_0">waitpid()</A>
+</A>
+ function.
+<p>
+<XMP>
+        $pid = POSIX::waitpid( -1, &POSIX::WNOHANG );
+        print "status = ", ($? / 256), "\n";
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_wcstombs_0">
+wcstombs</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_wcstombs_0">
+<A HREF="POSIX.htm#POSIX_wcstombs_0">wcstombs()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_wctomb_0">
+wctomb</A>
+
+</DT></STRONG>
+<DD>
+This is identical to the C function 
+<A HREF="POSIX.htm#POSIX_wctomb_0">
+<A HREF="POSIX.htm#POSIX_wctomb_0">wctomb()</A>
+</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_write_0">
+write</A>
+
+</DT></STRONG>
+<DD>
+Write to a file.  This uses file descriptors such as those obtained by
+calling <CODE>POSIX::open</CODE>.
+<p>
+<XMP>
+        $fd = POSIX::open( "foo", &POSIX::O_WRONLY );
+        $buf = "hello";
+        $bytes = POSIX::write( $b, $buf, 5 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_classes_0">
+CLASSES</A>
+</H1>
+<p>
+<H2> 
+<A NAME="POSIX_posix_sigaction_0">
+POSIX::SigAction</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_new_0">
+new</A>
+
+</DT></STRONG>
+<DD>
+Creates a new 
+<A HREF="POSIX.htm#POSIX_posix_sigaction_0">POSIX::SigAction</A>
+ object which corresponds to the C
+<CODE>struct sigaction</CODE>.  This object will be destroyed automatically when it is
+no longer needed.  The first parameter is the fully-qualified name of a sub
+which is a signal-handler.  The second parameter is a 
+<A HREF="POSIX.htm#POSIX_posix_sigset_0">POSIX::SigSet</A>
+
+object.  The third parameter contains the <CODE>sa_flags</CODE>.
+<p>
+<XMP>
+        $sigset = POSIX::SigSet->new;
+        $sigaction = POSIX::SigAction->new( 'main::handler', $sigset, &POSIX::SA_NOCLDSTOP );
+
+</XMP>
+<p>This 
+<A HREF="POSIX.htm#POSIX_posix_sigaction_0">POSIX::SigAction</A>
+ object should be used with the <CODE>POSIX::
+<A HREF="POSIX.htm#POSIX_sigaction_0">sigaction()</A>
+</CODE>
+function.
+<p>
+</DL>
+
+<H2> 
+<A NAME="POSIX_posix_sigset_0">
+POSIX::SigSet</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_new_0">
+new</A>
+
+</DT></STRONG>
+<DD>
+Create a new SigSet object.  This object will be destroyed automatically
+when it is no longer needed.  Arguments may be supplied to initialize the
+set.
+<p>Create an empty set.
+<p>
+<XMP>
+        $sigset = POSIX::SigSet->new;
+
+</XMP>
+<p>Create a set with SIGUSR1.
+<p>
+<XMP>
+        $sigset = POSIX::SigSet->new( &POSIX::SIGUSR1 );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_addset_0">
+addset</A>
+
+</DT></STRONG>
+<DD>
+Add a signal to a SigSet object.
+<p>
+<XMP>
+        $sigset->addset( &POSIX::SIGUSR2 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_delset_0">
+delset</A>
+
+</DT></STRONG>
+<DD>
+Remove a signal from the SigSet object.
+<p>
+<XMP>
+        $sigset->delset( &POSIX::SIGUSR2 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_emptyset_0">
+emptyset</A>
+
+</DT></STRONG>
+<DD>
+Initialize the SigSet object to be empty.
+<p>
+<XMP>
+        $sigset->emptyset();
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_fillset_0">
+fillset</A>
+
+</DT></STRONG>
+<DD>
+Initialize the SigSet object to include all signals.
+<p>
+<XMP>
+        $sigset->fillset();
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_ismember_0">
+ismember</A>
+
+</DT></STRONG>
+<DD>
+Tests the SigSet object to see if it contains a specific signal.
+<p>
+<XMP>
+        if( $sigset->ismember( &POSIX::SIGUSR1 ) ){
+                print "contains SIGUSR1\n";
+        }
+
+</XMP>
+<p>
+</DL>
+
+<H2> 
+<A NAME="POSIX_posix_termios_0">
+POSIX::Termios</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_new_0">
+new</A>
+
+</DT></STRONG>
+<DD>
+Create a new Termios object.  This object will be destroyed automatically
+when it is no longer needed.
+<p>
+<XMP>
+        $termios = POSIX::Termios->new;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getattr_0">
+getattr</A>
+
+</DT></STRONG>
+<DD>
+Get terminal control attributes.
+<p>Obtain the attributes for stdin.
+<p>
+<XMP>
+        $termios->getattr()
+
+</XMP>
+<p>Obtain the attributes for stdout.
+<p>
+<XMP>
+        $termios->getattr( 1 )
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getcc_0">
+getcc</A>
+
+</DT></STRONG>
+<DD>
+Retrieve a value from the c_cc field of a termios object.  The c_cc field is
+an array so an index must be specified.
+<p>
+<XMP>
+        $c_cc[1] = $termios->getcc(1);
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getcflag_0">
+getcflag</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the c_cflag field of a termios object.
+<p>
+<XMP>
+        $c_cflag = $termios->getcflag;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getiflag_0">
+getiflag</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the c_iflag field of a termios object.
+<p>
+<XMP>
+        $c_iflag = $termios->getiflag;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getispeed_0">
+getispeed</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the input baud rate.
+<p>
+<XMP>
+        $ispeed = $termios->getispeed;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getlflag_0">
+getlflag</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the c_lflag field of a termios object.
+<p>
+<XMP>
+        $c_lflag = $termios->getlflag;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getoflag_0">
+getoflag</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the c_oflag field of a termios object.
+<p>
+<XMP>
+        $c_oflag = $termios->getoflag;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_getospeed_0">
+getospeed</A>
+
+</DT></STRONG>
+<DD>
+Retrieve the output baud rate.
+<p>
+<XMP>
+        $ospeed = $termios->getospeed;
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setattr_0">
+setattr</A>
+
+</DT></STRONG>
+<DD>
+Set terminal control attributes.
+<p>Set attributes immediately for stdout.
+<p>
+<XMP>
+        $termios->setattr( 1, &POSIX::TCSANOW );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setcc_0">
+setcc</A>
+
+</DT></STRONG>
+<DD>
+Set a value in the c_cc field of a termios object.  The c_cc field is an
+array so an index must be specified.
+<p>
+<XMP>
+        $termios->setcc( 1, &POSIX::VEOF );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setcflag_0">
+setcflag</A>
+
+</DT></STRONG>
+<DD>
+Set the c_cflag field of a termios object.
+<p>
+<XMP>
+        $termios->setcflag( &POSIX::CLOCAL );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setiflag_0">
+setiflag</A>
+
+</DT></STRONG>
+<DD>
+Set the c_iflag field of a termios object.
+<p>
+<XMP>
+        $termios->setiflag( &POSIX::BRKINT );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setispeed_0">
+setispeed</A>
+
+</DT></STRONG>
+<DD>
+Set the input baud rate.
+<p>
+<XMP>
+        $termios->setispeed( &POSIX::B9600 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setlflag_0">
+setlflag</A>
+
+</DT></STRONG>
+<DD>
+Set the c_lflag field of a termios object.
+<p>
+<XMP>
+        $termios->setlflag( &POSIX::ECHO );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setoflag_0">
+setoflag</A>
+
+</DT></STRONG>
+<DD>
+Set the c_oflag field of a termios object.
+<p>
+<XMP>
+        $termios->setoflag( &POSIX::OPOST );
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_setospeed_0">
+setospeed</A>
+
+</DT></STRONG>
+<DD>
+Set the output baud rate.
+<p>
+<XMP>
+        $termios->setospeed( &POSIX::B9600 );
+
+</XMP>
+<p>Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on failure.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_baud_0">
+Baud rate values</A>
+
+</DT></STRONG>
+<DD>
+B38400 B75 B200 B134 B300 B1800 B150 B0 B19200 B1200 B9600 B600 B4800 B50 B2400 B110
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_terminal_0">
+Terminal interface values</A>
+
+</DT></STRONG>
+<DD>
+TCSADRAIN TCSANOW TCOON TCIOFLUSH TCOFLUSH TCION TCIFLUSH TCSAFLUSH TCIOFF TCOOFF
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_c_cc_0">
+c_cc field values</A>
+
+</DT></STRONG>
+<DD>
+VEOF VEOL VERASE VINTR VKILL VQUIT VSUSP VSTART VSTOP VMIN VTIME NCCS
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_c_cflag_0">
+c_cflag field values</A>
+
+</DT></STRONG>
+<DD>
+CLOCAL CREAD CSIZE CS5 CS6 CS7 CS8 CSTOPB HUPCL PARENB PARODD
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_c_iflag_0">
+c_iflag field values</A>
+
+</DT></STRONG>
+<DD>
+BRKINT ICRNL IGNBRK IGNCR IGNPAR INLCR INPCK ISTRIP IXOFF IXON PARMRK
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_c_lflag_0">
+c_lflag field values</A>
+
+</DT></STRONG>
+<DD>
+ECHO ECHOE ECHOK ECHONL ICANON IEXTEN ISIG NOFLSH TOSTOP
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_c_oflag_0">
+c_oflag field values</A>
+
+</DT></STRONG>
+<DD>
+OPOST
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_pathname_0">
+PATHNAME CONSTANTS</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+_PC_CHOWN_RESTRICTED _PC_LINK_MAX _PC_MAX_CANON _PC_MAX_INPUT _PC_NAME_MAX _PC_NO_TRUNC _PC_PATH_MAX _PC_PIPE_BUF _PC_VDISABLE
+<p>
+</DL>
+<p><hr>
+
+<H1> <A HREF="POSIX.htm">POSIX CONSTANTS</A></H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+_POSIX_ARG_MAX _POSIX_CHILD_MAX _POSIX_CHOWN_RESTRICTED _POSIX_JOB_CONTROL _POSIX_LINK_MAX _POSIX_MAX_CANON _POSIX_MAX_INPUT _POSIX_NAME_MAX _POSIX_NGROUPS_MAX _POSIX_NO_TRUNC _POSIX_OPEN_MAX _POSIX_PATH_MAX _POSIX_PIPE_BUF _POSIX_SAVED_IDS _POSIX_SSIZE_MAX _POSIX_STREAM_MAX _POSIX_TZNAME_MAX _POSIX_VDISABLE _POSIX_VERSION
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_system_1">
+SYSTEM CONFIGURATION</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+_SC_ARG_MAX _SC_CHILD_MAX _SC_CLK_TCK _SC_JOB_CONTROL _SC_NGROUPS_MAX _SC_OPEN_MAX _SC_SAVED_IDS _SC_STREAM_MAX _SC_TZNAME_MAX _SC_VERSION
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_errno_1">
+ERRNO</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+E2BIG EACCES EAGAIN EBADF EBUSY ECHILD EDEADLK EDOM EEXIST EFAULT EFBIG EINTR EINVAL EIO EISDIR EMFILE EMLINK ENAMETOOLONG ENFILE ENODEV ENOENT ENOEXEC ENOLCK ENOMEM ENOSPC ENOSYS ENOTDIR ENOTEMPTY ENOTTY ENXIO EPERM EPIPE ERANGE EROFS ESPIPE ESRCH EXDEV
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_fcntl_1">
+FCNTL</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+FD_CLOEXEC F_DUPFD F_GETFD F_GETFL F_GETLK F_OK F_RDLCK F_SETFD F_SETFL F_SETLK F_SETLKW F_UNLCK F_WRLCK O_ACCMODE O_APPEND O_CREAT O_EXCL O_NOCTTY O_NONBLOCK O_RDONLY O_RDWR O_TRUNC O_WRONLY
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_float_0">
+FLOAT</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+DBL_DIG DBL_EPSILON DBL_MANT_DIG DBL_MAX DBL_MAX_10_EXP DBL_MAX_EXP DBL_MIN DBL_MIN_10_EXP DBL_MIN_EXP FLT_DIG FLT_EPSILON FLT_MANT_DIG FLT_MAX FLT_MAX_10_EXP FLT_MAX_EXP FLT_MIN FLT_MIN_10_EXP FLT_MIN_EXP FLT_RADIX FLT_ROUNDS LDBL_DIG LDBL_EPSILON LDBL_MANT_DIG LDBL_MAX LDBL_MAX_10_EXP LDBL_MAX_EXP LDBL_MIN LDBL_MIN_10_EXP LDBL_MIN_EXP
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_limits_0">
+LIMITS</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+ARG_MAX CHAR_BIT CHAR_MAX CHAR_MIN CHILD_MAX INT_MAX INT_MIN LINK_MAX LONG_MAX LONG_MIN MAX_CANON MAX_INPUT MB_LEN_MAX NAME_MAX NGROUPS_MAX OPEN_MAX PATH_MAX PIPE_BUF SCHAR_MAX SCHAR_MIN SHRT_MAX SHRT_MIN SSIZE_MAX STREAM_MAX TZNAME_MAX UCHAR_MAX UINT_MAX ULONG_MAX USHRT_MAX
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_locale_0">
+LOCALE</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+LC_ALL LC_COLLATE LC_CTYPE LC_MONETARY LC_NUMERIC LC_TIME
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_math_0">
+MATH</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+HUGE_VAL
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_signal_0">
+SIGNAL</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+SA_NOCLDSTOP SIGABRT SIGALRM SIGCHLD SIGCONT SIGFPE SIGHUP SIGILL SIGINT SIGKILL SIGPIPE SIGQUIT SIGSEGV SIGSTOP SIGTERM SIGTSTP SIGTTIN SIGTTOU SIGUSR1 SIGUSR2 SIG_BLOCK SIG_DFL SIG_ERR SIG_IGN SIG_SETMASK SIG_UNBLOCK
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_stat_1">
+STAT</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU S_ISGID S_ISUID S_IWGRP S_IWOTH S_IWUSR S_IXGRP S_IXOTH S_IXUSR
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_macros_0">
+Macros</A>
+
+</DT></STRONG>
+<DD>
+S_ISBLK S_ISCHR S_ISDIR S_ISFIFO S_ISREG
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_stdlib_0">
+STDLIB</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+EXIT_FAILURE EXIT_SUCCESS MB_CUR_MAX RAND_MAX
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_stdio_0">
+STDIO</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+BUFSIZ EOF FILENAME_MAX L_ctermid L_cuserid L_tmpname TMP_MAX
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_time_1">
+TIME</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+CLK_TCK CLOCKS_PER_SEC
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_unistd_0">
+UNISTD</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+R_OK SEEK_CUR SEEK_END SEEK_SET STDIN_FILENO STDOUT_FILENO STRERR_FILENO W_OK X_OK
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_wait_1">
+WAIT</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_constants_0">
+Constants</A>
+
+</DT></STRONG>
+<DD>
+WNOHANG WUNTRACED
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="POSIX_macros_0">
+Macros</A>
+
+</DT></STRONG>
+<DD>
+WIFEXITED WEXITSTATUS WIFSIGNALED WTERMSIG WIFSTOPPED WSTOPSIG
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="POSIX_creation_0">
+CREATION</A>
+</H1>
+This document generated by ./mkposixman.PL version 19960129.
+<p>
+</BODY>
+</HTML>

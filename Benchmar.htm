@@ -1,0 +1,239 @@
+<HEAD><CENTER><TITLE>Benchmark</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Benchmark_name_0">
+NAME</A>
+</H1>
+Benchmark - benchmark running times of code
+<p>timethis - run a chunk of code several times
+<p>timethese - run several chunks of code several times
+<p>timeit - run a chunk of code and see how long it goes
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    timethis ($count, "code");
+    timethese($count, {
+        'Name1' => '...code1...',
+        'Name2' => '...code2...',
+    });
+    $t = timeit($count, '...other code...')
+    print "$count loops of other code took:",timestr($t),"\n";
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_description_0">
+DESCRIPTION</A>
+</H1>
+The Benchmark module encapsulates a number of routines to help you
+figure out how long it takes to execute some code.
+<p>
+<H2> 
+<A NAME="Benchmark_methods_0">
+Methods</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_new_0">
+new</A>
+
+</DT></STRONG>
+<DD>
+Returns the current time.   Example:
+<p>
+<XMP>
+    use Benchmark;
+    $t0 = new Benchmark;
+    # ... your code here ...
+    $t1 = new Benchmark;
+    $td = timediff($t1, $t0);
+    print "the code took:",timestr($dt),"\n";
+
+</XMP>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_debug_0">
+debug</A>
+
+</DT></STRONG>
+<DD>
+Enables or disable debugging by setting the <CODE><STRONG>$Benchmark::Debug</STRONG></CODE> flag:
+<p>
+<XMP>
+    debug Benchmark 1; 
+    $t = timeit(10, ' 5 ** $Global ');
+    debug Benchmark 0; 
+
+</XMP>
+<p>
+</DL>
+
+<H2> 
+<A NAME="Benchmark_standard_0">
+Standard Exports</A>
+</H2>
+The following routines will be exported into your namespace 
+if you use the Benchmark module:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_timeit_count_0">
+timeit(COUNT, CODE)</A>
+
+</DT></STRONG>
+<DD>
+Arguments: COUNT is the number of time to run the loop, and 
+the second is the code to run.  CODE may be a string containing the code,
+a reference to the function to run, or a reference to a hash containing 
+keys which are names and values which are more CODE specs.
+<p>Side-effects: prints out noise to standard out.
+<p>Returns: a Benchmark object.  
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_timethis_0">
+timethis</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_timethese_0">
+timethese</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_timediff_0">
+timediff</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Benchmark_timestr_0">
+timestr</A>
+
+</DT></STRONG>
+<DD>
+<p>
+</DL>
+
+<H2> 
+<A NAME="Benchmark_optional_0">
+Optional Exports</A>
+</H2>
+The following routines will be exported into your namespace
+if you specifically ask that they be imported:
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_notes_0">
+NOTES</A>
+</H1>
+The data is stored as a list of values from the time and times
+functions: 
+<p>
+<XMP>
+      ($real, $user, $system, $children_user, $children_system)
+
+</XMP>
+<p>in seconds for the whole loop (not divided by the number of rounds).
+<p>The timing is done using time(3) and times(3).
+<p>Code is executed in the caller's package.
+<p>Enable debugging by:  
+<p>
+<XMP>
+    $Benchmark::debug = 1;
+
+</XMP>
+<p>The time of the null loop (a loop with the same
+number of rounds but empty loop body) is subtracted
+from the time of the real loop.
+<p>The null loop times are cached, the key being the
+number of rounds. The caching can be controlled using
+calls like these:
+<p>
+<XMP>
+    clearcache($key); 
+    clearallcache();
+    disablecache(); 
+    enablecache();
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_inheritance_0">
+INHERITANCE</A>
+</H1>
+Benchmark inherits from no other class, except of course
+for Exporter.
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_caveats_0">
+CAVEATS</A>
+</H1>
+The real time timing is done using time(2) and
+the granularity is therefore only one second.
+<p>Short tests may produce negative figures because perl
+can appear to take longer to execute the empty loop 
+than a short test; try: 
+<p>
+<XMP>
+    timethis(100,'1');
+
+</XMP>
+<p>The system time of the null loop might be slightly
+more than the system time of the loop with the actual
+code and therefore the difference might end up being &lt; 0.
+<p>More documentation is needed :-( especially for styles and formats.
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_authors_0">
+AUTHORS</A>
+</H1>
+Jarkko Hietaniemi &lt;<A HREF="MAILTO:Jarkko.Hietaniemi@hut.fi">Jarkko.Hietaniemi@hut.fi</A>&gt;,
+Tim Bunce &lt;<A HREF="MAILTO:Tim.Bunce@ig.co.uk">Tim.Bunce@ig.co.uk</A>&gt;
+<p><p><hr>
+
+<H1> 
+<A NAME="Benchmark_modification_0">
+MODIFICATION HISTORY</A>
+</H1>
+September 8th, 1994; by Tim Bunce.
+<p>
+</BODY>
+</HTML>

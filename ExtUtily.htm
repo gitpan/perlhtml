@@ -1,0 +1,200 @@
+<HEAD><CENTER><TITLE>ExtUtils_Manifest</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_name_0">
+NAME</A>
+</H1>
+ExtUtils::Manifest - utilities to write and check a MANIFEST file
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<A HREF="perlfunc.htm#perlfunc_require_0">require ExtUtils::Manifest;</A>
+
+<p><CODE>ExtUtils::Manifest::mkmanifest;</CODE>
+<p><CODE>ExtUtils::Manifest::manicheck;</CODE>
+<p><CODE>ExtUtils::Manifest::filecheck;</CODE>
+<p><CODE>ExtUtils::Manifest::fullcheck;</CODE>
+<p><CODE>ExtUtils::Manifest::skipcheck;</CODE>
+<p><CODE>ExtUtild::Manifest::<EM>manifind()</EM>;</CODE>
+<p><CODE>ExtUtils::Manifest::maniread(<STRONG>$file</STRONG>);</CODE>
+<p><CODE>ExtUtils::Manifest::manicopy(<STRONG>$read</STRONG>,<STRONG>$target</STRONG>,<STRONG>$how</STRONG>);</CODE>
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_description_0">
+DESCRIPTION</A>
+</H1>
+<EM>Mkmanifest()</EM> writes all files in and below the current directory to a
+file named in the global variable <STRONG>$ExtUtils::Manifest::MANIFEST</STRONG> (which
+defaults to <CODE>MANIFEST</CODE>) in the current directory. It works similar to
+<p>
+<XMP>
+    find . -print
+
+</XMP>
+<p>but in doing so checks each line in an existing <CODE>MANIFEST</CODE> file and
+includes any comments that are found in the existing <CODE>MANIFEST</CODE> file
+in the new one. Anything between white space and an end of line within
+a <CODE>MANIFEST</CODE> file is considered to be a comment. Filenames and
+comments are seperated by one or more TAB characters in the
+output. All files that match any regular expression in a file
+
+<A HREF="ExtUtily.htm#ExtUtils::Manifest_manifest_skip_0">MANIFEST.SKIP</A>
+ (if such a file exists) are ignored.
+<p><EM>Manicheck()</EM> checks if all the files within a <CODE>MANIFEST</CODE> in the current
+directory really do exist.
+<p><EM>Filecheck()</EM> finds files below the current directory that are not
+mentioned in the <CODE>MANIFEST</CODE> file. An optional file 
+<A HREF="ExtUtily.htm#ExtUtils::Manifest_manifest_skip_0">MANIFEST.SKIP</A>
+
+will be consulted. Any file matching a regular expression in such a
+file will not be reported as missing in the <CODE>MANIFEST</CODE> file.
+<p><EM>Fullcheck()</EM> does both a <EM>manicheck()</EM> and a <EM>filecheck()</EM>.
+<p><EM>Skipcheck()</EM> lists all the files that are skipped due to your
+
+<A HREF="ExtUtily.htm#ExtUtils::Manifest_manifest_skip_0">MANIFEST.SKIP</A>
+ file.
+<p><EM>Manifind()</EM> retruns a hash reference. The keys of the hash are the
+files found below the current directory.
+<p>Maniread(<STRONG>$file</STRONG>) reads a named <CODE>MANIFEST</CODE> file (defaults to
+<CODE>MANIFEST</CODE> in the current directory) and returns a HASH reference
+with files being the keys and comments being the values of the HASH.
+<p><EM>Manicopy(<STRONG>$read</STRONG>,<STRONG>$target</STRONG>,<STRONG>$how</STRONG>)</EM> copies the files that are the keys in
+the HASH <EM><STRONG>%$</STRONG>read</EM> to the named target directory. The HASH reference
+<EM><STRONG>$read</STRONG></EM> is typically returned by the <EM>maniread()</EM> function. This
+function is useful for producing a directory tree identical to the
+intended distribution tree. The third parameter <STRONG>$how</STRONG> can be used to
+specify a different methods of ``copying''. Valid values are <CODE>cp</CODE>,
+which actually copies the files, <CODE>ln</CODE> which creates hard links, and
+<CODE>best</CODE> which mostly links the files but copies any symbolic link to
+make a tree without any symbolic link. Best is the default.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_manifest_skip_0">
+MANIFEST.SKIP</A>
+</H1>
+The file MANIFEST.SKIP may contain regular expressions of files that
+should be ignored by <EM>mkmanifest()</EM> and <EM>filecheck()</EM>. The regular
+expressions should appear one on each line. A typical example:
+<p>
+<XMP>
+    \bRCS\b
+    ^MANIFEST\.
+    ^Makefile$
+    ~$
+    \.html$
+    \.old$
+    ^blib/
+    ^MakeMaker-\d
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_export_ok_0">
+EXPORT_OK</A>
+</H1>
+<CODE>&amp;mkmanifest</CODE>, <CODE>&amp;manicheck</CODE>, <CODE>&amp;filecheck</CODE>, <CODE>&amp;fullcheck</CODE>,
+<CODE>&amp;maniread</CODE>, and <CODE>&amp;manicopy</CODE> are exportable.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_global_0">
+GLOBAL VARIABLES</A>
+</H1>
+<CODE><STRONG>$ExtUtils::Manifest::MANIFEST</STRONG></CODE> defaults to <CODE>MANIFEST</CODE>. Changing it
+results in both a different <CODE>MANIFEST</CODE> and a different
+
+<A HREF="ExtUtily.htm#ExtUtils::Manifest_manifest_skip_0">MANIFEST.SKIP</A>
+ file. This is useful if you want to maintain
+different distributions for different audiences (say a user version
+and a developer version including RCS).
+<p><<STRONG>$ExtUtils::Manifest::Quiet</STRONG>&gt; defaults to 0. If set to a true value,
+all functions act silently.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_diagnostics_0">
+DIAGNOSTICS</A>
+</H1>
+All diagnostic output is sent to <CODE>STDERR</CODE>.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::Manifest_not_0">
+Not in MANIFEST:</A>
+ <EM>file</EM>
+</DT></STRONG>
+<DD>
+is reported if a file is found, that is missing in the <CODE>MANIFEST</CODE>
+file which is excluded by a regular expression in the file
+
+<A HREF="ExtUtily.htm#ExtUtils::Manifest_manifest_skip_0">MANIFEST.SKIP</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::Manifest_no_0">
+No such file:</A>
+ <EM>file</EM>
+</DT></STRONG>
+<DD>
+is reported if a file mentioned in a <CODE>MANIFEST</CODE> file does not
+exist.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::Manifest_manifest_0">
+MANIFEST:</A>
+ 
+<A NAME="perlvar__21">
+$!</A>
+
+</DT></STRONG>
+<DD>
+is reported if <CODE>MANIFEST</CODE> could not be opened.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::Manifest_added_0">
+Added to MANIFEST:</A>
+ <EM>file</EM>
+</DT></STRONG>
+<DD>
+is reported by <EM>mkmanifest()</EM> if <STRONG>$Verbose</STRONG> is set and a file is added
+to MANIFEST. <STRONG>$Verbose</STRONG> is set to 1 by default.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_see_0">
+SEE ALSO</A>
+</H1>
+<EM>ExtUtils::MakeMaker</EM> which has handy targets for most of the functionality.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Manifest_author_0">
+AUTHOR</A>
+</H1>
+Andreas Koenig <EM>&lt;<A HREF="MAILTO:koenig@franz.ww.TU-Berlin.DE">koenig@franz.ww.TU-Berlin.DE</A>&gt;</EM>
+<p>
+</BODY>
+</HTML>

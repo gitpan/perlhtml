@@ -1,0 +1,281 @@
+<HEAD><CENTER><TITLE>Socket</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Socket_name_0">
+NAME</A>
+</H1>
+Socket, sockaddr_in, sockaddr_un, inet_aton, inet_ntoa - load the C socket.h defines and structure manipulators 
+<p><p><hr>
+
+<H1> 
+<A NAME="Socket_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Socket;
+    $proto = getprotobyname('udp');
+    socket(Socket_Handle, PF_INET, SOCK_DGRAM, $proto);
+    $iaddr = gethostbyname('hishost.com');
+    $port = getservbyname('time', 'udp');
+    $sin = sockaddr_in($port, $iaddr);
+    send(Socket_Handle, 0, 0, $sin);
+    $proto = getprotobyname('tcp');
+    socket(Socket_Handle, PF_INET, SOCK_STREAM, $proto);
+    $port = getservbyname('smtp');
+    $sin = sockaddr_in($port,inet_aton("127.1"));
+    $sin = sockaddr_in(7,inet_aton("localhost"));
+    $sin = sockaddr_in(7,INADDR_LOOPBACK);
+    connect(Socket_Handle,$sin);
+    ($port, $iaddr) = sockaddr_in(getpeername(Socket_Handle));
+    $peer_host = gethostbyaddr($iaddr, AF_INET);
+    $peer_addr = inet_ntoa($iaddr);
+    $proto = getprotobyname('tcp');
+    socket(Socket_Handle, PF_UNIX, SOCK_STREAM, $proto);
+    unlink('/tmp/usock');
+    $sun = sockaddr_un('/tmp/usock');
+    connect(Socket_Handle,$sun);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Socket_description_0">
+DESCRIPTION</A>
+</H1>
+This module is just a translation of the C 
+<A HREF="perlfunc.htm#perlfunc_socket_0">socket.h</A>
+ file.
+Unlike the old mechanism of requiring a translated 
+<A HREF="perlfunc.htm#perlfunc_socket_0">socket.ph</A>
+
+file, this uses the <STRONG>h2xs</STRONG> program (see the Perl source distribution)
+and your native C compiler.  This means that it has a 
+far more likely chance of getting the numbers right.  This includes
+all of the commonly used pound-defines like AF_INET, SOCK_STREAM, etc.
+<p>In addition, some structure manipulation functions are available:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_inet_aton_0">
+inet_aton HOSTNAME</A>
+
+</DT></STRONG>
+<DD>
+Takes a string giving the name of a host, and translates that
+to the 4-byte string (structure). Takes arguments of both
+the 'rtfm.mit.edu' type and '18.181.0.24'. If the host name
+cannot be resolved, returns undef.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_inet_ntoa_0">
+inet_ntoa IP_ADDRESS</A>
+
+</DT></STRONG>
+<DD>
+Takes a four byte ip address (as returned by 
+<A HREF="Socket.htm#Socket_inet_aton_0">inet_aton()</A>
+)
+and translates it into a string of the form 'd.d.d.d'
+where the 'd's are numbers less than 256 (the normal
+readable four dotted number notation for internet addresses).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_inaddr_any_0">
+INADDR_ANY</A>
+
+</DT></STRONG>
+<DD>
+Note: does not return a number, but a packed string.
+<p>Returns the 4-byte wildcard ip address which specifies any
+of the hosts ip addresses. (A particular machine can have
+more than one ip address, each address corresponding to
+a particular network interface. This wildcard address
+allows you to bind to all of them simultaneously.)
+Normally equivalent to inet_aton('0.0.0.0').
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_inaddr_loopback_0">
+INADDR_LOOPBACK</A>
+
+</DT></STRONG>
+<DD>
+Note - does not return a number.
+<p>Returns the 4-byte loopback address. Normally equivalent
+to inet_aton('localhost').
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_inaddr_none_0">
+INADDR_NONE</A>
+
+</DT></STRONG>
+<DD>
+Note - does not return a number.
+<p>Returns the 4-byte invalid ip address. Normally equivalent
+to inet_aton('255.255.255.255').
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_sockaddr_in_0">
+sockaddr_in PORT, ADDRESS</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_sockaddr_in_1">
+sockaddr_in SOCKADDR_IN</A>
+
+</DT></STRONG>
+<DD>
+In an array context, unpacks its SOCKADDR_IN argument and returns an array
+consisting of (PORT, ADDRESS).  In a scalar context, packs its (PORT,
+ADDRESS) arguments as a SOCKADDR_IN and returns it.  If this is confusing,
+use 
+<A HREF="Socket.htm#Socket_pack_sockaddr_in_0">pack_sockaddr_in()</A>
+ and 
+<A HREF="Socket.htm#Socket_unpack_sockaddr_in_0">unpack_sockaddr_in()</A>
+ explicitly.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_pack_sockaddr_in_0">
+pack_sockaddr_in PORT, IP_ADDRESS</A>
+
+</DT></STRONG>
+<DD>
+Takes two arguments, a port number and a 4 byte IP_ADDRESS (as returned by
+
+<A HREF="Socket.htm#Socket_inet_aton_0">inet_aton()</A>
+). Returns the sockaddr_in structure with those arguments
+packed in with AF_INET filled in.  For internet domain sockets, this
+structure is normally what you need for the arguments in 
+<A HREF="perlfunc.htm#perlfunc_bind_0">bind()</A>
+,
+
+<A HREF="perlfunc.htm#perlfunc_connect_0">connect()</A>
+, and 
+<A HREF="perlfunc.htm#perlfunc_send_1">send()</A>
+, and is also returned by 
+<A HREF="perlfunc.htm#perlfunc_getpeername_0">getpeername()</A>
+,
+
+<A HREF="perlfunc.htm#perlfunc_getsockname_0">getsockname()</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_recv_0">recv()</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_unpack_sockaddr_in_0">
+unpack_sockaddr_in SOCKADDR_IN</A>
+
+</DT></STRONG>
+<DD>
+Takes a sockaddr_in structure (as returned by 
+<A HREF="Socket.htm#Socket_pack_sockaddr_in_0">pack_sockaddr_in()</A>
+) and
+returns an array of two elements: the port and the 4-byte ip-address.
+Will croak if the structure does not have AF_INET in the right place.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_sockaddr_un_0">
+sockaddr_un PATHNAME</A>
+
+</DT></STRONG>
+<DD>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_sockaddr_un_1">
+sockaddr_un SOCKADDR_UN</A>
+
+</DT></STRONG>
+<DD>
+In an array context, unpacks its SOCKADDR_UN argument and returns an array
+consisting of (PATHNAME).  In a scalar context, packs its PATHANE
+arguments as a SOCKADDR_UN and returns it.  If this is confusing, use
+
+<A HREF="Socket.htm#Socket_pack_sockaddr_un_0">pack_sockaddr_un()</A>
+ and 
+<A HREF="Socket.htm#Socket_unpack_sockaddr_un_0">unpack_sockaddr_un()</A>
+ explicitly.
+These are only supported if your system has &lt;sys/un.h&gt;.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_pack_sockaddr_un_0">
+pack_sockaddr_un PATH</A>
+
+</DT></STRONG>
+<DD>
+Takes one argument, a pathname. Returns the sockaddr_un structure with
+that path packed in with AF_UNIX filled in. For unix domain sockets, this
+structure is normally what you need for the arguments in 
+<A HREF="perlfunc.htm#perlfunc_bind_0">bind()</A>
+,
+
+<A HREF="perlfunc.htm#perlfunc_connect_0">connect()</A>
+, and 
+<A HREF="perlfunc.htm#perlfunc_send_1">send()</A>
+, and is also returned by 
+<A HREF="perlfunc.htm#perlfunc_getpeername_0">getpeername()</A>
+,
+
+<A HREF="perlfunc.htm#perlfunc_getsockname_0">getsockname()</A>
+ and 
+<A HREF="perlfunc.htm#perlfunc_recv_0">recv()</A>
+.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Socket_unpack_sockaddr_un_0">
+unpack_sockaddr_un SOCKADDR_UN</A>
+
+</DT></STRONG>
+<DD>
+Takes a sockaddr_un structure (as returned by 
+<A HREF="Socket.htm#Socket_pack_sockaddr_un_0">pack_sockaddr_un()</A>
+)
+and returns the pathname.  Will croak if the structure does not
+have AF_UNIX in the right place.
+<p>
+</DL>
+
+</BODY>
+</HTML>

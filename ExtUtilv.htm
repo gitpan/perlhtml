@@ -1,0 +1,841 @@
+<HEAD><CENTER><TITLE>ExtUtils_MM_Unix</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::MM_Unix_name_0">
+NAME</A>
+</H1>
+ExtUtils::MM_Unix - methods used by ExtUtils::MakeMaker
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::MM_Unix_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<A HREF="perlfunc.htm#perlfunc_require_0">require ExtUtils::MM_Unix;</A>
+
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::MM_Unix_description_0">
+DESCRIPTION</A>
+</H1>
+The methods provided by this package are designed to be used in
+conjunction with ExtUtils::MakeMaker. When MakeMaker writes a
+Makefile, it creates one or more objects that inherit their methods
+from a package <CODE>MM</CODE>. MM itself doesn't provide any methods, but it
+ISA ExtUtils::MM_Unix class. The inheritance tree of MM lets operating
+specific packages take the responsibility for all the methods provided
+by MM_Unix. We are trying to reduce the number of the necessary
+overrides by defining rather primitive operations within
+ExtUtils::MM_Unix.
+<p>If you are going to write a platform specific MM package, please try
+to limit the necessary overrides to primitiv methods, and if it is not
+possible to do so, let's work it out how to achieve that gain.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::MM_Unix_methods_0">
+METHODS</A>
+</H1>
+The following description of methods is still under
+development. Please refer to the code for not suitably documented
+sections and complain loudly to the makemaker mailing list.
+<p>
+<H2> 
+<A NAME="ExtUtils::MM_Unix_preloaded_0">
+Preloaded methods</A>
+</H2>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_catdir_0">
+catdir</A>
+
+</DT></STRONG>
+<DD>
+Concatenate two or more directory names to form a complete path ending
+with a directory
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_catfile_0">
+catfile</A>
+
+</DT></STRONG>
+<DD>
+Concatenate two or more directory names and a filename to form a
+complete path ending with a filename
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_nicetext_0">
+nicetext</A>
+
+</DT></STRONG>
+<DD>
+misnamed method (will have to be changed). The MM_Unix method just
+returns the argument without further processing.
+<p>On VMS used to insure that colons marking targets are preceded by
+space - most Unix Makes don't need this, but it's necessary under VMS
+to distinguish the target delimiter from a colon appearing as part of
+a filespec. 
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_libscan_0">
+libscan</A>
+
+</DT></STRONG>
+<DD>
+Takes a path to a file that is found by init_dirscan and returns false
+if we don't want to include this file in the library. Mainly used to
+exclude RCS, CVS, and SCCS directories from installation.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_exescan_0">
+exescan</A>
+
+</DT></STRONG>
+<DD>
+Deprecated method. Use libscan instead.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_lsdir_0">
+lsdir</A>
+
+</DT></STRONG>
+<DD>
+Takes as arguments a directory name and a regular expression. Returns
+all entries in the directory that match the regular expression.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_path_0">
+path</A>
+
+</DT></STRONG>
+<DD>
+Takes no argument, returns the environment variable PATH as an array.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_replace_manpage_separator_0">
+replace_manpage_separator</A>
+
+</DT></STRONG>
+<DD>
+Takes the name of a package, which may be a nested package, in the
+form Foo/Bar and replaces the slash with <CODE>::</CODE>. Returns the replacement.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_file_name_is_absolute_0">
+file_name_is_absolute</A>
+
+</DT></STRONG>
+<DD>
+Takes as argument a path and returns true, it it is an absolute path.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_prefixify_0">
+prefixify</A>
+
+</DT></STRONG>
+<DD>
+Check a path variable in <STRONG>$self</STRONG> from <STRONG>%Config</STRONG>, if it contains a prefix,
+and replace it with another one. 
+<p>Takes as arguments an attribute name, a search prefix and a
+replacement prefix. Changes the attribute in the object.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_maybe_command_in_dirs_0">
+maybe_command_in_dirs</A>
+
+</DT></STRONG>
+<DD>
+method under development. Not yet used. Ask Ilya :-)
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_maybe_command_0">
+maybe_command</A>
+
+</DT></STRONG>
+<DD>
+Returns true, if the argument is likely to be a command.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_perl_script_0">
+perl_script</A>
+
+</DT></STRONG>
+<DD>
+Returns true, if we the argument is likely to be a perl script. On
+MM_Unix this is true for any ordinary, readable file.
+<p>
+<H2> 
+<A NAME="ExtUtils::MM_Unix_selfloaded_0">
+SelfLoaded methods</A>
+</H2>
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_guess_name_0">
+guess_name</A>
+
+</DT></STRONG>
+<DD>
+Guess the name of this package by examining the working directory's
+name. MakeMaker calls this only if the developer has not supplied a
+NAME attribute.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_init_main_0">
+init_main</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_init_dirscan_0">
+init_dirscan</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_init_others_0">
+init_others</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_find_perl_0">
+find_perl</A>
+
+</DT></STRONG>
+<DD>
+
+<H2> 
+<A NAME="ExtUtils::MM_Unix_methods_1">
+Methods to actually produce chunks of text for the Makefile</A>
+</H2>
+The methods here are called in the order specified by
+<STRONG>@ExtUtils::MakeMaker::MM_Sections</STRONG>. This manpage reflects the order as
+well as possible. Some methods call each other, so in doubt refer to
+the code.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_post_initialize_0">
+post_initialize</A>
+
+</DT></STRONG>
+<DD>
+Returns an ampty string per default. Used in Makefile.PLs to add some
+chunk of text to the Makefile after the object is initialized.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_const_config_0">
+const_config</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_constants_0">
+constants</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_const_loadlibs_0">
+const_loadlibs</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_const_cccmd_0">
+const_cccmd</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_tool_autosplit_0">
+tool_autosplit</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_tool_xsubpp_0">
+tool_xsubpp</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_tools_other_0">
+tools_other</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_0">
+dist</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_macro_0">
+macro</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_depend_0">
+depend</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_post_constants_0">
+post_constants</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_pasthru_0">
+pasthru</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_c_o_0">
+c_o</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_xs_c_0">
+xs_c</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_xs_o_0">
+xs_o</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_top_targets_0">
+top_targets</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_linkext_0">
+linkext</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dlsyms_0">
+dlsyms</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dynamic_0">
+dynamic</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dynamic_bs_0">
+dynamic_bs</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dynamic_lib_0">
+dynamic_lib</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_static_0">
+static</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_static_lib_0">
+static_lib</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_installpm_0">
+installpm</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_installpm_x_0">
+installpm_x</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_manifypods_0">
+manifypods</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_processpl_0">
+processPL</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_installbin_0">
+installbin</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_subdirs_0">
+subdirs</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_subdir_x_0">
+subdir_x</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_clean_0">
+clean</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_realclean_0">
+realclean</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_basics_0">
+dist_basics</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_core_0">
+dist_core</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_dir_0">
+dist_dir</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_test_0">
+dist_test</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dist_ci_0">
+dist_ci</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_install_0">
+install</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_force_0">
+force</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_perldepend_0">
+perldepend</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_makefile_0">
+makefile</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_staticmake_0">
+staticmake</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_test_0">
+test</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_test_via_harness_0">
+test_via_harness</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_test_via_script_0">
+test_via_script</A>
+
+</DT></STRONG>
+<DD>
+
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_postamble_0">
+postamble</A>
+
+</DT></STRONG>
+<DD>
+Returns an empty string. Can be used in Makefile.PLs to write some
+text to the Makefile at the end.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_makeaperl_0">
+makeaperl</A>
+
+</DT></STRONG>
+<DD>
+Called by staticmake.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_extliblist_0">
+extliblist</A>
+
+</DT></STRONG>
+<DD>
+Called by init_others.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_dir_target_0">
+dir_target</A>
+
+</DT></STRONG>
+<DD>
+Takes an array of directories that need to exist and returns a
+Makefile entry for a .exists file in these directories. Returns
+nothing, if the entry has already been processed. We're helpless
+though, if the same directory comes as 
+<A HREF="perlvar.htm#perlvar__26">$(</A>
+FOO) _and_ as ``bar''. Both of
+them get an entry, that's why we use ``::''.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_needs_linking_0">
+needs_linking</A>
+
+</DT></STRONG>
+<DD>
+Does this module need linking? Looks into subdirectory objects (see
+also 
+<A HREF="#ExtUtils::MM_Unix_has_link_code_0">has_link_code()</A>
+)
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_has_link_code_0">
+has_link_code</A>
+
+</DT></STRONG>
+<DD>
+Returns true if C, XS, MYEXTLIB or similar objects exist within this
+object that need a compiler. Does not descend into subdirectories as
+
+<A HREF="#ExtUtils::MM_Unix_needs_linking_0">needs_linking()</A>
+ does.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="ExtUtils::MM_Unix_writedoc_0">
+writedoc</A>
+
+</DT></STRONG>
+<DD>
+Obsolete, depecated method.
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::MM_Unix_see_0">
+SEE ALSO</A>
+</H1>
+<EM>ExtUtils::MakeMaker</EM>
+<p>
+</DL>
+
+</BODY>
+</HTML>

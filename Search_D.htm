@@ -1,0 +1,37 @@
+<HEAD><CENTER><TITLE>Search_Dict</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Search::Dict_name_0">
+NAME</A>
+</H1>
+Search::Dict, look - search for key in dictionary file
+<p><p><hr>
+
+<H1> 
+<A NAME="Search::Dict_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Search::Dict;
+    look *FILEHANDLE, $key, $dict, $fold;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Search::Dict_description_0">
+DESCRIPTION</A>
+</H1>
+Sets file position in FILEHANDLE to be first line greater than or equal
+(stringwise) to <EM><STRONG>$key</STRONG></EM>.  Returns the new file position, or -1 if an error
+occurs.
+<p>The flags specify dictionary order and case folding:
+<p>If <EM><STRONG>$dict</STRONG></EM> is true, search by dictionary order (ignore anything but word
+characters and whitespace).
+<p>If <EM><STRONG>$fold</STRONG></EM> is true, ignore case.
+<p>
+</BODY>
+</HTML>

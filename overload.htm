@@ -1,0 +1,710 @@
+<HEAD><CENTER><TITLE>overload</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="overload_name_0">
+NAME </A>
+</H1>
+overload - Package for overloading perl operations
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    package SomeThing;
+    use overload 
+        '+' => \&myadd,
+        '-' => \&mysub;
+        # etc
+    ...
+    package main;
+    $a = new SomeThing 57;
+    $b=5+$a;
+    ...
+    if (overload::Overloaded $b) {...}
+    ...
+    $strval = overload::StrVal $b;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_caveat_0">
+CAVEAT SCRIPTOR</A>
+</H1>
+Overloading of operators is a subject not to be taken lightly.
+Neither its precise implementation, syntax, nor semantics are
+100<STRONG>% </STRONG>endorsed by Larry Wall.  So any of these may be changed 
+at some point in the future.
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_description_0">
+DESCRIPTION</A>
+</H1>
+<p>
+<H2> 
+<A NAME="overload_declaration_0">
+Declaration of overloaded functions</A>
+</H2>
+The compilation directive
+<p>
+<XMP>
+    package Number;
+    use overload
+        "+" => \&add, 
+        "*=" => "muas";
+
+</XMP>
+<p>declares function Number::<EM>add()</EM> for addition, and method <EM>muas()</EM> in
+the ``class'' <CODE>Number</CODE> (or one of its base classes)
+for the assignment form <CODE>*=</CODE> of multiplication.  
+<p>Arguments of this directive come in (key, value) pairs.  Legal values
+are values legal inside a <CODE>&amp;{ ... }</CODE> call, so the name of a subroutine,
+a reference to a subroutine, or an anonymous subroutine will all work.
+Legal keys are listed below.
+<p>The subroutine <CODE>add</CODE> will be called to execute <CODE><STRONG>$a</STRONG>+<STRONG>$b</STRONG></CODE> if <STRONG>$a</STRONG>
+is a reference to an object blessed into the package <CODE>Number</CODE>, or if <STRONG>$a</STRONG> is
+not an object from a package with defined mathemagic addition, but <STRONG>$b</STRONG> is a
+reference to a <CODE>Number</CODE>.  It can also be called in other situations, like
+<CODE><STRONG>$a</STRONG>+=7</CODE>, or <CODE><STRONG>$a</STRONG>++</CODE>.  See 
+<A HREF="overload.htm#overload_magic_0"><EM>MAGIC AUTOGENERATION</EM></A>
+.  (Mathemagical
+methods refer to methods triggered by an overloaded mathematical
+operator.)
+<p>
+<H2> 
+<A NAME="overload_calling_0">
+Calling Conventions for Binary Operations</A>
+</H2>
+The functions specified in the 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload ...</A>
+ directive are called
+with three (in one particular case with four, see 
+<A HREF="overload.htm#overload_last_0"><EM>Last Resort</EM></A>
+)
+arguments.  If the corresponding operation is binary, then the first
+two arguments are the two arguments of the operation.  However, due to
+general object calling conventions, the first argument should always be
+an object in the package, so in the situation of <CODE>7+<STRONG>$a</STRONG></CODE>, the
+order of the arguments is interchanged.  It probably does not matter
+when implementing the addition method, but whether the arguments
+are reversed is vital to the subtraction method.  The method can
+query this information by examining the third argument, which can take
+three different values:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_false_0">
+FALSE</A>
+
+</DT></STRONG>
+<DD>
+the order of arguments is as in the current operation.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_true_0">
+TRUE</A>
+
+</DT></STRONG>
+<DD>
+the arguments are reversed.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_undef_0">
+undef</A>
+
+</DT></STRONG>
+<DD>
+the current operation is an assignment variant (as in
+<CODE><STRONG>$a</STRONG>+=7</CODE>), but the usual function is called instead.  This additional
+information can be used to generate some optimizations.
+<p>
+</DL>
+
+<H2> 
+<A NAME="overload_calling_1">
+Calling Conventions for Unary Operations</A>
+</H2>
+Unary operation are considered binary operations with the second
+argument being 
+<A HREF="overload.htm#overload_undef_0">undef</A>
+.  Thus the functions that overloads <CODE>{``++''}</CODE>
+is called with arguments <CODE>(<STRONG>$a</STRONG>,undef,'')</CODE> when <STRONG>$a</STRONG>++ is executed.
+<p>
+<H2> 
+<A NAME="overload_overloadable_0">
+Overloadable Operations</A>
+</H2>
+The following symbols can be specified in 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+* <EM>Arithmetic operations</EM>
+</DT></STRONG>
+<DD>
+
+<PRE>
+    ``+'', ``+='', ``-'', ``-='', ``*'', ``*='', ``/'', ``/='', ``%'', ``%='',
+    ``**'', ``**='', ``&lt;&lt;'', ``&lt;&lt;='', ``&gt;&gt;'', ``&gt;&gt;='', ``x'', ``x='', ``.'', ``.='',
+
+</PRE>
+<p>For these operations a substituted non-assignment variant can be called if
+the assignment variant is not available.  Methods for operations ``<CODE>+</CODE>'',
+``<CODE>-</CODE>'', ``<CODE>+=</CODE>'', and ``<CODE>-=</CODE>'' can be called to automatically generate
+increment and decrement methods.  The operation ``<CODE>-</CODE>'' can be used to
+autogenerate missing methods for unary minus or 
+<A HREF="perlfunc.htm#perlfunc_abs_0">abs</A>
+.
+<p>
+<DT>
+
+<STRONG>
+* 
+<A NAME="overload_comparison_0">
+Comparison operations</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "<",  "<=", ">",  ">=", "==", "!=", "<=>",
+    "lt", "le", "gt", "ge", "eq", "ne", "cmp",
+
+</XMP>
+<p>If the corresponding ``spaceship'' variant is available, it can be
+used to substitute for the missing operation.  During 
+<A HREF="perlfunc.htm#perlfunc_sort_2">sort</A>
+ing
+arrays, <CODE>cmp</CODE> is used to compare values subject to 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+.
+<p>
+<DT>
+
+<STRONG>
+* <EM>Bit operations</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "&", "^", "|", "neg", "!", "~",
+
+</XMP>
+<p>``<CODE>neg</CODE>'' stands for unary minus.  If the method for <CODE>neg</CODE> is not
+specified, it can be autogenerated using the method for subtraction.
+<p>
+<DT>
+
+<STRONG>
+* 
+<A NAME="overload_increment_0">
+Increment and decrement</A>
+
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "++", "--",
+
+</XMP>
+<p>If undefined, addition and subtraction methods can be
+used instead.  These operations are called both in prefix and
+postfix form.
+<p>
+<DT>
+
+<STRONG>
+* <EM>Transcendental functions</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "atan2", "cos", "sin", "exp", "abs", "log", "sqrt",
+
+</XMP>
+<p>If 
+<A HREF="perlfunc.htm#perlfunc_abs_0">abs</A>
+ is unavailable, it can be autogenerated using methods
+for ``&lt;'' or ``&lt;=&gt;'' combined with either unary minus or subtraction.
+<p>
+<DT>
+
+<STRONG>
+* <EM>Boolean, string and numeric conversion</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "bool", "\"\"", "0+",
+
+</XMP>
+<p>If one or two of these operations are unavailable, the remaining ones can
+be used instead.  <CODE>bool</CODE> is used in the flow control operators
+(like <CODE>while</CODE>) and for the ternary ``<CODE>?:</CODE>'' operation.  These functions can
+return any arbitrary Perl value.  If the corresponding operation for this value
+is overloaded too, that operation will be called again with this value.
+<p>
+<DT>
+
+<STRONG>
+* <EM>Special</EM>
+</DT></STRONG>
+<DD>
+
+<XMP>
+    "nomethod", "fallback", "=",
+
+</XMP>
+<p>see <EM>SPECIAL SYMBOLS FOR 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</EM</A>
+&gt;.
+<p>
+</DL>
+See <EM>``Fallback''</EM> for an explanation of when a missing method can be autogenerated.
+<p><p><hr>
+
+<H1> SPECIAL SYMBOLS FOR 
+<A NAME="perlfunc_use_1">
+use overload</A>
+</H1>
+Three keys are recognized by Perl that are not covered by the above
+description.
+<p>
+<H2> 
+<A NAME="overload_last_0">
+Last Resort</A>
+</H2>
+<CODE>``nomethod''</CODE> should be followed by a reference to a function of four
+parameters.  If defined, it is called when the overloading mechanism
+cannot find a method for some operation.  The first three arguments of
+this function coincide with the arguments for the corresponding method if
+it were found, the fourth argument is the symbol
+corresponding to the missing method.  If several methods are tried,
+the last one is used.  Say, <CODE>1-<STRONG>$a</STRONG></CODE> can be equivalent to
+<p>
+<XMP>
+        &nomethodMethod($a,1,1,"-")
+
+</XMP>
+<p>if the pair <CODE>``nomethod'' =&gt; ``nomethodMethod''</CODE> was specified in the
+
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+ directive.
+<p>If some operation cannot be resolved, and there is no function
+assigned to <CODE>``nomethod''</CODE>, then an exception will be raised via 
+<A HREF="perlfunc.htm#perlfunc_die_0">die()</A>
+--
+unless <CODE>``fallback''</CODE> was specified as a key in 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+ directive.
+<p>
+<H2> 
+<A NAME="overload_fallback_0">
+Fallback </A>
+</H2>
+The key <CODE>``fallback''</CODE> governs what to do if a method for a particular
+operation is not found.  Three different cases are possible depending on
+the value of <CODE>``fallback''</CODE>:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+* 
+<A NAME="overload_undef_0">
+undef</A>
+
+</DT></STRONG>
+<DD>
+Perl tries to use a
+substituted method (see 
+<A HREF="overload.htm#overload_magic_0"><EM>MAGIC AUTOGENERATION</EM></A>
+).  If this fails, it
+then tries to calls <CODE>``nomethod''</CODE> value; if missing, an exception
+will be raised.
+<p>
+<DT>
+
+<STRONG>
+<EM>* TRUE</EM>
+</DT></STRONG>
+<DD>
+The same as for the 
+<A HREF="overload.htm#overload_undef_0">undef</A>
+ value, but no exception is raised.  Instead,
+it silently reverts to what it would have done were there no 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+
+present.
+<p>
+<DT>
+
+<STRONG>
+<EM>* defined, but FALSE</EM>
+</DT></STRONG>
+<DD>
+No autogeneration is tried.  Perl tries to call
+<CODE>``nomethod''</CODE> value, and if this is missing, raises an exception. 
+<p>
+</DL>
+
+<H2> 
+<A NAME="overload_copy_0">
+Copy Constructor</A>
+</H2>
+The value for <CODE>``=''</CODE> is a reference to a function with three
+arguments, i.e., it looks like the other values in C<use
+overload&gt;. However, it does not overload the Perl assignment
+operator. This would go against Camel hair.
+<p>This operation is called in the situations when a mutator is applied
+to a reference that shares its object with some other reference, such
+as
+<p>
+<XMP>
+        $a=$b; 
+        $a++;
+
+</XMP>
+<p>To make this change <STRONG>$a</STRONG> and not change <STRONG>$b</STRONG>, a copy of <CODE>
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+a</CODE> is made,
+and <STRONG>$a</STRONG> is assigned a reference to this new object.  This operation is
+done during execution of the <CODE><STRONG>$a</STRONG>++</CODE>, and not during the assignment,
+(so before the increment <CODE>
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+a</CODE> coincides with <CODE>
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+b</CODE>).  This is only
+done if <CODE>++</CODE> is expressed via a method for <CODE>'++'</CODE> or <CODE>'+='</CODE>.  Note
+that if this operation is expressed via <CODE>'+'</CODE> a nonmutator, i.e., as
+in
+<p>
+<XMP>
+        $a=$b; 
+        $a=$a+1;
+
+</XMP>
+<p>then <CODE><STRONG>$a</STRONG></CODE> does not reference a new copy of <CODE>
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+a</CODE>, since 
+<A HREF="perlvar.htm#perlvar__23">$$</A>
+a does not
+appear as lvalue when the above code is executed.
+<p>If the copy constructor is required during the execution of some mutator,
+but a method for <CODE>'='</CODE> was not specified, it can be autogenerated as a
+string copy if the object is a plain scalar.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_example_0">
+Example</A>
+
+</DT></STRONG>
+<DD>
+The actually executed code for 
+<p>
+<XMP>
+        $a=$b; 
+        Something else which does not modify $a or $b....
+        ++$a;
+
+</XMP>
+<p>may be
+<p>
+<XMP>
+        $a=$b; 
+        Something else which does not modify $a or $b....
+        $a = $a->clone(undef,"");
+        $a->incr(undef,"");
+
+</XMP>
+<p>if <STRONG>$b</STRONG> was mathemagical, and <CODE>'++'</CODE> was overloaded with <CODE>\&amp;incr</CODE>,
+<CODE>'='</CODE> was overloaded with <CODE>\&amp;clone</CODE>.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="overload_magic_0">
+MAGIC AUTOGENERATION</A>
+</H1>
+If a method for an operation is not found, and the value for  <CODE>``fallback''</CODE> is
+TRUE or undefined, Perl tries to autogenerate a substitute method for
+the missing operation based on the defined operations.  Autogenerated method
+substitutions are possible for the following operations:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_assignment_0">
+Assignment forms of arithmetic operations</A>
+
+</DT></STRONG>
+<DD>
+<CODE><STRONG>$a</STRONG>+=<STRONG>$b</STRONG></CODE> can use the method for <CODE>``+''</CODE> if the method for <CODE>``+=''</CODE>
+is not defined.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_conversion_0">
+Conversion operations</A>
+ 
+</DT></STRONG>
+<DD>
+String, numeric, and boolean conversion are calculated in terms of one
+another if not all of them are defined.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_increment_0">
+Increment and decrement</A>
+
+</DT></STRONG>
+<DD>
+The <CODE>++<STRONG>$a</STRONG></CODE> operation can be expressed in terms of <CODE><STRONG>$a</STRONG>+=1</CODE> or <CODE><STRONG>$a</STRONG>+1</CODE>,
+and <CODE><STRONG>$a</STRONG>--</CODE> in terms of <CODE><STRONG>$a</STRONG>-=1</CODE> and <CODE><STRONG>$a</STRONG>-1</CODE>.
+<p>
+<DT>
+
+<A NAME="overload_abs_a_0">
+abs(<STRONG>$a</STRONG>)</A>
+<DD>
+can be expressed in terms of <CODE><STRONG>$a</STRONG>&lt;0</CODE> and <CODE>-<STRONG>$a</STRONG></CODE> (or <CODE>0-<STRONG>$a</STRONG></CODE>).
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_unary_0">
+Unary minus</A>
+
+</DT></STRONG>
+<DD>
+can be expressed in terms of subtraction.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_concatenation_0">
+Concatenation</A>
+
+</DT></STRONG>
+<DD>
+can be expressed in terms of string conversion.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_comparison_0">
+Comparison operations</A>
+ 
+</DT></STRONG>
+<DD>
+can be expressed in terms of its ``spaceship'' counterpart: either
+<CODE>&lt;=&gt;</CODE> or <CODE>cmp</CODE>:
+ 
+    &lt;, &gt;, &lt;=, &gt;=, ==, != 	in terms of &lt;=&gt;
+    lt, gt, le, ge, eq, ne 	in terms of cmp
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_copy_1">
+Copy operator</A>
+
+</DT></STRONG>
+<DD>
+can be expressed in terms of an assignment to the dereferenced value, if this
+value is a scalar and not a reference.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="overload_warning_0">
+WARNING</A>
+</H1>
+The restriction for the comparison operation is that even if, for example,
+`<CODE>cmp</CODE>' should return a blessed reference, the autogenerated `<CODE>lt</CODE>'
+function will produce only a standard logical value based on the
+numerical value of the result of `<CODE>cmp</CODE>'.  In particular, a working
+numeric conversion is needed in this case (possibly expressed in terms of
+other conversions).
+<p>Similarly, <CODE>.=</CODE>  and <CODE>x=</CODE> operators lose their mathemagical properties
+if the string conversion substitution is applied.
+<p>When you 
+<A HREF="perlfunc.htm#perlfunc_chop_1">chop()</A>
+ a mathemagical object it is promoted to a string and its
+mathemagical properties are lost.  The same can happen with other
+operations as well.
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_run_time_0">
+Run-time Overloading</A>
+</H1>
+Since all 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ directives are executed at compile-time, the only way to
+change overloading during run-time is to
+<p>
+<XMP>
+    eval 'use overload "+" => \&addmethod';
+
+</XMP>
+<p>You can also use
+<p>
+<XMP>
+    eval 'no overload "+", "--", "<="';
+
+</XMP>
+<p>though the use of these constructs during run-time is questionable.
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_public_0">
+Public functions</A>
+</H1>
+Package <CODE>overload.pm</CODE> provides the following public functions:
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_overload_strval_arg_0">
+overload::StrVal(arg)</A>
+
+</DT></STRONG>
+<DD>
+Gives string value of <CODE>arg</CODE> as in absence of stringify overloading.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_overload_overloaded_arg_0">
+overload::Overloaded(arg)</A>
+
+</DT></STRONG>
+<DD>
+Returns true if <CODE>arg</CODE> is subject to overloading of some operations.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="overload_overload_method_obj_op_0">
+overload::Method(obj,op)</A>
+
+</DT></STRONG>
+<DD>
+Returns 
+<A HREF="overload.htm#overload_undef_0">undef</A>
+ or a reference to the method that implements <CODE>op</CODE>.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="overload_implementation_0">
+IMPLEMENTATION</A>
+</H1>
+What follows is subject to change RSN.
+<p>The table of methods for all operations is cached as magic in the
+symbol table hash for the package.  The table is rechecked for changes due to
+
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+, 
+<A HREF="perlfunc.htm#perlfunc_no_0">no overload</A>
+, and <STRONG>@ISA</STRONG> only during
+
+<A HREF="perlfunc.htm#perlfunc_bless_1">bless</A>
+ing; so if they are changed dynamically, you'll need an
+additional fake 
+<A HREF="perlfunc.htm#perlfunc_bless_1">bless</A>
+ing to update the table.
+<p>(Every SVish thing has a magic queue, and magic is an entry in that queue.
+This is how a single variable may participate in multiple forms of magic
+simultaneously.  For instance, environment variables regularly have two
+forms at once: their <STRONG>%ENV</STRONG> magic and their taint magic.)
+<p>If an object belongs to a package using overload, it carries a special
+flag.  Thus the only speed penalty during arithmetic operations without
+overloading is the checking of this flag.
+<p>In fact, if 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+ is not present, there is almost no overhead for
+overloadable operations, so most programs should not suffer measurable
+performance penalties.  A considerable effort was made to minimize the overhead
+when overload is used and the current operation is overloadable but
+the arguments in question do not belong to packages using overload.  When
+in doubt, test your speed with 
+<A HREF="perlfunc.htm#perlfunc_use_1">use overload</A>
+ and without it.  So far there
+have been no reports of substantial speed degradation if Perl is compiled
+with optimization turned on.
+<p>There is no size penalty for data if overload is not used. 
+<p>Copying (<CODE><STRONG>$a</STRONG>=<STRONG>$b</STRONG></CODE>) is shallow; however, a one-level-deep copying is 
+carried out before any operation that can imply an assignment to the
+object <STRONG>$a</STRONG> (or <STRONG>$b</STRONG>) refers to, like <CODE><STRONG>$a</STRONG>++</CODE>.  You can override this
+behavior by defining your own copy constructor (see <EM>``Copy Constructor''</EM>).
+<p>It is expected that arguments to methods that are not explicitly supposed
+to be changed are constant (but this is not enforced).
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_author_0">
+AUTHOR</A>
+</H1>
+Ilya Zakharevich &lt;<EM><A HREF="MAILTO:ilya@math.mps.ohio-state.edu">ilya@math.mps.ohio-state.edu</A></EM>&gt;.
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_diagnostics_0">
+DIAGNOSTICS</A>
+</H1>
+When Perl is run with the <STRONG>-Do</STRONG> switch or its equivalent, overloading
+induces diagnostic messages.
+<p><p><hr>
+
+<H1> 
+<A NAME="overload_bugs_0">
+BUGS</A>
+</H1>
+Because it is used for overloading, the per-package associative array
+<STRONG>%OVERLOAD</STRONG> now has a special meaning in Perl.
+<p>As shipped, mathemagical properties are not inherited via the <STRONG>@ISA</STRONG> tree.
+<p>This document is confusing.
+<p>
+</BODY>
+</HTML>

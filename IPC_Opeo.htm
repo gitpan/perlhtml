@@ -1,0 +1,47 @@
+<HEAD><CENTER><TITLE>IPC_Open3</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="IPC::Open3_name_0">
+NAME</A>
+</H1>
+IPC::Open3, open3 - open a process for reading, writing, and error handling
+<p><p><hr>
+
+<H1> 
+<A NAME="IPC::Open3_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    $pid = open3(\*WTRFH, \*RDRFH, \*ERRFH 
+                    'some cmd and args', 'optarg', ...);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="IPC::Open3_description_0">
+DESCRIPTION</A>
+</H1>
+Extremely similar to <EM>open2()</EM>, <EM>open3()</EM> spawns the given <STRONG>$cmd</STRONG> and
+connects RDRFH for reading, WTRFH for writing, and ERRFH for errors.  If
+ERRFH is '', or the same as RDRFH, then STDOUT and STDERR of the child are
+on the same file handle.
+<p>If WTRFH begins with ``&lt;&amp;'', then WTRFH will be closed in the parent, and
+the child will read from it directly.  If RDRFH or ERRFH begins with
+``&gt;&amp;'', then the child will send output directly to that file handle.  In both
+cases, there will be a dup(2) instead of a pipe(2) made.
+<p>If you try to read from the child's stdout writer and their stderr
+writer, you'll have problems with blocking, which means you'll
+want to use 
+<A HREF="perlfunc.htm#perlfunc_select_1">select()</A>
+, which means you'll have to use 
+<A HREF="perlfunc.htm#perlfunc_sysread_1">sysread()</A>
+ instead
+of normal stuff.
+<p>All caveats from <EM>open2()</EM> continue to apply.  See <EM>open2</EM> for details.
+<p>
+</BODY>
+</HTML>

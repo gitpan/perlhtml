@@ -1,0 +1,145 @@
+<HEAD><CENTER><TITLE>lib</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="lib_name_0">
+NAME</A>
+</H1>
+lib - manipulate 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ at compile time
+<p><p><hr>
+
+<H1> 
+<A NAME="lib_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use lib LIST;
+    no lib LIST;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="lib_description_0">
+DESCRIPTION</A>
+</H1>
+This is a small simple module which simplifies the manipulation of 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+
+at compile time.
+<p>It is typically used to add extra directories to perl's search path so
+that later 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ or 
+<A HREF="perlfunc.htm#perlfunc_require_0">require</A>
+ statements will find modules which are
+not located on perl's default search path.
+<p>
+<H2> ADDING DIRECTORIES TO 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+</H2>
+The parameters to 
+<A HREF="perlfunc.htm#perlfunc_use_1">use lib</A>
+ are added to the start of the perl search
+path. Saying
+<p>
+<XMP>
+    use lib LIST;
+
+</XMP>
+<p>is <EM>almost</EM> the same as saying
+<p>
+<XMP>
+    BEGIN { unshift(@INC, LIST) }
+
+</XMP>
+<p>For each directory in LIST (called <STRONG>$dir</STRONG> here) the lib module also
+checks to see if a directory called <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG>/auto exists.
+If so the <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> directory is assumed to be a corresponding
+architecture specific directory and is added to 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ in front of <STRONG>$dir</STRONG>.
+<p>If LIST includes both <STRONG>$dir</STRONG> and <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> then <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> will
+be added to 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ twice (if <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG>/auto exists).
+<p>
+<H2> DELETING DIRECTORIES FROM 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+</H2>
+You should normally only add directories to 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+.  If you need to
+delete directories from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ take care to only delete those which you
+added yourself or which you are certain are not needed by other modules
+in your script.  Other modules may have added directories which they
+need for correct operation.
+<p>By default the 
+<A HREF="perlfunc.htm#perlfunc_no_0">no lib</A>
+ statement deletes the <EM>first</EM> instance of
+each named directory from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+.  To delete multiple instances of the
+same name from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ you can specify the name multiple times.
+<p>To delete <EM>all</EM> instances of <EM>all</EM> the specified names from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ you can
+specify ':ALL' as the first parameter of 
+<A HREF="perlfunc.htm#perlfunc_no_0">no lib</A>
+. For example:
+<p>
+<XMP>
+    no lib qw(:ALL .);
+
+</XMP>
+<p>For each directory in LIST (called <STRONG>$dir</STRONG> here) the lib module also
+checks to see if a directory called <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG>/auto exists.
+If so the <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> directory is assumed to be a corresponding
+architecture specific directory and is also deleted from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+.
+<p>If LIST includes both <STRONG>$dir</STRONG> and <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> then <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG> will
+be deleted from 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ twice (if <STRONG>$dir</STRONG>/<STRONG>$archname</STRONG>/auto exists).
+<p>
+<H2> RESTORING ORIGINAL 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+</H2>
+When the lib module is first loaded it records the current value of 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+
+in an array <CODE><STRONG>@lib::ORIG_INC</STRONG></CODE>. To restore 
+<A HREF="perlvar.htm#perlvar_inc_0">@INC</A>
+ to that value you
+can say
+<p>
+<XMP>
+    @INC = @lib::ORIG_INC;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="lib_see_0">
+SEE ALSO</A>
+</H1>
+AddINC - optional module which deals with paths relative to the source file.
+<p><p><hr>
+
+<H1> 
+<A NAME="lib_author_0">
+AUTHOR</A>
+</H1>
+Tim Bunce, 2nd June 1995.
+<p>
+</BODY>
+</HTML>

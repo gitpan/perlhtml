@@ -1,0 +1,57 @@
+<HEAD><CENTER><TITLE>Cwd</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Cwd_name_0">
+NAME</A>
+</H1>
+getcwd - get pathname of current working directory
+<p><p><hr>
+
+<H1> 
+<A NAME="Cwd_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Cwd;
+    $dir = cwd;
+    use Cwd;
+    $dir = getcwd;
+    use Cwd;
+    $dir = fastgetcwd;
+    use Cwd 'chdir';
+    chdir "/tmp";
+    print $ENV{'PWD'};
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Cwd_description_0">
+DESCRIPTION</A>
+</H1>
+The <EM>getcwd()</EM> function re-implements the getcwd(3) (or getwd(3)) functions
+in Perl.
+<p>The <EM>fastcwd()</EM> function looks the same as <EM>getcwd()</EM>, but runs faster.
+It's also more dangerous because you might conceivably 
+<A HREF="perlfunc.htm#perlfunc_chdir_0">chdir()</A>
+ out of a
+directory that you can't 
+<A HREF="perlfunc.htm#perlfunc_chdir_0">chdir()</A>
+ back into.
+<p>The <EM>cwd()</EM> function looks the same as getcwd and fastgetcwd but is
+implemented using the most natural and safe form for the current
+architecture. For most systems it is identical to `pwd` (but without
+the trailing line terminator). It is recommended that cwd (or another
+*<EM>cwd()</EM> function) is used in <EM>all</EM> code to ensure portability.
+<p>If you ask to override your 
+<A HREF="perlfunc.htm#perlfunc_chdir_0">chdir()</A>
+ built-in function, then your PWD
+environment variable will be kept up to date.  (See
+<EM>Overriding builtin functions</EM>.) Note that it will only be
+kept up to date it all packages which use chdir import it from Cwd.
+<p>
+</BODY>
+</HTML>

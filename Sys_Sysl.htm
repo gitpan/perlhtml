@@ -1,0 +1,128 @@
+<HEAD><CENTER><TITLE>Sys_Syslog</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_name_0">
+NAME</A>
+</H1>
+Sys::Syslog, openlog, closelog, setlogmask, syslog - Perl interface to the UNIX syslog(3) calls
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Sys::Syslog;
+    openlog $ident, $logopt, $facility;
+    syslog $priority, $mask, $format, @args;
+    $oldmask = setlogmask $mask_priority;
+    closelog;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_description_0">
+DESCRIPTION</A>
+</H1>
+Sys::Syslog is an interface to the UNIX 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_syslog_0">syslog(3)</A>
+ program.
+Call 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_syslog_0">
+<A HREF="Sys_Sysl.htm#Sys::Syslog_syslog_0">syslog()</A>
+</A>
+ with a string priority and a list of 
+<A HREF="perlfunc.htm#perlfunc_printf_1">
+<A HREF="perlfunc.htm#perlfunc_printf_1">printf()</A>
+</A>
+ args
+just like 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_syslog_0">syslog(3)</A>
+.
+<p>Syslog provides the functions:
+<p>
+<DL>
+<DT>
+openlog <STRONG>$ident</STRONG>, <STRONG>$logopt</STRONG>, <STRONG>$facility</STRONG><DD>
+<EM><STRONG>$ident</STRONG></EM> is prepended to every message.
+<EM><STRONG>$logopt</STRONG></EM> contains one or more of the words <EM>pid</EM>, <EM>ndelay</EM>, <EM>cons</EM>, <EM>nowait</EM>.
+<EM><STRONG>$facility</STRONG></EM> specifies the part of the system
+<p>
+<DT>
+syslog <STRONG>$priority</STRONG>, <STRONG>$mask</STRONG>, <STRONG>$format</STRONG>, <STRONG>@args</STRONG><DD>
+If <EM><STRONG>$priority</STRONG></EM> and <EM><STRONG>$mask</STRONG></EM> permit, logs <EM>(<STRONG>$format</STRONG>, <STRONG>@args</STRONG>)</EM>
+printed as by 
+<A HREF="perlfunc.htm#perlfunc_printf_1">printf(3V)</A>
+, with the addition that <EM><STRONG>%m</STRONG></EM>
+is replaced with <CODE>``$!''</CODE> (the latest error message).
+<p>
+<DT>
+setlogmask <STRONG>$mask_priority</STRONG><DD>
+Sets log mask <EM><STRONG>$mask_priority</STRONG></EM> and returns the old mask.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Sys::Syslog_closelog_0">
+closelog</A>
+
+</DT></STRONG>
+<DD>
+Closes the log file.
+<p>
+</DL>
+Note that 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_openlog_0">openlog</A>
+ now takes three arguments, just like 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_openlog_0">openlog(3)</A>
+.
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_examples_0">
+EXAMPLES</A>
+</H1>
+
+<XMP>
+    openlog($program, 'cons,pid', 'user');
+    syslog('info', 'this is another test');
+    syslog('mail|warning', 'this is a better test: %d', time);
+    closelog();
+    syslog('debug', 'this is the last test');
+    openlog("$program $$", 'ndelay', 'user');
+    syslog('notice', 'fooprogram: this is really done');
+    $! = 55;
+    syslog('info', 'problem was %m'); # %m == $! in syslog(3)
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_dependencies_0">
+DEPENDENCIES</A>
+</H1>
+<STRONG>Sys::Syslog</STRONG> needs 
+<A HREF="Sys_Sysl.htm#Sys::Syslog_syslog_0">syslog.ph</A>
+, which can be created with <CODE>h2ph</CODE>.
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_see_0">
+SEE ALSO</A>
+</H1>
+<EM>syslog(3)</EM>
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Syslog_author_0">
+AUTHOR</A>
+</H1>
+Tom Christiansen &lt;<EM><A HREF="MAILTO:tchrist@perl.com">tchrist@perl.com</A></EM>&gt; and Larry Wall &lt;<EM><A HREF="MAILTO:lwall@sems.com">lwall@sems.com</A></EM>&gt;
+<p>
+</BODY>
+</HTML>

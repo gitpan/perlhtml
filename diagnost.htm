@@ -1,0 +1,209 @@
+<HEAD><CENTER><TITLE>diagnostics</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="diagnostics_name_0">
+NAME</A>
+</H1>
+diagnostics - Perl compiler pragma to force verbose warning diagnostics
+<p>splain - standalone program to do the same thing
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_synopsis_0">
+SYNOPSIS</A>
+</H1>
+As a pragma:
+<p>
+<XMP>
+    use diagnostics;
+    use diagnostics -verbose;
+    enable  diagnostics;
+    disable diagnostics;
+
+</XMP>
+<p>Aa a program:
+<p>
+<XMP>
+    perl program 2>diag.out
+    splain [-v] [-p] diag.out
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_description_0">
+DESCRIPTION</A>
+</H1>
+<p>
+<H2> The <CODE>diagnostics</CODE> Pragma</H2>
+This module extends the terse diagnostics normally emitted by both the
+perl compiler and the perl interpeter, augmenting them wtih the more
+explicative and endearing descriptions found in 
+<A HREF="perldiag.htm">
+the <EM>perldiag</EM> manpage</A>
+.  Like the
+other pragmata, it affects to compilation phase of your program rather
+than merely the execution phase.
+<p>To use in your program as a pragma, merely invoke
+<p>
+<XMP>
+    use diagnostics;
+
+</XMP>
+<p>at the start (or near the start) of your program.  (Note 
+that this <EM>does</EM> enable perl's 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+ flag.)  Your whole
+compilation will then be subject(ed :-) to the enhanced diagnostics.
+These still go out <STRONG>STDERR</STRONG>.
+<p>Due to the interaction between runtime and compiletime issues,
+and because it's probably not a very good idea anyway,
+you may not use 
+<A HREF="perlfunc.htm#perlfunc_no_0">no diagnostics</A>
+ to turn them off at compiletime.
+However, you may control there behaviour at runtime using the 
+<EM>disable()</EM> and <EM>enable()</EM> methods to turn them off and on respectively.
+<p>The <STRONG>-verbose</STRONG> flag first prints out the 
+<A HREF="perldiag.htm">
+the <EM>perldiag</EM> manpage</A>
+ introduction before
+any other diagnostics.  The <STRONG>$diagnostics::PRETTY</STRONG> can generate nicer escape
+sequences for pgers.
+<p>
+<H2> The <EM>splain</EM> Program</H2>
+While apparently a whole nuther program, <EM>splain</EM> is actually nothing
+more than a link to the (executable) <EM>diagnostics.pm</EM> module, as well as
+a link to the <EM>diagnostics.pod</EM> documentation.  The 
+<A HREF="perlrun.htm#perlrun_v_0">-v</A>
+ flag is like
+the 
+<A HREF="perlfunc.htm#perlfunc_use_1">use diagnostics -verbose</A>
+ directive.
+The 
+<A HREF="perlrun.htm#perlrun_p_0">-p</A>
+ flag is like the
+<STRONG>$diagnostics::PRETTY</STRONG> variable.  Since you're post-processing with 
+<EM>splain</EM>, there's no sense in being able to <EM>enable()</EM> or <EM>disable()</EM> processing.
+<p>Output from <EM>splain</EM> is directed to <STRONG>STDOUT</STRONG>, unlike the pragma.
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_examples_0">
+EXAMPLES</A>
+</H1>
+The following file is certain to trigger a few errors at both
+runtime and compiletime:
+<p>
+<XMP>
+    use diagnostics;
+    print NOWHERE "nothing\n";
+    print STDERR "\n\tThis message should be unadorned.\n";
+    warn "\tThis is a user warning";
+    print "\nDIAGNOSTIC TESTER: Please enter a <CR> here: ";
+    my $a, $b = scalar <STDIN>;
+    print "\n";
+    print $x/$y;
+
+</XMP>
+<p>If you prefer to run your program first and look at its problem
+afterwards, do this:
+<p>
+<XMP>
+    perl -w test.pl 2>test.out
+    ./splain < test.out
+
+</XMP>
+<p>Note that this is not in general possible in shells of more dubious heritage, 
+as the theorectical 
+<p>
+<XMP>
+    (perl -w test.pl >/dev/tty) >& test.out
+    ./splain < test.out
+
+</XMP>
+<p>Because you just moved the existing <STRONG>stdout</STRONG> to somewhere else.
+<p>If you don't want to modify your source code, but still have on-the-fly
+warnings, do this:
+<p>
+<XMP>
+    exec 3>&1; perl -w test.pl 2>&1 1>&3 3>&- | splain 1>&2 3>&- 
+
+</XMP>
+<p>Nifty, eh?
+<p>If you want to control warnings on the fly, do something like this.
+Make sure you do the 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ first, or you won't be able to get
+at the <EM>enable()</EM> or <EM>disable()</EM> methods.
+<p>
+<XMP>
+    use diagnostics; # checks entire compilation phase 
+        print "\ntime for 1st bogus diags: SQUAWKINGS\n";
+        print BOGUS1 'nada';
+        print "done with 1st bogus\n";
+    disable diagnostics; # only turns off runtime warnings
+        print "\ntime for 2nd bogus: (squelched)\n";
+        print BOGUS2 'nada';
+        print "done with 2nd bogus\n";
+    enable diagnostics; # turns back on runtime warnings
+        print "\ntime for 3rd bogus: SQUAWKINGS\n";
+        print BOGUS3 'nada';
+        print "done with 3rd bogus\n";
+    disable diagnostics;
+        print "\ntime for 4th bogus: (squelched)\n";
+        print BOGUS4 'nada';
+        print "done with 4th bogus\n";
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_internals_0">
+INTERNALS</A>
+</H1>
+Diagnostic messages derive from the <EM>perldiag.pod</EM> file when available at
+runtime.  Otherwise, they may be embedded in the file itself when the
+splain package is built.   See the <EM>Makefile</EM> for details.
+<p>If an extant <STRONG>$SIG</STRONG>{__WARN__} handler is discovered, it will continue
+to be honored, but only after the diagnostic::<EM>splainthis()</EM> function 
+(the module's <STRONG>$SIG</STRONG>{__WARN__} interceptor) has had its way with your
+warnings.
+<p>There is a <STRONG>$diagnostics::DEBUG</STRONG> variable you may set if you're desperately
+curious what sorts of things are being intercepted.
+<p>
+<XMP>
+    BEGIN { $diagnostics::DEBUG = 1 } 
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_bugs_0">
+BUGS</A>
+</H1>
+Not being able to say ``no diagnostics'' is annoying, but may not be
+insurmountable.
+<p>The <CODE>-pretty</CODE> directive is called too late to affect matters.
+You have to to this instead, and <EM>before</EM> you load the module.
+<p>
+<XMP>
+    BEGIN { $diagnostics::PRETTY = 1 } 
+
+</XMP>
+<p>I could start up faster by delaying compilation until it should be
+needed, but this gets a ``panic: top_level''
+when using the pragma form in 5.001e.  
+<p>While it's true that this documentation is somewhat subserious, if you use
+a program named <EM>splain</EM>, you should expect a bit of whimsy.
+<p><p><hr>
+
+<H1> 
+<A NAME="diagnostics_author_0">
+AUTHOR</A>
+</H1>
+Tom Christiansen <EM>&lt;<A HREF="MAILTO:tchrist@mox.perl.com">tchrist@mox.perl.com</A>&gt;</EM>, 25 June 1995.
+<p>
+</BODY>
+</HTML>

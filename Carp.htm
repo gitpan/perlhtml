@@ -1,0 +1,42 @@
+<HEAD><CENTER><TITLE>Carp</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Carp_name_0">
+NAME</A>
+</H1>
+carp - warn of errors (from perspective of caller)
+<p>croak - die of errors (from perspective of caller)
+<p>confess - die of errors with stack backtrace
+<p><p><hr>
+
+<H1> 
+<A NAME="Carp_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Carp;
+    croak "We're outta here!";
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Carp_description_0">
+DESCRIPTION</A>
+</H1>
+The Carp routines are useful in your own modules because
+they act like 
+<A HREF="perlfunc.htm#perlfunc_die_0">die()</A>
+ or 
+<A HREF="perlfunc.htm#perlfunc_warn_0">warn()</A>
+, but report where the error
+was in the code they were called from.  Thus if you have a 
+routine <EM>Foo()</EM> that has a <EM>carp()</EM> in it, then the <EM>carp()</EM> 
+will report the error as occurring where <EM>Foo()</EM> was called, 
+not where <EM>carp()</EM> was called.
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,48 @@
+<HEAD><CENTER><TITLE>ExtUtils_Install</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Install_name_0">
+NAME</A>
+</H1>
+ExtUtils::Install - install files from here to there
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Install_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<A HREF="perlfunc.htm#perlfunc_use_1">use ExtUtils::Install;</A>
+
+<p><STRONG>install(<STRONG>$hashref</STRONG>,<STRONG>$verbose</STRONG>,<STRONG>$nonono</STRONG>);</STRONG>
+<p><STRONG>uninstall(<STRONG>$packlistfile</STRONG>,<STRONG>$verbose</STRONG>,<STRONG>$nonono</STRONG>);</STRONG>
+<p><p><hr>
+
+<H1> 
+<A NAME="ExtUtils::Install_description_0">
+DESCRIPTION</A>
+</H1>
+Both functions, <EM>install()</EM> and <EM>uninstall()</EM> are specific to the way
+ExtUtils::MakeMaker handles the installation and deinstallation of
+perl modules. They are not designed as general purpose tools.
+<p><EM>install()</EM> takes three arguments. A reference to a hash, a verbose
+switch and a don't-really-do-it switch. The hash ref contains a
+mapping of directories: each key/value pair is a combination of
+directories to be copied. Key is a directory to copy from, value is a
+directory to copy to. The whole tree below the ``from'' directory will
+be copied preserving timestamps and permissions.
+<p>There are two keys with a special meaning in the hash: ``read'' and
+``write''. After the copying is done, install will write the list of
+target files to the file named by <STRONG>$hashref</STRONG>-&gt;{write}. If there is
+another file named by <STRONG>$hashref</STRONG>-&gt;{read}, the contents of this file will
+be merged into the written file. The read and the written file may be
+identical, but on AFS it is quite likely, people are installing to a
+different directory than the one where the files later appear.
+<p><EM>uninstall()</EM> takes as first argument a file containing filenames to be
+unlinked. The second argument is a verbose switch, the third is a
+no-don't-really-do-it-now switch.
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,45 @@
+<HEAD><CENTER><TITLE>Sys_Hostname</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Sys::Hostname_name_0">
+NAME</A>
+</H1>
+Sys::Hostname - Try every conceivable way to get hostname
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Hostname_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Sys::Hostname;
+    $host = hostname;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Hostname_description_0">
+DESCRIPTION</A>
+</H1>
+Attempts several methods of getting the system hostname and
+then caches the result.  It tries 
+<A HREF="perlfunc.htm#perlfunc_syscall_0">syscall(SYS_gethostname)</A>
+,
+<CODE>`hostname`</CODE>, <CODE>`uname -n`</CODE>, and the file <EM>/com/host</EM>.
+If all that fails it <CODE>croak</CODE>s.
+<p>All nulls, returns, and newlines are removed from the result.
+<p><p><hr>
+
+<H1> 
+<A NAME="Sys::Hostname_author_0">
+AUTHOR</A>
+</H1>
+David Sundstrom &lt;<A HREF="MAILTO:sunds@asictest.sc.ti.com">sunds@asictest.sc.ti.com</A>&gt;
+<p>Texas Instruments
+<p>
+</BODY>
+</HTML>

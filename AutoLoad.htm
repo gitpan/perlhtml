@@ -1,0 +1,34 @@
+<HEAD><CENTER><TITLE>AutoLoader</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="AutoLoader_name_0">
+NAME</A>
+</H1>
+AutoLoader - load functions only on demand
+<p><p><hr>
+
+<H1> 
+<A NAME="AutoLoader_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    package FOOBAR;
+    use Exporter;
+    use AutoLoader;
+    @ISA = (Exporter, AutoLoader);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="AutoLoader_description_0">
+DESCRIPTION</A>
+</H1>
+This module tells its users that functions in the FOOBAR package are to be
+autoloaded from <EM>auto/<STRONG>$AUTOLOAD</STRONG>.al</EM>.  See <EM>``Autoloading''</EM>.
+<p>
+</BODY>
+</HTML>

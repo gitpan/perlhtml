@@ -1,0 +1,71 @@
+<HEAD><CENTER><TITLE>Math_Complex</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Math::Complex_name_0">
+NAME</A>
+</H1>
+Math::Complex - complex numbers package
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::Complex_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Math::Complex;
+  $i = new Math::Complex;
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::Complex_description_0">
+DESCRIPTION</A>
+</H1>
+Complex numbers declared as
+<p>
+<XMP>
+    $i = Math::Complex->new(1,1);
+
+</XMP>
+<p>can be manipulated with overloaded math operators. The operators
+<p>
+<XMP>
+  + - * / neg ~ abs cos sin exp sqrt
+
+</XMP>
+<p>are supported as well as
+<p>
+<XMP>
+  "" (stringify)
+
+</XMP>
+<p>The methods
+<p>
+<XMP>
+  Re Im arg
+
+</XMP>
+<p>are also provided.
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::Complex_bugs_0">
+BUGS</A>
+</H1>
+
+<A HREF="perlfunc.htm#perlfunc_sqrt_0">sqrt()</A>
+ should return two roots, but only returns one.
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::Complex_authors_0">
+AUTHORS</A>
+</H1>
+Dave Nadler, Tom Christiansen, Tim Bunce, Larry Wall.
+<p>
+</BODY>
+</HTML>

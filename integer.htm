@@ -1,0 +1,36 @@
+<HEAD><CENTER><TITLE>integer</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="integer_name_0">
+NAME</A>
+</H1>
+integer - Perl pragma to compute arithmetic in integer instead of double
+<p><p><hr>
+
+<H1> 
+<A NAME="integer_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use integer;
+    $x = 10/3;
+    # $x is now 3, not 3.33333333333333333
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="integer_description_0">
+DESCRIPTION</A>
+</H1>
+This tells the compiler that it's okay to use integer operations
+from here to the end of the enclosing BLOCK.  On many machines, 
+this doesn't matter a great deal for most computations, but on those 
+without floating point hardware, it can make a big difference.
+<p>See <EM>Pragmatic Modules</EM>.
+<p>
+</BODY>
+</HTML>

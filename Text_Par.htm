@@ -1,0 +1,92 @@
+<HEAD><CENTER><TITLE>Text_ParseWords</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Text::ParseWords_name_0">
+NAME</A>
+</H1>
+Text::ParseWords - parse text into an array of tokens
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::ParseWords_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Text::ParseWords;
+  @words = &quotewords($delim, $keep, @lines);
+  @words = &shellwords(@lines);
+  @words = &old_shellwords(@lines);
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::ParseWords_description_0">
+DESCRIPTION</A>
+</H1>
+&amp;<EM>quotewords()</EM> accepts a delimiter (which can be a regular expression)
+and a list of lines and then breaks those lines up into a list of
+words ignoring delimiters that appear inside quotes.
+<p>The <STRONG>$keep</STRONG> argument is a boolean flag.  If true, the quotes are kept
+with each word, otherwise quotes are stripped in the splitting process.
+<STRONG>$keep</STRONG> also defines whether unprotected backslashes are retained.
+<p>A &amp;<EM>shellwords()</EM> replacement is included to demonstrate the new package.
+This version differs from the original in that it will _NOT_ default
+to using 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ if no arguments are given.  I personally find the old behavior
+to be a mis-feature.
+<p>&amp;<EM>quotewords()</EM> works by simply jamming all of <STRONG>@lines</STRONG> into a single
+string in 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ and then pulling off words a bit at a time until 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+
+is exhausted.
+<p>The inner ``for'' loop builds up each word (or <STRONG>$field</STRONG>) one <STRONG>$snippet</STRONG>
+at a time.  A <STRONG>$snippet</STRONG> is a quoted string, a backslashed character,
+or an unquoted string.  We fall out of the ``for'' loop when we reach
+the end of 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+ or when we hit a delimiter.  Falling out of the ``for''
+loop, we push the <STRONG>$field</STRONG> we've been building up onto the list of
+<STRONG>@words</STRONG> we'll be returning, and then loop back and pull another word
+off of 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+.
+<p>The first two cases inside the ``for'' loop deal with quoted strings.
+The first case matches a double quoted string, removes it from 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+,
+and assigns the double quoted string to <STRONG>$snippet</STRONG> in the body of the
+conditional.  The second case handles single quoted strings.  In
+the third case we've found a quote at the current beginning of 
+<A HREF="perlvar.htm#perlvar__0">$_</A>
+,
+but it didn't match the quoted string regexps in the first two cases,
+so it must be an unbalanced quote and we croak with an error (which can
+be caught by 
+<A HREF="perlfunc.htm#perlfunc_eval_1">eval()</A>
+).
+<p>The next case handles backslashed characters, and the next case is the
+exit case on reaching the end of the string or finding a delimiter.
+<p>Otherwise, we've found an unquoted thing and we pull of characters one
+at a time until we reach something that could start another <STRONG>$snippet</STRONG>--
+a quote of some sort, a backslash, or the delimiter.  This one character
+at a time behavior was necessary if the delimiter was going to be a
+regexp (love to hear it if you can figure out a better way).
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::ParseWords_authors_0">
+AUTHORS</A>
+</H1>
+Hal Pomeranz (<A HREF="MAILTO:pomeranz@netcom.com">pomeranz@netcom.com</A>), 23 March 1994
+<p>Basically an update and generalization of the old shellwords.pl.
+Much code shamelessly stolen from the old version (author unknown).
+<p>
+</BODY>
+</HTML>

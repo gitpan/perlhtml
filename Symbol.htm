@@ -1,0 +1,56 @@
+<HEAD><CENTER><TITLE>Symbol</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Symbol_name_0">
+NAME</A>
+</H1>
+Symbol - manipulate Perl symbols and their names
+<p><p><hr>
+
+<H1> 
+<A NAME="Symbol_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Symbol;
+    $sym = gensym;
+    open($sym, "filename");
+    $_ = <$sym>;
+    # etc.
+    ungensym $sym;      # no effect
+    print qualify("x"), "\n";              # "Test::x"
+    print qualify("x", "FOO"), "\n"        # "FOO::x"
+    print qualify("BAR::x"), "\n";         # "BAR::x"
+    print qualify("BAR::x", "FOO"), "\n";  # "BAR::x"
+    print qualify("STDOUT", "FOO"), "\n";  # "main::STDOUT" (global)
+    print qualify(\*x), "\n";              # returns \*x
+    print qualify(\*x, "FOO"), "\n";       # returns \*x
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Symbol_description_0">
+DESCRIPTION</A>
+</H1>
+<CODE>Symbol::gensym</CODE> creates an anonymous glob and returns a reference
+to it.  Such a glob reference can be used as a file or directory
+handle.
+<p>For backward compatibility with older implementations that didn't
+support anonymous globs, <CODE>Symbol::ungensym</CODE> is also provided.
+But it doesn't do anything.
+<p><CODE>Symbol::qualify</CODE> turns unqualified symbol names into qualified
+variable names (e.g. ``myvar'' -&gt; ``MyPackage::myvar'').  If it is given a
+second parameter, <CODE>qualify</CODE> uses it as the default package;
+otherwise, it uses the package of its caller.  Regardless, global
+variable names (e.g. ``STDOUT'', ``ENV'', ``SIG'') are always qualfied with
+``main::''.
+<p>Qualification applies only to symbol names (strings).  References are
+left unchanged under the assumption that they are glob references,
+which are qualified by their nature.
+<p>
+</BODY>
+</HTML>

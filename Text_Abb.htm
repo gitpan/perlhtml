@@ -1,0 +1,44 @@
+<HEAD><CENTER><TITLE>Text_Abbrev</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Text::Abbrev_name_0">
+NAME</A>
+</H1>
+abbrev - create an abbreviation table from a list
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Abbrev_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use Abbrev;
+    abbrev *HASH, LIST
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Abbrev_description_0">
+DESCRIPTION</A>
+</H1>
+Stores all unambiguous truncations of each element of LIST
+as keys key in the associative array indicated by <CODE>*hash</CODE>.
+The values are the original list elements.
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Abbrev_example_0">
+EXAMPLE</A>
+</H1>
+
+<XMP>
+    abbrev(*hash,qw("list edit send abort gripe"));
+
+</XMP>
+<p>
+</BODY>
+</HTML>

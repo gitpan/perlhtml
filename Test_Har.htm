@@ -1,0 +1,158 @@
+<HEAD><CENTER><TITLE>Test_Harness</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_name_0">
+NAME</A>
+</H1>
+Test::Harness - run perl standard test scripts with statistics
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_synopsis_0">
+SYNOPSIS</A>
+</H1>
+use Test::Harness;
+<p>runtests(<STRONG>@tests</STRONG>);
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_description_0">
+DESCRIPTION</A>
+</H1>
+Perl test scripts print to standard output <CODE>``ok N''</CODE> for each single
+test, where <CODE>N</CODE> is an increasing sequence of integers. The first line
+output by a standard test scxript is <CODE>``1..M''</CODE> with <CODE>M</CODE> being the
+number of tests that should be run within the test
+script. Test::Harness::runscripts(<STRONG>@tests</STRONG>) runs all the testscripts
+named as arguments and checks standard output for the expected
+<CODE>``ok N''</CODE> strings.
+<p>After all tests have been performed, <EM>runscripts()</EM> prints some
+performance statistics that are computed by the Benchmark module.
+<p>
+<H2> 
+<A NAME="Test::Harness_the_0">
+The test script output</A>
+</H2>
+Any output from the testscript to standard error is ignored and
+bypassed, thus will be seen by the user. Lines written to standard
+output that look like perl comments (start with <CODE>/^\s*\#/</CODE>) are
+discarded. Lines containing <CODE>/^(not\s+)?ok\b/</CODE> are interpreted as
+feedback for <EM>runtests()</EM>.
+<p>It is tolerated if the test numbers after <CODE>ok</CODE> are omitted. In this
+case Test::Harness maintains temporarily its own counter until the
+script supplies test numbers again. So the following test script
+<p>
+<PRE>
+    print &lt;&lt;END;
+    1..6
+    not ok
+    ok
+    not ok
+    ok
+    ok
+    END
+
+</PRE>
+<p>will generate 
+<p>
+<XMP>
+    FAILED tests 1, 3, 6
+    Failed 3/6 tests, 50.00% okay
+
+</XMP>
+<p>The global variable <STRONG>$Test::Harness::verbose</STRONG> is exportable and can be
+used to let <EM>runscripts()</EM> display the standard output of the script
+without altering the behavior otherwise.
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_export_0">
+EXPORT</A>
+</H1>
+<CODE>&amp;runscripts</CODE> is exported by Test::Harness per default.
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_diagnostics_0">
+DIAGNOSTICS</A>
+</H1>
+<p>
+<DL>
+<DT>
+
+<A NAME="Test::Harness_all_0">
+All tests successful.\nFiles=<STRONG>%d</STRONG>,  Tests=<STRONG>%d</STRONG>, <STRONG>%s</STRONG></A>
+<DD>
+If all tests are successful some statistics about the performance are
+printed.
+<p>
+<DT>
+
+<A NAME="Test::Harness_failed_0">
+FAILED tests <STRONG>%s</STRONG>\n\tFailed <STRONG>%d</STRONG>/<STRONG>%d</STRONG> tests, <STRONG>%.</STRONG>2f%<STRONG>% </STRONG>okay.</A>
+<DD>
+For any single script that has failing subtests statistics like the
+above are printed.
+<p>
+<DT>
+
+<A NAME="Test::Harness_test_0">
+Test returned status <STRONG>%d</STRONG> (wstat <STRONG>%d</STRONG>)</A>
+<DD>
+Scripts that return a non-zero exit status, both $?&gt;&gt;8 and $? are
+printed in a message similar to the above.
+<p>
+<DT>
+
+<A NAME="Test::Harness_failed_1">
+Failed 1 test, <STRONG>%.</STRONG>2f%<STRONG>% </STRONG>okay. <STRONG>%s</STRONG></A>
+<DD>
+<p>
+<DT>
+
+<A NAME="Test::Harness_failed_2">
+Failed <STRONG>%d</STRONG>/<STRONG>%d</STRONG> tests, <STRONG>%.</STRONG>2f%<STRONG>% </STRONG>okay. <STRONG>%s</STRONG></A>
+<DD>
+If not all tests were successful, the script dies with one of the
+above messages.
+<p>
+</DL>
+<p><hr>
+
+<H1> 
+<A NAME="Test::Harness_see_0">
+SEE ALSO</A>
+</H1>
+See <EM>Benchmark</EM> for the underlying timing routines.
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_authors_0">
+AUTHORS</A>
+</H1>
+Either Tim Bunce or Andreas Koenig, we don't know. What we know for
+sure is, that it was inspired by Larry Wall's TEST script that came
+with perl distributions for ages. Current maintainer is Andreas
+Koenig.
+<p><p><hr>
+
+<H1> 
+<A NAME="Test::Harness_bugs_0">
+BUGS</A>
+</H1>
+Test::Harness uses 
+<A HREF="perlvar.htm#perlvar__18">$^</A>
+X to determine the perl binary to run the tests
+with. Test scripts running via the shebang (<CODE>#!</CODE>) line may not be
+portable because 
+<A HREF="perlvar.htm#perlvar__18">$^</A>
+X is not consistent for shebang scripts across
+platforms. This is no problem when Test::Harness is run with an
+absolute path to the perl binary or when 
+<A HREF="perlvar.htm#perlvar__18">$^</A>
+X can be found in the path.
+<p>
+</BODY>
+</HTML>

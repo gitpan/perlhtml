@@ -1,0 +1,211 @@
+<HEAD><CENTER><TITLE>Exporter</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Exporter_name_0">
+NAME</A>
+</H1>
+Exporter - Implements default import method for modules
+<p><p><hr>
+
+<H1> 
+<A NAME="Exporter_synopsis_0">
+SYNOPSIS</A>
+</H1>
+In module ModuleName.pm:
+<p>
+<XMP>
+  package ModuleName;
+  require Exporter;
+  @ISA = qw(Exporter);
+  @EXPORT = qw(...);            # symbols to export by default
+  @EXPORT_OK = qw(...);         # symbols to export on request
+  %EXPORT_TAGS = tag => [...];  # define names for sets of symbols
+
+</XMP>
+<p>In other files which wish to use ModuleName:
+<p>
+<XMP>
+  use ModuleName;               # import default symbols into my package
+  use ModuleName qw(...);       # import listed symbols into my package
+  use ModuleName ();            # do not import any symbols
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Exporter_description_0">
+DESCRIPTION</A>
+</H1>
+The Exporter module implements a default 
+<A HREF="perlfunc.htm#perlfunc_import_0">import</A>
+ method which
+many modules choose inherit rather than implement their own.
+<p>Perl automatically calls the 
+<A HREF="perlfunc.htm#perlfunc_import_0">import</A>
+ method when processing a
+
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ statement for a module. Modules and 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ are documented
+in 
+<A HREF="perlfunc.htm">
+the <EM>perlfunc</EM> manpage</A>
+ and 
+<A HREF="perlmod.htm">
+the <EM>perlmod</EM> manpage</A>
+. Understanding the concept of
+modules and how the 
+<A HREF="perlfunc.htm#perlfunc_use_1">use</A>
+ statement operates is important to
+understanding the Exporter.
+<p>
+<H2> 
+<A NAME="Exporter_selecting_0">
+Selecting What To Export</A>
+</H2>
+Do <STRONG>not</STRONG> export method names!
+<p>Do <STRONG>not</STRONG> export anything else by default without a good reason!
+<p>Exports pollute the namespace of the module user.  If you must export
+try to use <STRONG>@EXPORT_OK</STRONG> in preference to <STRONG>@EXPORT</STRONG> and avoid short or
+common symbol names to reduce the risk of name clashes.
+<p>Generally anything not exported is still accessible from outside the
+module using the ModuleName::item_name (or <STRONG>$blessed_ref</STRONG>-&gt;method)
+syntax.  By convention you can use a leading underscore on names to
+informally indicate that they are 'internal' and not for public use.
+<p>(It is actually possible to get private functions by saying:
+<p>
+<XMP>
+  my $subref = sub { ... };
+  &$subref;
+
+</XMP>
+<p>But there's no way to call that directly as a method, since a method
+must have a name in the symbol table.)
+<p>As a general rule, if the module is trying to be object oriented
+then export nothing. If it's just a collection of functions then
+<STRONG>@EXPORT_OK</STRONG> anything but use <STRONG>@EXPORT</STRONG> with caution.
+<p>Other module design guidelines can be found in 
+<A HREF="perlmod.htm">
+the <EM>perlmod</EM> manpage</A>
+.
+<p>
+<H2> 
+<A NAME="Exporter_specialised_0">
+Specialised Import Lists</A>
+</H2>
+If the first entry in an import list begins with !, : or / then the
+list is treated as a series of specifications which either add to or
+delete from the list of names to import. They are processed left to
+right. Specifications are in the form:
+<p>
+<XMP>
+    [!]name         This name only
+    [!]:DEFAULT     All names in @EXPORT
+    [!]:tag         All names in $EXPORT_TAGS{tag} anonymous list
+    [!]/pattern/    All names in @EXPORT and @EXPORT_OK which match
+
+</XMP>
+<p>A leading ! indicates that matching names should be deleted from the
+list of names to import.  If the first specification is a deletion it
+is treated as though preceded by :DEFAULT. If you just want to import
+extra names in addition to the default set you will still need to
+include :DEFAULT explicitly.
+<p>e.g., Module.pm defines:
+<p>
+<XMP>
+    @EXPORT      = qw(A1 A2 A3 A4 A5);
+    @EXPORT_OK   = qw(B1 B2 B3 B4 B5);
+    %EXPORT_TAGS = (T1 => [qw(A1 A2 B1 B2)], T2 => [qw(A1 A2 B3 B4)]);
+    Note that you cannot use tags in @EXPORT or @EXPORT_OK.
+    Names in EXPORT_TAGS must also appear in @EXPORT or @EXPORT_OK.
+
+</XMP>
+<p>An application using Module can say something like:
+<p>
+<XMP>
+    use Module qw(:DEFAULT :T2 !B3 A3);
+
+</XMP>
+<p>Other examples include:
+<p>
+<XMP>
+    use Socket qw(!/^[AP]F_/ !SOMAXCONN !SOL_SOCKET);
+    use POSIX  qw(:errno_h :termios_h !TCSADRAIN !/^EXIT/);
+
+</XMP>
+<p>Remember that most patterns (using //) will need to be anchored
+with a leading ^, e.g., <CODE>/^EXIT/</CODE> rather than <CODE>/EXIT/</CODE>.
+<p>You can say <CODE>BEGIN { <STRONG>$Exporter::Verbose</STRONG>=1 }</CODE> to see how the
+specifications are being processed and what is actually being imported
+into modules.
+<p>
+<H2> 
+<A NAME="Exporter_module_0">
+Module Version Checking</A>
+</H2>
+The Exporter module will convert an attempt to import a number from a
+module into a call to <STRONG>$module_name</STRONG>-&gt;require_version(<STRONG>$value</STRONG>). This can
+be used to validate that the version of the module being used is
+greater than or equal to the required version.
+<p>The Exporter module supplies a default require_version method which
+checks the value of <STRONG>$VERSION</STRONG> in the exporting module.
+<p>Since the default require_version method treats the <STRONG>$VERSION</STRONG> number as
+a simple numeric value it will regard version 1.10 as lower than
+1.9. For this reason it is strongly recommended that you use numbers
+with at least two decimal places, e.g., 1.09.
+<p>
+<H2> 
+<A NAME="Exporter_managing_0">
+Managing Unknown Symbols</A>
+</H2>
+In some situations you may want to prevent certain symbols from being
+exported. Typically this applies to extensions which have functions
+or constants that may not exist on some systems.
+<p>The names of any symbols that cannot be exported should be listed
+in the <CODE><STRONG>@EXPORT_FAIL</STRONG></CODE> array.
+<p>If a module attempts to import any of these symbols the Exporter will
+will give the module an opportunity to handle the situation before
+generating an error. The Exporter will call an export_fail method
+with a list of the failed symbols:
+<p>
+<XMP>
+  @failed_symbols = $module_name->export_fail(@failed_symbols);
+
+</XMP>
+<p>If the export_fail method returns an empty list then no error is
+recorded and all the requested symbols are exported. If the returned
+list is not empty then an error is generated for each symbol and the
+export fails. The Exporter provides a default export_fail method which
+simply returns the list unchanged.
+<p>Uses for the export_fail method include giving better error messages
+for some symbols and performing lazy architectural checks (put more
+symbols into <STRONG>@EXPORT_FAIL</STRONG> by default and then take them out if someone
+actually tries to use them and an expensive check shows that they are
+usable on that platform).
+<p>
+<H2> 
+<A NAME="Exporter_tag_0">
+Tag Handling Utility Functions</A>
+</H2>
+Since the symbols listed within <STRONG>%EXPORT_TAGS</STRONG> must also appear in either
+<STRONG>@EXPORT</STRONG> or <STRONG>@EXPORT_OK</STRONG>, two utility functions are provided which allow
+you to easily add tagged sets of symbols to <STRONG>@EXPORT</STRONG> or <STRONG>@EXPORT_OK:</STRONG>
+<p>
+<XMP>
+  %EXPORT_TAGS = (foo => [qw(aa bb cc)], bar => [qw(aa cc dd)]);
+  Exporter::export_tags('foo');     # add aa, bb and cc to @EXPORT
+  Exporter::export_ok_tags('bar');  # add aa, cc and dd to @EXPORT_OK
+
+</XMP>
+<p>Any names which are not tags are added to <STRONG>@EXPORT</STRONG> or <STRONG>@EXPORT_OK</STRONG>
+unchanged but will trigger a warning (with 
+<A HREF="perlrun.htm#perlrun_w_0">-w</A>
+) to avoid misspelt tags
+names being silently added to <STRONG>@EXPORT</STRONG> or <STRONG>@EXPORT_OK</STRONG>. Future versions
+may make this a fatal error.
+<p>
+</BODY>
+</HTML>

@@ -1,0 +1,45 @@
+<HEAD><CENTER><TITLE>SelectSaver</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="SelectSaver_name_0">
+NAME</A>
+</H1>
+SelectSaver - save and restore selected file handle
+<p><p><hr>
+
+<H1> 
+<A NAME="SelectSaver_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+    use SelectSaver;
+    {
+       my $saver = new SelectSaver(FILEHANDLE);
+       # FILEHANDLE is selected
+    }
+    # previous handle is selected
+    {
+       my $saver = new SelectSaver;
+       # new handle may be selected, or not
+    }
+    # previous handle is selected
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="SelectSaver_description_0">
+DESCRIPTION</A>
+</H1>
+A <CODE>SelectSaver</CODE> object contains a reference to the file handle that
+was selected when it was created.  If its <CODE>new</CODE> method gets an extra
+parameter, then that parameter is selected; otherwise, the selected
+file handle remains unchanged.
+<p>When a <CODE>SelectSaver</CODE> is destroyed, it re-selects the file handle
+that was selected when it was created.
+<p>
+</BODY>
+</HTML>

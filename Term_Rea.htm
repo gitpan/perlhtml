@@ -1,0 +1,201 @@
+<HEAD><CENTER><TITLE>Term_ReadLine</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Term::ReadLine_name_0">
+NAME</A>
+</H1>
+Term::ReadLine - Perl interface to various 
+<A HREF="Term_Rea.htm#Term::ReadLine_readline_1">readline</A>
+ packages. If
+no real package is found, substitutes stubs instead of basic functions.
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::ReadLine_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Term::ReadLine;
+  $term = new Term::ReadLine 'Simple Perl calc';
+  $prompt = "Enter your arithmetic expression: ";
+  $OUT = $term->OUT || STDOUT;
+  while ( defined ($_ = $term->readline($prompt)) ) {
+    $res = eval($_), "\n";
+    warn $@ if $@;
+    print $OUT $res, "\n" unless $@;
+    $term->addhistory($_) if /\S/;
+  }
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::ReadLine_description_0">
+DESCRIPTION</A>
+</H1>
+This package is just a front end to some other packages. At the moment
+this description is written, the only such package is Term-ReadLine,
+available on CPAN near you. The real target of this stub package is to
+set up a common interface to whatever Readline emerges with time.
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::ReadLine_minimal_0">
+Minimal set of supported functions</A>
+</H1>
+All the supported functions should be called as methods, i.e., either as 
+<p>
+<XMP>
+  $term = new Term::ReadLine 'name';
+
+</XMP>
+<p>or as 
+<p>
+<XMP>
+  $term->addhistory('row');
+
+</XMP>
+<p>where <STRONG>$term</STRONG> is a return value of Term::ReadLine-&gt;Init.
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_readline_0">
+ReadLine</A>
+
+</DT></STRONG>
+<DD>
+returns the actual package that executes the commands. Among possible
+values are <CODE>Term::ReadLine::Gnu</CODE>, <CODE>Term::ReadLine::Perl</CODE>,
+<CODE>Term::ReadLine::Stub Exporter</CODE>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_new_0">
+new</A>
+
+</DT></STRONG>
+<DD>
+returns the handle for subsequent calls to following
+functions. Argument is the name of the application. Optionally can be
+followed by two arguments for <CODE>IN</CODE> and <CODE>OUT</CODE> filehandles. These
+arguments should be globs.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_readline_1">
+readline</A>
+
+</DT></STRONG>
+<DD>
+gets an input line, <EM>possibly</EM> with actual 
+<A HREF="Term_Rea.htm#Term::ReadLine_readline_1">readline</A>
+
+support. Trailing newline is removed. Returns 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ on <CODE>EOF</CODE>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_addhistory_0">
+addhistory</A>
+
+</DT></STRONG>
+<DD>
+adds the line to the history of input, from where it can be used if
+the actual 
+<A HREF="Term_Rea.htm#Term::ReadLine_readline_1">readline</A>
+ is present.
+<p>
+<DT>
+
+<STRONG>
+<CODE>IN</CODE>, 
+<A HREF="perlvar.htm#perlvar__24">$<</A>
+CODE>OUT</CODE>
+</DT></STRONG>
+<DD>
+return the filehandles for input and output or 
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ if 
+<A HREF="Term_Rea.htm#Term::ReadLine_readline_1">readline</A>
+
+input and output cannot be used for Perl.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_minline_0">
+MinLine</A>
+
+</DT></STRONG>
+<DD>
+If argument is specified, it is an advice on minimal size of line to
+be included into history.  
+<A HREF="perlfunc.htm#perlfunc_undef_0">undef</A>
+ means do not include anything into
+history. Returns the old value.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_findconsole_0">
+findConsole</A>
+
+</DT></STRONG>
+<DD>
+returns an array with two strings that give most appropriate names for
+files for input and output using conventions <CODE>``&lt;<STRONG>$in</STRONG>''</CODE>, <CODE>``&gt;out''</CODE>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Term::ReadLine_features_0">
+Features</A>
+
+</DT></STRONG>
+<DD>
+Returns a reference to a hash with keys being features present in
+current implementation. Several optional features are used in the
+minimal interface: <CODE>appname</CODE> should be present if the first argument
+to 
+<A HREF="Term_Rea.htm#Term::ReadLine_new_0">new</A>
+ is recognized, and <CODE>minline</CODE> should be present if
+
+<A HREF="Term_Rea.htm#Term::ReadLine_minline_0">MinLine</A>
+ method is not dummy.  <CODE>autohistory</CODE> should be present if
+lines are put into history automatically (maybe subject to
+
+<A HREF="Term_Rea.htm#Term::ReadLine_minline_0">MinLine</A>
+), and 
+<A HREF="Term_Rea.htm#Term::ReadLine_addhistory_0">addhistory</A>
+ if 
+<A HREF="Term_Rea.htm#Term::ReadLine_addhistory_0">addhistory</A>
+ method is not dummy.
+<p>
+</DL>
+Actually <CODE>Term::ReadLine</CODE> can use some other package, that willsupport reacher set of commands.
+<p><p><hr>
+
+<H1> 
+<A NAME="Term::ReadLine_exports_0">
+EXPORTS</A>
+</H1>
+None
+<p>
+</BODY>
+</HTML>

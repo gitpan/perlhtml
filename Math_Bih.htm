@@ -1,0 +1,117 @@
+<HEAD><CENTER><TITLE>Math_BigInt</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_name_0">
+NAME</A>
+</H1>
+Math::BigInt - Arbitrary size integer math package
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+  use Math::BigInt;
+  $i = Math::BigInt->new($string);
+  $i->bneg return BINT               negation
+  $i->babs return BINT               absolute value
+  $i->bcmp(BINT) return CODE         compare numbers (undef,<0,=0,>0)
+  $i->badd(BINT) return BINT         addition
+  $i->bsub(BINT) return BINT         subtraction
+  $i->bmul(BINT) return BINT         multiplication
+  $i->bdiv(BINT) return (BINT,BINT)  division (quo,rem) just quo if scalar
+  $i->bmod(BINT) return BINT         modulus
+  $i->bgcd(BINT) return BINT         greatest common divisor
+  $i->bnorm return BINT              normalization
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_description_0">
+DESCRIPTION</A>
+</H1>
+All basic math operations are overloaded if you declare your big
+integers as
+<p>
+<XMP>
+  $i = new Math::BigInt '123 456 789 123 456 789';
+
+</XMP>
+<p>
+<DL>
+<DT>
+
+<STRONG>
+
+<A NAME="Math::BigInt_canonical_0">
+Canonical notation</A>
+
+</DT></STRONG>
+<DD>
+Big integer value are strings of the form <CODE>/^[+-]\d+$/</CODE> with leading
+zeros suppressed.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Math::BigInt_input_0">
+Input</A>
+
+</DT></STRONG>
+<DD>
+Input values to these routines may be strings of the form
+<CODE>/^\s*[+-]?[\d\s]+$/</CODE>.
+<p>
+<DT>
+
+<STRONG>
+
+<A NAME="Math::BigInt_output_0">
+Output</A>
+
+</DT></STRONG>
+<DD>
+Output values always always in canonical form
+<p>
+</DL>
+Actual math is done in an internal format consisting of an arraywhose first element is the sign (/^[+-]$/) and whose remaining 
+elements are base 100000 digits with the least significant digit first.
+The string 'NaN' is used to represent the result when input arguments 
+are not numbers, as well as the result of dividing by zero.
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_examples_0">
+EXAMPLES</A>
+</H1>
+
+<XMP>
+   '+0'                            canonical zero value
+   '   -123 123 123'               canonical value '-123123123'
+   '1 23 456 7890'                 canonical value '+1234567890'
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_bugs_0">
+BUGS</A>
+</H1>
+The current version of this module is a preliminary version of the
+real thing that is currently (as of perl5.002) under development.
+<p><p><hr>
+
+<H1> 
+<A NAME="Math::BigInt_author_0">
+AUTHOR</A>
+</H1>
+Mark Biggar, overloaded interface by Ilya Zakharevich.
+<p>
+</BODY>
+</HTML>

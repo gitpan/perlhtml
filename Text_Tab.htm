@@ -1,0 +1,48 @@
+<HEAD><CENTER><TITLE>Text_Tabs</TITLE>
+</CENTER></HEAD>
+<BODY><p><hr>
+
+<H1> 
+<A NAME="Text::Tabs_name_0">
+NAME</A>
+</H1>
+Text::Tabs -- expand and unexpand tabs
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Tabs_synopsis_0">
+SYNOPSIS</A>
+</H1>
+
+<XMP>
+        use Text::Tabs;
+        
+        #$tabstop = 8; # Defaults
+        print expand("Hello\tworld");
+        print unexpand("Hello,        world");
+        $tabstop = 4;
+        print join("\n",expand(split(/\n/,
+                "Hello\tworld,\nit's a nice day.\n"
+                )));
+
+</XMP>
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Tabs_description_0">
+DESCRIPTION</A>
+</H1>
+This module expands and unexpands tabs into spaces, as per the unix expand
+and unexpand programs. Either function should be passed an array of strings
+(newlines may <EM>not</EM> be included, and should be used to split an incoming
+string into separate elements.) which will be processed and returned.
+<p><p><hr>
+
+<H1> 
+<A NAME="Text::Tabs_author_0">
+AUTHOR</A>
+</H1>
+David Muir Sharnoff &lt;<A HREF="MAILTO:muir@idiom.com">muir@idiom.com</A>&gt;
+<p>
+</BODY>
+</HTML>
